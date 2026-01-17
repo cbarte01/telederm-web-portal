@@ -1,17 +1,19 @@
+import { Link } from "react-router-dom";
+
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const links = {
     company: [
-      { label: "About Us", href: "#" },
-      { label: "Our Doctors", href: "#" },
+      { label: "About Us", href: "/#about" },
+      { label: "Our Doctors", href: "/#doctors" },
+      { label: "Skin Blog", href: "/skin-blog", isRoute: true },
       { label: "Careers", href: "#" },
-      { label: "Press", href: "#" },
     ],
     support: [
-      { label: "FAQ", href: "#faq" },
-      { label: "Contact", href: "#" },
-      { label: "How It Works", href: "#how-it-works" },
+      { label: "FAQ", href: "/#faq" },
+      { label: "Contact", href: "/#contact" },
+      { label: "How It Works", href: "/#how-it-works" },
     ],
     legal: [
       { label: "Privacy Policy", href: "#" },
@@ -43,12 +45,21 @@ const Footer = () => {
             <ul className="space-y-3">
               {links.company.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-sm hover:text-background transition-colors"
-                  >
-                    {link.label}
-                  </a>
+                  {'isRoute' in link && link.isRoute ? (
+                    <Link
+                      to={link.href}
+                      className="text-sm hover:text-background transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a
+                      href={link.href}
+                      className="text-sm hover:text-background transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>

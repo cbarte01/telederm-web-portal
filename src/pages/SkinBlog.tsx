@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const categories = [
   { id: "all", label: "All Topics" },
@@ -109,27 +111,20 @@ const SkinBlog = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-lg shadow-soft border-b border-border/50">
-        <div className="container flex items-center justify-between h-18 md:h-22">
-          <Link to="/" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl gradient-hero flex items-center justify-center shadow-sm">
-              <span className="text-primary-foreground font-bold text-lg">T</span>
-            </div>
-            <span className="font-serif font-bold text-xl text-foreground">telederm</span>
-          </Link>
-          <Link to="/">
-            <Button variant="ghost" className="gap-2">
-              <ArrowLeft className="w-4 h-4" />
-              Back to Home
-            </Button>
-          </Link>
-        </div>
-      </header>
+      <Header />
 
       {/* Hero Section */}
       <section className="pt-32 pb-16 md:pt-40 md:pb-20 bg-gradient-to-b from-accent to-background">
         <div className="container">
+          {/* Breadcrumb */}
+          <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
+            <Link to="/" className="hover:text-foreground transition-colors">
+              Home
+            </Link>
+            <ChevronRight className="w-4 h-4" />
+            <span className="text-foreground font-medium">Skin Blog</span>
+          </nav>
+          
           <div className="max-w-3xl mx-auto text-center">
             <Badge variant="secondary" className="mb-6">
               Skin Health Resources
@@ -244,22 +239,7 @@ const SkinBlog = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-8 border-t border-border bg-card">
-        <div className="container">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg gradient-hero flex items-center justify-center">
-                <span className="text-primary-foreground font-bold">T</span>
-              </div>
-              <span className="font-serif font-bold text-lg text-foreground">telederm</span>
-            </Link>
-            <p className="text-sm text-muted-foreground">
-              © 2026 Telederm. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

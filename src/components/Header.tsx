@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,34 +18,37 @@ const Header = () => {
   }, []);
 
   const navLinks = [
-    { href: "#how-it-works", label: "How It Works" },
-    { href: "#conditions", label: "Conditions" },
-    { href: "#pricing", label: "Pricing" },
-    { href: "#faq", label: "FAQ" },
+    { href: "/#how-it-works", label: "How It Works" },
+    { href: "/#conditions", label: "Conditions" },
+    { href: "/#pricing", label: "Pricing" },
+    { href: "/#faq", label: "FAQ" },
   ];
 
   const pageLinks = [
     { href: "/skin-blog", label: "Skin Blog" },
   ];
 
+  // Determine header style based on scroll and page
+  const showTransparent = isHomePage && !isScrolled;
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled
-          ? "bg-card/95 backdrop-blur-lg shadow-soft border-b border-border/50"
-          : "bg-transparent"
+        showTransparent
+          ? "bg-transparent"
+          : "bg-card/95 backdrop-blur-lg shadow-soft border-b border-border/50"
       }`}
     >
       <div className="container flex items-center justify-between h-18 md:h-22">
         {/* Logo */}
-        <a href="#" className="flex items-center gap-2.5">
+        <Link to="/" className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl gradient-hero flex items-center justify-center shadow-sm">
             <span className="text-primary-foreground font-bold text-lg">T</span>
           </div>
           <span className={`font-serif font-bold text-xl transition-colors duration-300 ${
-            isScrolled ? 'text-foreground' : 'text-card'
+            showTransparent ? 'text-card' : 'text-foreground'
           }`}>telederm</span>
-        </a>
+        </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-10">
@@ -51,8 +56,8 @@ const Header = () => {
             <a
               key={link.href}
               href={link.href}
-              className={`text-sm font-medium transition-colors duration-300 hover:text-primary ${
-                isScrolled ? 'text-muted-foreground' : 'text-card/80 hover:text-card'
+            className={`text-sm font-medium transition-colors duration-300 hover:text-primary ${
+                showTransparent ? 'text-card/80 hover:text-card' : 'text-muted-foreground'
               }`}
             >
               {link.label}
@@ -63,7 +68,9 @@ const Header = () => {
               key={link.href}
               to={link.href}
               className={`text-sm font-medium transition-colors duration-300 hover:text-primary ${
-                isScrolled ? 'text-muted-foreground' : 'text-card/80 hover:text-card'
+                location.pathname === link.href 
+                  ? 'text-primary' 
+                  : showTransparent ? 'text-card/80 hover:text-card' : 'text-muted-foreground'
               }`}
             >
               {link.label}
