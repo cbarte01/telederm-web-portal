@@ -11,7 +11,7 @@
     "apply": "Apply"
   },
   "buttons": {
-    "login": "Log In",
+    "login": "Patient Login",
     "doctorLogin": "Doctor Login",
     "startTreatment": "Start Treatment",
     "startConsultation": "Start Your Consultation",

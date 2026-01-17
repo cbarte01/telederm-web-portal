@@ -11,7 +11,7 @@
     "apply": "Bewerben"
   },
   "buttons": {
-    "login": "Anmelden",
+    "login": "Patienten-Login",
     "doctorLogin": "Arzt-Login",
     "startTreatment": "Behandlung starten",
     "startConsultation": "Behandlung starten",
