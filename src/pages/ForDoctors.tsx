@@ -140,7 +140,7 @@ const ForDoctors = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background doctors-theme">
       <Header />
 
       {/* Hero Section */}
@@ -216,7 +216,7 @@ const ForDoctors = () => {
                 <Button
                   size="xl"
                   variant="outline"
-                  className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm"
+                  className="bg-white/20 border-2 border-white text-white hover:bg-white/30 font-medium backdrop-blur-sm"
                 >
                   {t("cta.secondary")}
                 </Button>
@@ -225,40 +225,40 @@ const ForDoctors = () => {
 
             {/* Right side - Application card */}
             <div className="hidden lg:block">
-              <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 shadow-2xl">
+              <div className="bg-white rounded-3xl p-8 border border-border shadow-2xl">
                 <div className="text-center mb-6">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/20 flex items-center justify-center">
-                    <Stethoscope className="w-8 h-8 text-white" />
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Stethoscope className="w-8 h-8 text-primary" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-2">Join Our Network</h3>
-                  <p className="text-white/80">750+ dermatologists already on board</p>
+                  <h3 className="text-2xl font-bold text-foreground mb-2">Join Our Network</h3>
+                  <p className="text-muted-foreground">750+ dermatologists already on board</p>
                 </div>
                 
                 <div className="space-y-4 mb-6">
-                  <div className="flex items-center gap-4 bg-white/10 rounded-xl p-4">
-                    <Euro className="w-6 h-6 text-white" />
+                  <div className="flex items-center gap-4 bg-primary/5 rounded-xl p-4 border border-primary/10">
+                    <Euro className="w-6 h-6 text-primary" />
                     <div>
-                      <p className="text-white font-medium">Competitive Rates</p>
-                      <p className="text-white/70 text-sm">Earn on your own terms</p>
+                      <p className="text-foreground font-medium">Competitive Rates</p>
+                      <p className="text-muted-foreground text-sm">Earn on your own terms</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4 bg-white/10 rounded-xl p-4">
-                    <Clock className="w-6 h-6 text-white" />
+                  <div className="flex items-center gap-4 bg-primary/5 rounded-xl p-4 border border-primary/10">
+                    <Clock className="w-6 h-6 text-primary" />
                     <div>
-                      <p className="text-white font-medium">Flexible Schedule</p>
-                      <p className="text-white/70 text-sm">Work when it suits you</p>
+                      <p className="text-foreground font-medium">Flexible Schedule</p>
+                      <p className="text-muted-foreground text-sm">Work when it suits you</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4 bg-white/10 rounded-xl p-4">
-                    <Shield className="w-6 h-6 text-white" />
+                  <div className="flex items-center gap-4 bg-primary/5 rounded-xl p-4 border border-primary/10">
+                    <Shield className="w-6 h-6 text-primary" />
                     <div>
-                      <p className="text-white font-medium">Full Compliance</p>
-                      <p className="text-white/70 text-sm">Legal & regulatory covered</p>
+                      <p className="text-foreground font-medium">Full Compliance</p>
+                      <p className="text-muted-foreground text-sm">Legal & regulatory covered</p>
                     </div>
                   </div>
                 </div>
 
-                <Button className="w-full bg-white text-primary hover:bg-white/90 h-14 text-lg font-semibold">
+                <Button className="w-full h-14 text-lg font-semibold">
                   Start Application
                   <ChevronRight className="w-5 h-5 ml-2" />
                 </Button>
@@ -655,14 +655,14 @@ const ForDoctors = () => {
                 {t("cta.description")}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="xl" className="bg-white text-primary hover:bg-white/90 shadow-lg">
+                <Button size="xl" className="bg-white text-primary hover:bg-white/90 shadow-lg font-semibold">
                   {t("cta.button")}
                   <ChevronRight className="w-5 h-5 ml-2" />
                 </Button>
                 <Button
                   size="xl"
                   variant="outline"
-                  className="border-white/30 text-white hover:bg-white/10"
+                  className="bg-white/20 border-2 border-white text-white hover:bg-white/30 font-medium"
                 >
                   {t("cta.secondary")}
                 </Button>
