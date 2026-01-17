@@ -44,6 +44,40 @@
       "description": "Werden Sie mit unserer 45-minütigen Schulung vollständig eingearbeitet. Laufende Unterstützung, wann immer Sie sie brauchen."
     }
   },
+  "testimonials": {
+    "title": "Was unsere Partner-Ärzte sagen",
+    "description": "Erfahren Sie von Dermatologen, die bereits Teil unseres Netzwerks sind.",
+    "items": {
+      "mueller": {
+        "quote": "Telederm hat die Führung meiner Praxis verändert. Die Flexibilität, von zu Hause aus zu arbeiten und dabei zusätzliches Einkommen zu erzielen, ist unbezahlbar. Die Plattform ist intuitiv und das Support-Team reagiert immer schnell.",
+        "name": "Dr. med. Sarah Müller",
+        "specialty": "Dermatologin",
+        "location": "München",
+        "experience": "Partnerin seit 2021"
+      },
+      "weber": {
+        "quote": "Als vielbeschäftigter Klinikinhaber war ich anfangs skeptisch. Aber Teledermatologie hat tatsächlich die Überfüllung meines Wartezimmers reduziert und meinen Patienten schnelleren Zugang zur Versorgung ermöglicht. Eine Win-Win-Situation.",
+        "name": "Dr. med. Thomas Weber",
+        "specialty": "Dermatologe & Allergologe",
+        "location": "Berlin",
+        "experience": "Partner seit 2020"
+      },
+      "schmidt": {
+        "quote": "Das Onboarding war nahtlos – 45 Minuten Schulung und ich war startklar. Ich bearbeite jetzt 15-20 Fälle pro Woche in meiner Freizeit. Die GOÄ-Abrechnung wird automatisch erledigt.",
+        "name": "Dr. med. Lisa Schmidt",
+        "specialty": "Dermatologin",
+        "location": "Hamburg",
+        "experience": "Partnerin seit 2022"
+      },
+      "braun": {
+        "quote": "Was ich am meisten schätze, ist die Qualität der Fälle. Die Fotodokumentation ist ausgezeichnet, und das 48-Stunden-Antwortfenster bedeutet, dass ich mich nie unter Druck gesetzt fühle. Perfekt für die Work-Life-Balance.",
+        "name": "Dr. med. Michael Braun",
+        "specialty": "Dermatologe & Venerologe",
+        "location": "Frankfurt",
+        "experience": "Partner seit 2021"
+      }
+    }
+  },
   "howItWorks": {
     "title": "In 3 einfachen Schritten starten",
     "description": "Von der Registrierung bis zum ersten Patienten – wir machen das Onboarding schnell und einfach.",
