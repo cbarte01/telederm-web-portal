@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogIn } from "lucide-react";
+import { Menu, X, LogIn, Stethoscope } from "lucide-react";
 import LanguageSwitcher from "./LanguageSwitcher";
 import teledermLogo from "@/assets/logo/telederm-logo.png";
 
@@ -22,20 +22,34 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navLinks = [
+  // Navigation links for the main homepage
+  const homeNavLinks = [
     { href: "/#how-it-works", label: t("nav.howItWorks") },
     { href: "/#conditions", label: t("nav.conditions") },
     { href: "/#pricing", label: t("nav.pricing") },
     { href: "/#faq", label: t("nav.faq") },
   ];
 
-  const pageLinks = [
+  const homePageLinks = [
     { href: "/skin-blog", label: t("nav.skinBlog") },
     { href: "/for-doctors", label: t("nav.forDoctors") },
   ];
 
+  // Navigation links for the for-doctors page
+  const doctorsNavLinks = [
+    { href: "/for-doctors#benefits", label: t("nav.benefits") },
+    { href: "/for-doctors#testimonials", label: t("nav.testimonials") },
+    { href: "/for-doctors#how-it-works", label: t("nav.howItWorks") },
+    { href: "/for-doctors#faq", label: t("nav.faq") },
+    { href: "/for-doctors#apply", label: t("nav.apply") },
+  ];
+
+  // Select navigation based on current page
+  const navLinks = isForDoctorsPage ? doctorsNavLinks : homeNavLinks;
+  const pageLinks = isForDoctorsPage ? [] : homePageLinks;
+
   // Determine header style based on scroll and page
-  const showTransparent = isHomePage && !isScrolled;
+  const showTransparent = (isHomePage || isForDoctorsPage) && !isScrolled;
 
   return (
     <header
@@ -89,7 +103,12 @@ const Header = () => {
         {/* Right side: Language Switcher + Login */}
         <div className="hidden md:flex items-center gap-4">
           <LanguageSwitcher variant={showTransparent ? 'transparent' : 'default'} />
-          {!isForDoctorsPage && (
+          {isForDoctorsPage ? (
+            <Button variant="ghost" size="lg" className={`gap-2 ${showTransparent ? 'text-card hover:text-card hover:bg-card/10' : ''}`}>
+              <Stethoscope className="w-4 h-4" />
+              {t("buttons.doctorLogin")}
+            </Button>
+          ) : (
             <Button variant="ghost" size="lg" className={`gap-2 ${showTransparent ? 'text-card hover:text-card hover:bg-card/10' : ''}`}>
               <LogIn className="w-4 h-4" />
               {t("buttons.login")}
@@ -138,7 +157,12 @@ const Header = () => {
             <div className="py-2">
               <LanguageSwitcher />
             </div>
-            {!isForDoctorsPage && (
+            {isForDoctorsPage ? (
+              <Button variant="ghost" size="lg" className="mt-2 gap-2 justify-start">
+                <Stethoscope className="w-4 h-4" />
+                {t("buttons.doctorLogin")}
+              </Button>
+            ) : (
               <Button variant="ghost" size="lg" className="mt-2 gap-2 justify-start">
                 <LogIn className="w-4 h-4" />
                 {t("buttons.login")}
