@@ -32,6 +32,8 @@ import {
   ChevronRight,
   CheckCircle2,
   Stethoscope,
+  Quote,
+  MapPin,
 } from "lucide-react";
 
 const ForDoctors = () => {
@@ -82,6 +84,8 @@ const ForDoctors = () => {
   ];
 
   const steps = ["register", "training", "start"];
+
+  const testimonials = ["mueller", "weber", "schmidt", "braun"];
 
   const faqItems = [
     "requirements",
@@ -217,6 +221,67 @@ const ForDoctors = () => {
                 <p className="text-muted-foreground">
                   {t(`benefits.${benefit.key}.description`)}
                 </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-20 md:py-28 bg-muted/30">
+        <div className="container">
+          <div className="text-center mb-16">
+            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
+              {t("testimonials.title")}
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              {t("testimonials.description")}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+            {testimonials.map((key, index) => (
+              <div
+                key={key}
+                className={`relative bg-card rounded-2xl p-8 border border-border shadow-sm hover:shadow-lg transition-all duration-300 ${
+                  index === 0 ? "md:col-span-2" : ""
+                }`}
+              >
+                {/* Quote icon */}
+                <div className="absolute top-6 right-6 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Quote className="w-6 h-6 text-primary" />
+                </div>
+
+                {/* Quote text */}
+                <p className="text-foreground/90 text-lg leading-relaxed mb-6 pr-16">
+                  "{t(`testimonials.items.${key}.quote`)}"
+                </p>
+
+                {/* Doctor info */}
+                <div className="flex items-center gap-4">
+                  {/* Avatar placeholder */}
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center border-2 border-primary/20">
+                    <Stethoscope className="w-6 h-6 text-primary" />
+                  </div>
+
+                  <div className="flex-1">
+                    <p className="font-semibold text-foreground">
+                      {t(`testimonials.items.${key}.name`)}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {t(`testimonials.items.${key}.specialty`)}
+                    </p>
+                    <div className="flex items-center gap-3 mt-1">
+                      <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <MapPin className="w-3 h-3" />
+                        {t(`testimonials.items.${key}.location`)}
+                      </span>
+                      <span className="text-xs text-primary font-medium">
+                        {t(`testimonials.items.${key}.experience`)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
             ))}
           </div>

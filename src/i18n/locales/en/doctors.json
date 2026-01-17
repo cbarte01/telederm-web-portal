@@ -44,6 +44,40 @@
       "description": "Get fully onboarded with our 45-minute training session. Ongoing support whenever you need it."
     }
   },
+  "testimonials": {
+    "title": "What Our Partner Doctors Say",
+    "description": "Hear from dermatologists who are already part of our network.",
+    "items": {
+      "mueller": {
+        "quote": "Telederm has transformed how I manage my practice. The flexibility to work from home while earning extra income is invaluable. The platform is intuitive and the support team is always responsive.",
+        "name": "Dr. med. Sarah Müller",
+        "specialty": "Dermatologist",
+        "location": "Munich",
+        "experience": "Partner since 2021"
+      },
+      "weber": {
+        "quote": "As a busy clinic owner, I was skeptical at first. But teledermatology has actually reduced my waiting room congestion and given my patients faster access to care. It's a win-win.",
+        "name": "Dr. med. Thomas Weber",
+        "specialty": "Dermatologist & Allergist",
+        "location": "Berlin",
+        "experience": "Partner since 2020"
+      },
+      "schmidt": {
+        "quote": "The onboarding was seamless – 45 minutes of training and I was ready to go. I now handle 15-20 cases per week during my free time. The GOÄ billing is handled automatically.",
+        "name": "Dr. med. Lisa Schmidt",
+        "specialty": "Dermatologist",
+        "location": "Hamburg",
+        "experience": "Partner since 2022"
+      },
+      "braun": {
+        "quote": "What I appreciate most is the quality of cases. The photo documentation is excellent, and the 48-hour response window means I never feel pressured. Perfect for work-life balance.",
+        "name": "Dr. med. Michael Braun",
+        "specialty": "Dermatologist & Venereologist",
+        "location": "Frankfurt",
+        "experience": "Partner since 2021"
+      }
+    }
+  },
   "howItWorks": {
     "title": "Get Started in 3 Simple Steps",
     "description": "From registration to your first patient – we make onboarding fast and simple.",
