@@ -1,7 +1,10 @@
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
 const CTA = () => {
+  const { t } = useTranslation("home");
+
   return (
     <section className="py-20 md:py-28 gradient-hero relative overflow-hidden">
       {/* Decorative elements */}
@@ -12,17 +15,17 @@ const CTA = () => {
       <div className="container relative">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary-foreground mb-6 text-balance">
-            Take the First Step Towards Healthier Skin
+            {t("cta.title")}
           </h2>
           <p className="text-lg md:text-xl text-primary-foreground/80 mb-8 max-w-2xl mx-auto">
-            Join thousands of patients who've discovered convenient, professional dermatology care from home.
+            {t("cta.description")}
           </p>
           <Button
             variant="default"
             size="xl"
             className="bg-background text-foreground hover:bg-background/90 shadow-elevated group"
           >
-            Start Your Consultation Now
+            {t("cta.button")}
             <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
           </Button>
         </div>

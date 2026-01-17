@@ -1,0 +1,49 @@
+{
+  "nav": {
+    "howItWorks": "So funktioniert's",
+    "conditions": "Hauterkrankungen",
+    "pricing": "Preise",
+    "faq": "FAQ",
+    "skinBlog": "Hautblog"
+  },
+  "buttons": {
+    "startTreatment": "Behandlung starten",
+    "startConsultation": "Beratung starten",
+    "startNow": "Jetzt starten",
+    "selectPlan": "Plan wählen",
+    "learnMore": "Mehr erfahren",
+    "viewAllConditions": "Alle Erkrankungen ansehen",
+    "readArticle": "Artikel lesen",
+    "loadMore": "Mehr Artikel laden",
+    "subscribe": "Abonnieren",
+    "sendMessage": "Nachricht senden",
+    "sending": "Wird gesendet...",
+    "clearFilters": "Filter löschen",
+    "clearAllFilters": "Alle Filter löschen"
+  },
+  "footer": {
+    "tagline": "Professionelle dermatologische Versorgung, digital geliefert. Ihre Haut verdient fachkundige Aufmerksamkeit.",
+    "company": "Unternehmen",
+    "support": "Hilfe",
+    "legal": "Rechtliches",
+    "certifications": "Zertifizierungen",
+    "aboutUs": "Über uns",
+    "ourDoctors": "Unsere Ärzte",
+    "careers": "Karriere",
+    "contact": "Kontakt",
+    "privacyPolicy": "Datenschutz",
+    "termsOfService": "AGB",
+    "imprint": "Impressum",
+    "copyright": "© {{year}} Telederm. Alle Rechte vorbehalten.",
+    "medicalDisclaimer": "Medizinische Beratungen werden von approbierten Dermatologen durchgeführt."
+  },
+  "certificates": {
+    "gdpr": "DSGVO-konform",
+    "iso": "ISO/IEC 27001",
+    "telemedicine": "Telemedizin-zertifiziert",
+    "ce": "CE-gekennzeichnete Software"
+  },
+  "breadcrumb": {
+    "home": "Startseite"
+  }
+}

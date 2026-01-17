@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const isHomePage = location.pathname === "/";
+  const { t } = useTranslation("common");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,14 +21,14 @@ const Header = () => {
   }, []);
 
   const navLinks = [
-    { href: "/#how-it-works", label: "How It Works" },
-    { href: "/#conditions", label: "Conditions" },
-    { href: "/#pricing", label: "Pricing" },
-    { href: "/#faq", label: "FAQ" },
+    { href: "/#how-it-works", label: t("nav.howItWorks") },
+    { href: "/#conditions", label: t("nav.conditions") },
+    { href: "/#pricing", label: t("nav.pricing") },
+    { href: "/#faq", label: t("nav.faq") },
   ];
 
   const pageLinks = [
-    { href: "/skin-blog", label: "Skin Blog" },
+    { href: "/skin-blog", label: t("nav.skinBlog") },
   ];
 
   // Determine header style based on scroll and page
@@ -78,10 +81,11 @@ const Header = () => {
           ))}
         </nav>
 
-        {/* CTA Button */}
-        <div className="hidden md:block">
+        {/* Right side: Language Switcher + CTA */}
+        <div className="hidden md:flex items-center gap-4">
+          <LanguageSwitcher variant={showTransparent ? 'transparent' : 'default'} />
           <Button variant="hero" size="lg">
-            Start Treatment
+            {t("buttons.startTreatment")}
           </Button>
         </div>
 
@@ -123,8 +127,11 @@ const Header = () => {
                 {link.label}
               </Link>
             ))}
+            <div className="py-2">
+              <LanguageSwitcher />
+            </div>
             <Button variant="hero" size="lg" className="mt-2">
-              Start Treatment
+              {t("buttons.startTreatment")}
             </Button>
           </nav>
         </div>

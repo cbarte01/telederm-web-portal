@@ -1,0 +1,49 @@
+{
+  "nav": {
+    "howItWorks": "How It Works",
+    "conditions": "Conditions",
+    "pricing": "Pricing",
+    "faq": "FAQ",
+    "skinBlog": "Skin Blog"
+  },
+  "buttons": {
+    "startTreatment": "Start Treatment",
+    "startConsultation": "Start Your Consultation",
+    "startNow": "Start Now",
+    "selectPlan": "Select Plan",
+    "learnMore": "Learn More",
+    "viewAllConditions": "View All Conditions",
+    "readArticle": "Read Article",
+    "loadMore": "Load More Articles",
+    "subscribe": "Subscribe",
+    "sendMessage": "Send Message",
+    "sending": "Sending...",
+    "clearFilters": "Clear filters",
+    "clearAllFilters": "Clear all filters"
+  },
+  "footer": {
+    "tagline": "Professional dermatology care, delivered digitally. Your skin deserves expert attention.",
+    "company": "Company",
+    "support": "Support",
+    "legal": "Legal",
+    "certifications": "Certifications",
+    "aboutUs": "About Us",
+    "ourDoctors": "Our Doctors",
+    "careers": "Careers",
+    "contact": "Contact",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "imprint": "Imprint",
+    "copyright": "© {{year}} Telederm. All rights reserved.",
+    "medicalDisclaimer": "Medical consultations provided by licensed dermatologists."
+  },
+  "certificates": {
+    "gdpr": "GDPR Compliant",
+    "iso": "ISO/IEC 27001",
+    "telemedicine": "Telemedicine Certified",
+    "ce": "CE Marked Software"
+  },
+  "breadcrumb": {
+    "home": "Home"
+  }
+}

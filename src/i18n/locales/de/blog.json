@@ -1,0 +1,58 @@
+{
+  "page": {
+    "badge": "Hautgesundheits-Ressourcen",
+    "title": "Hautblog",
+    "description": "Experteneinblicke, Behandlungsleitfäden und Hautpflegetipps von unseren Fachärzten für Dermatologie. Bleiben Sie informiert über Ihre Hautgesundheit."
+  },
+  "categories": {
+    "all": "Alle Themen",
+    "skinCare": "Hautpflege",
+    "conditions": "Erkrankungen",
+    "treatments": "Behandlungen",
+    "lifestyle": "Lebensstil"
+  },
+  "newsletter": {
+    "title": "Erhalten Sie Hautgesundheitstipps per E-Mail",
+    "description": "Abonnieren Sie unseren Newsletter und erhalten Sie 20% Rabatt auf Ihre erste Beratung sowie wöchentliche Hautpflegetipps von unseren Dermatologen.",
+    "placeholder": "Ihre E-Mail-Adresse",
+    "noSpam": "Kein Spam. Jederzeit abmelden."
+  },
+  "posts": {
+    "post1": {
+      "title": "ABCDE-Regel: So überprüfen Sie Ihre Muttermale auf Hautkrebs",
+      "excerpt": "Lernen Sie die einfache ABCDE-Methode, die Dermatologen verwenden, um potenziell gefährliche Muttermale zu identifizieren und wann Sie professionelle Hilfe suchen sollten."
+    },
+    "post2": {
+      "title": "Akne verstehen: Ursachen, Arten und wirksame Behandlungen",
+      "excerpt": "Von hormoneller Akne bis zu zystischen Ausbrüchen, entdecken Sie, was verschiedene Aknearten verursacht und welche Behandlungsmöglichkeiten am wirksamsten sind."
+    },
+    "post3": {
+      "title": "Der ultimative Leitfaden zum Aufbau einer Hautpflegeroutine",
+      "excerpt": "Schritt-für-Schritt-Anleitung zur Erstellung einer personalisierten Hautpflegeroutine, die Ihre individuellen Hautprobleme und Ziele anspricht."
+    },
+    "post4": {
+      "title": "Ekzem-Management: Tipps für das Leben mit Neurodermitis",
+      "excerpt": "Praktische Ratschläge zur Bewältigung von Ekzem-Schüben, einschließlich Auslöser-Identifikation, Feuchtigkeitsstrategien und Behandlungsoptionen."
+    },
+    "post5": {
+      "title": "Wie Ernährung Ihre Haut beeinflusst: Lebensmittel die helfen und schaden",
+      "excerpt": "Erkunden Sie die Verbindung zwischen Ernährung und Hautgesundheit und entdecken Sie, welche Lebensmittel häufige Hautprobleme verbessern oder verschlechtern können."
+    },
+    "post6": {
+      "title": "Psoriasis-Behandlungsoptionen: Von Cremes bis Biologika",
+      "excerpt": "Ein umfassender Überblick über Psoriasis-Behandlungen, einschließlich der neuesten Fortschritte bei biologischen Therapien und Lebensstiländerungen."
+    },
+    "post7": {
+      "title": "Sonnenschutz 101: SPF, UVA, UVB erklärt",
+      "excerpt": "Alles, was Sie über den Schutz Ihrer Haut vor Sonnenschäden wissen müssen, einschließlich der richtigen Auswahl und Anwendung von Sonnencreme."
+    },
+    "post8": {
+      "title": "Stress und Haut: Wie die psychische Gesundheit Ihren Teint beeinflusst",
+      "excerpt": "Verstehen Sie die Wissenschaft hinter stressbedingten Hautproblemen und lernen Sie Strategien zur Erhaltung gesunder Haut in herausfordernden Zeiten."
+    },
+    "post9": {
+      "title": "Rosazea: Auslöser, Symptome und Behandlungsansätze",
+      "excerpt": "Lernen Sie, Rosazea-Auslöser zu identifizieren und entdecken Sie wirksame Behandlungsstrategien für diese häufige, aber oft missverstandene Erkrankung."
+    }
+  }
+}
