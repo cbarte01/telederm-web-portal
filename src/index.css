@@ -21,6 +21,10 @@
     --primary: 175 42% 38%;
     --primary-foreground: 0 0% 100%;
 
+    /* Warm Coral CTA - stands out for action buttons */
+    --cta: 20 85% 55%;
+    --cta-foreground: 0 0% 100%;
+
     /* Warm slate secondary */
     --secondary: 220 15% 92%;
     --secondary-foreground: 220 30% 18%;
@@ -92,6 +96,9 @@
 
     --primary: 175 50% 50%;
     --primary-foreground: 220 25% 10%;
+
+    --cta: 20 80% 50%;
+    --cta-foreground: 0 0% 100%;
 
     --secondary: 220 15% 22%;
     --secondary-foreground: 40 20% 95%;
