@@ -11,6 +11,7 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const isHomePage = location.pathname === "/";
+  const isForDoctorsPage = location.pathname === "/for-doctors";
   const { t } = useTranslation("common");
 
   useEffect(() => {
@@ -88,9 +89,11 @@ const Header = () => {
         {/* Right side: Language Switcher + CTA */}
         <div className="hidden md:flex items-center gap-4">
           <LanguageSwitcher variant={showTransparent ? 'transparent' : 'default'} />
-          <Button variant="hero" size="lg">
-            {t("buttons.startTreatment")}
-          </Button>
+          {!isForDoctorsPage && (
+            <Button variant="hero" size="lg">
+              {t("buttons.startTreatment")}
+            </Button>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -134,9 +137,11 @@ const Header = () => {
             <div className="py-2">
               <LanguageSwitcher />
             </div>
-            <Button variant="hero" size="lg" className="mt-2">
-              {t("buttons.startTreatment")}
-            </Button>
+            {!isForDoctorsPage && (
+              <Button variant="hero" size="lg" className="mt-2">
+                {t("buttons.startTreatment")}
+              </Button>
+            )}
           </nav>
         </div>
       )}
