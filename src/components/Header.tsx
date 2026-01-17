@@ -23,28 +23,32 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled
-          ? "bg-background/95 backdrop-blur-md shadow-soft"
+          ? "bg-card/95 backdrop-blur-lg shadow-soft border-b border-border/50"
           : "bg-transparent"
       }`}
     >
-      <div className="container flex items-center justify-between h-16 md:h-20">
+      <div className="container flex items-center justify-between h-18 md:h-22">
         {/* Logo */}
-        <a href="#" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg gradient-hero flex items-center justify-center">
+        <a href="#" className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-xl gradient-hero flex items-center justify-center shadow-sm">
             <span className="text-primary-foreground font-bold text-lg">T</span>
           </div>
-          <span className="font-bold text-xl text-foreground">telederm</span>
+          <span className={`font-serif font-bold text-xl transition-colors duration-300 ${
+            isScrolled ? 'text-foreground' : 'text-card'
+          }`}>telederm</span>
         </a>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden md:flex items-center gap-10">
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className={`text-sm font-medium transition-colors duration-300 hover:text-primary ${
+                isScrolled ? 'text-muted-foreground' : 'text-card/80 hover:text-card'
+              }`}
             >
               {link.label}
             </a>
