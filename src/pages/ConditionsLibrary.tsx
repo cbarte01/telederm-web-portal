@@ -12,7 +12,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Search } from "lucide-react";
+import { Search, ArrowRight } from "lucide-react";
 import {
   conditions,
   categoryColors,
@@ -262,8 +262,9 @@ const ConditionsLibrary = () => {
           <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
             {t("page.needAdviceDescription")}
           </p>
-          <Button variant="hero" size="lg" className="shadow-soft">
+          <Button variant="hero" size="xl" className="shadow-elevated group">
             {t("page.startConsultation", "Start Your Consultation")}
+            <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
           </Button>
         </div>
       </section>
