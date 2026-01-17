@@ -45,6 +45,7 @@ import drMueller from "@/assets/doctors/dr-mueller.jpg";
 import drWeber from "@/assets/doctors/dr-weber.jpg";
 import drSchmidt from "@/assets/doctors/dr-schmidt.jpg";
 import drBraun from "@/assets/doctors/dr-braun.jpg";
+import heroDoctors from "@/assets/hero-doctors.jpg";
 
 const ForDoctors = () => {
   const { t } = useTranslation("doctors");
@@ -143,12 +144,19 @@ const ForDoctors = () => {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">
-        {/* Background gradient */}
-        <div className="absolute inset-0 gradient-hero opacity-95" />
-        <div className="absolute inset-0 bg-[url('/placeholder.svg')] opacity-5 bg-cover bg-center" />
+      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+        {/* Background image with overlay */}
+        <div className="absolute inset-0">
+          <img
+            src={heroDoctors}
+            alt="Dermatologist using telemedicine platform"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/85 to-primary/40" />
+          <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent" />
+        </div>
 
-        <div className="container relative z-10">
+        <div className="container relative z-10 py-32 md:py-40">
           {/* Breadcrumb */}
           <Breadcrumb className="mb-8">
             <BreadcrumbList>
@@ -168,32 +176,93 @@ const ForDoctors = () => {
             </BreadcrumbList>
           </Breadcrumb>
 
-          <div className="max-w-4xl mx-auto text-center">
-            <Badge className="mb-6 bg-white/20 text-white border-white/30 hover:bg-white/30">
-              <Stethoscope className="w-4 h-4 mr-2" />
-              {t("page.badge")}
-            </Badge>
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left content */}
+            <div className="max-w-xl">
+              <Badge className="mb-6 bg-white/20 text-white border-white/30 hover:bg-white/30 backdrop-blur-sm">
+                <Stethoscope className="w-4 h-4 mr-2" />
+                {t("page.badge")}
+              </Badge>
 
-            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6 leading-tight">
-              {t("page.title")}
-            </h1>
+              <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6 leading-tight">
+                {t("page.title")}
+              </h1>
 
-            <p className="text-lg md:text-xl text-primary-foreground/90 mb-10 max-w-2xl mx-auto">
-              {t("page.description")}
-            </p>
+              <p className="text-lg md:text-xl text-primary-foreground/90 mb-8">
+                {t("page.description")}
+              </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="xl" className="bg-white text-primary hover:bg-white/90 shadow-lg">
-                {t("cta.button")}
-                <ChevronRight className="w-5 h-5 ml-2" />
-              </Button>
-              <Button
-                size="xl"
-                variant="outline"
-                className="border-white/30 text-white hover:bg-white/10"
-              >
-                {t("cta.secondary")}
-              </Button>
+              {/* Key benefits list */}
+              <ul className="space-y-3 mb-10">
+                <li className="flex items-center gap-3 text-primary-foreground/90">
+                  <CheckCircle2 className="w-5 h-5 text-white flex-shrink-0" />
+                  <span>Flexible hours, work from anywhere</span>
+                </li>
+                <li className="flex items-center gap-3 text-primary-foreground/90">
+                  <CheckCircle2 className="w-5 h-5 text-white flex-shrink-0" />
+                  <span>Additional income stream</span>
+                </li>
+                <li className="flex items-center gap-3 text-primary-foreground/90">
+                  <CheckCircle2 className="w-5 h-5 text-white flex-shrink-0" />
+                  <span>Full administrative support</span>
+                </li>
+              </ul>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button size="xl" className="bg-white text-primary hover:bg-white/90 shadow-lg font-semibold">
+                  Apply Now
+                  <ChevronRight className="w-5 h-5 ml-2" />
+                </Button>
+                <Button
+                  size="xl"
+                  variant="outline"
+                  className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm"
+                >
+                  {t("cta.secondary")}
+                </Button>
+              </div>
+            </div>
+
+            {/* Right side - Application card */}
+            <div className="hidden lg:block">
+              <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 shadow-2xl">
+                <div className="text-center mb-6">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/20 flex items-center justify-center">
+                    <Stethoscope className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-2">Join Our Network</h3>
+                  <p className="text-white/80">750+ dermatologists already on board</p>
+                </div>
+                
+                <div className="space-y-4 mb-6">
+                  <div className="flex items-center gap-4 bg-white/10 rounded-xl p-4">
+                    <Euro className="w-6 h-6 text-white" />
+                    <div>
+                      <p className="text-white font-medium">Competitive Rates</p>
+                      <p className="text-white/70 text-sm">Earn on your own terms</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4 bg-white/10 rounded-xl p-4">
+                    <Clock className="w-6 h-6 text-white" />
+                    <div>
+                      <p className="text-white font-medium">Flexible Schedule</p>
+                      <p className="text-white/70 text-sm">Work when it suits you</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4 bg-white/10 rounded-xl p-4">
+                    <Shield className="w-6 h-6 text-white" />
+                    <div>
+                      <p className="text-white font-medium">Full Compliance</p>
+                      <p className="text-white/70 text-sm">Legal & regulatory covered</p>
+                    </div>
+                  </div>
+                </div>
+
+                <Button className="w-full bg-white text-primary hover:bg-white/90 h-14 text-lg font-semibold">
+                  Start Application
+                  <ChevronRight className="w-5 h-5 ml-2" />
+                </Button>
+              </div>
             </div>
           </div>
         </div>
