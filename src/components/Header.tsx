@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import LanguageSwitcher from "./LanguageSwitcher";
+import teledermLogo from "@/assets/logo/telederm-logo.png";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -46,9 +47,11 @@ const Header = () => {
       <div className="container flex items-center justify-between h-18 md:h-22">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl gradient-hero flex items-center justify-center shadow-sm">
-            <span className="text-primary-foreground font-bold text-lg">T</span>
-          </div>
+          <img 
+            src={teledermLogo} 
+            alt="Telederm" 
+            className="w-9 h-9 rounded-lg"
+          />
           <span className={`font-serif font-bold text-xl transition-colors duration-300 ${
             showTransparent ? 'text-card' : 'text-foreground'
           }`}>telederm</span>

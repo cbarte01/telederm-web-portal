@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ShieldCheck, Lock, Award, BadgeCheck } from "lucide-react";
+import teledermLogo from "@/assets/logo/telederm-logo.png";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -38,12 +39,14 @@ const Footer = () => {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg">T</span>
-              </div>
+            <Link to="/" className="flex items-center gap-2 mb-4">
+              <img 
+                src={teledermLogo} 
+                alt="Telederm" 
+                className="w-8 h-8 rounded-lg"
+              />
               <span className="font-bold text-xl text-background">telederm</span>
-            </div>
+            </Link>
             <p className="text-sm text-background/60 max-w-xs">
               {t("footer.tagline")}
             </p>
