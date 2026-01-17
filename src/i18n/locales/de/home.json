@@ -40,6 +40,7 @@
     "label": "Was wir behandeln",
     "title": "Fachkundige Versorgung für alle Hauterkrankungen",
     "description": "Unsere Fachärzte für Dermatologie sind auf die Diagnose und Behandlung einer Vielzahl von Haut-, Haar- und Nagelerkrankungen spezialisiert. Ob kleinere Beschwerden oder chronische Erkrankungen – wir sind für Sie da.",
+    "viewAll": "Alle Erkrankungen anzeigen",
     "featured": {
       "acne": {
         "name": "Akne",
@@ -74,6 +75,7 @@
     "oneTime": "einmalig",
     "responseWithin": "Antwort innerhalb von {{time}}",
     "mostPopular": "Am beliebtesten",
+    "selectPlan": "Plan auswählen",
     "note": "*Medikamentenpreis nicht inbegriffen. Viele Krankenversicherungen erstatten Telemedizin-Konsultationen — informieren Sie sich bei Ihrer Versicherung.",
     "plans": {
       "standard": {
@@ -167,6 +169,18 @@
     "toast": {
       "title": "Nachricht gesendet!",
       "description": "Wir melden uns innerhalb von 24 Stunden bei Ihnen."
+    },
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "Ihr Name",
+      "email": "E-Mail",
+      "emailPlaceholder": "ihre@email.de",
+      "phone": "Telefonnummer",
+      "phonePlaceholder": "+49 123 456 7890",
+      "message": "Nachricht",
+      "messagePlaceholder": "Wie können wir Ihnen helfen?",
+      "sending": "Wird gesendet...",
+      "submit": "Nachricht senden"
     }
   },
   "cta": {

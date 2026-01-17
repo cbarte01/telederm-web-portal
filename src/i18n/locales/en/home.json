@@ -40,6 +40,7 @@
     "label": "What We Treat",
     "title": "Expert Care for All Skin Conditions",
     "description": "Our board-certified dermatologists specialize in diagnosing and treating a wide range of skin, hair, and nail conditions. Whether it's a minor concern or a chronic condition, we're here to help.",
+    "viewAll": "View All Conditions",
     "featured": {
       "acne": {
         "name": "Acne",
@@ -74,6 +75,7 @@
     "oneTime": "one-time",
     "responseWithin": "Response within {{time}}",
     "mostPopular": "Most Popular",
+    "selectPlan": "Select Plan",
     "note": "*Price of medication not included. Many health insurance plans reimburse telemedicine consultations — check with your provider for coverage details.",
     "plans": {
       "standard": {
@@ -167,6 +169,18 @@
     "toast": {
       "title": "Message sent!",
       "description": "We'll get back to you within 24 hours."
+    },
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "Your name",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "phone": "Phone Number",
+      "phonePlaceholder": "+49 123 456 7890",
+      "message": "Message",
+      "messagePlaceholder": "How can we help you?",
+      "sending": "Sending...",
+      "submit": "Send Message"
     }
   },
   "cta": {
