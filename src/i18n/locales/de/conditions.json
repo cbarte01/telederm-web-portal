@@ -1,0 +1,20 @@
+{
+  "page": {
+    "title": "Hauterkrankungen-Bibliothek",
+    "description": "Entdecken Sie unseren umfassenden Leitfaden zu dermatologischen Erkrankungen. Finden Sie Informationen zu Symptomen, Ursachen und verfügbaren Behandlungen.",
+    "searchPlaceholder": "Erkrankungen suchen...",
+    "allConditions": "Alle Erkrankungen",
+    "noResults": "Keine Erkrankungen gefunden, die Ihren Kriterien entsprechen.",
+    "showing": "Zeige {{count}} von {{total}} Erkrankungen",
+    "needAdvice": "Brauchen Sie fachkundige Beratung?",
+    "needAdviceDescription": "Unsere Fachärzte für Dermatologie sind bereit, Ihre Hauterkrankung zu diagnostizieren und zu behandeln. Erhalten Sie persönliche Betreuung bequem von zu Hause."
+  },
+  "categories": {
+    "skin": "Hauterkrankungen",
+    "hair": "Haar & Kopfhaut",
+    "nails": "Nagelerkrankungen",
+    "infections": "Infektionen",
+    "allergies": "Allergien & Reaktionen",
+    "pigmentation": "Pigmentierung"
+  }
+}

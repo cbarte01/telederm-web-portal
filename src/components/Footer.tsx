@@ -1,33 +1,35 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { ShieldCheck, Lock, Award, BadgeCheck } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const { t } = useTranslation("common");
 
   const links = {
     company: [
-      { label: "About Us", href: "/#about" },
-      { label: "Our Doctors", href: "/#doctors" },
-      { label: "Skin Blog", href: "/skin-blog", isRoute: true },
-      { label: "Careers", href: "#" },
+      { label: t("footer.aboutUs"), href: "/#about" },
+      { label: t("footer.ourDoctors"), href: "/#doctors" },
+      { label: t("nav.skinBlog"), href: "/skin-blog", isRoute: true },
+      { label: t("footer.careers"), href: "#" },
     ],
     support: [
-      { label: "FAQ", href: "/#faq" },
-      { label: "Contact", href: "/#contact" },
-      { label: "How It Works", href: "/#how-it-works" },
+      { label: t("nav.faq"), href: "/#faq" },
+      { label: t("footer.contact"), href: "/#contact" },
+      { label: t("nav.howItWorks"), href: "/#how-it-works" },
     ],
     legal: [
-      { label: "Privacy Policy", href: "#" },
-      { label: "Terms of Service", href: "#" },
-      { label: "Imprint", href: "#" },
+      { label: t("footer.privacyPolicy"), href: "#" },
+      { label: t("footer.termsOfService"), href: "#" },
+      { label: t("footer.imprint"), href: "#" },
     ],
   };
 
   const certificates = [
-    { label: "GDPR Compliant", icon: ShieldCheck },
-    { label: "ISO/IEC 27001", icon: Lock },
-    { label: "Telemedicine Certified", icon: Award },
-    { label: "CE Marked Software", icon: BadgeCheck },
+    { label: t("certificates.gdpr"), icon: ShieldCheck },
+    { label: t("certificates.iso"), icon: Lock },
+    { label: t("certificates.telemedicine"), icon: Award },
+    { label: t("certificates.ce"), icon: BadgeCheck },
   ];
 
   return (
@@ -43,13 +45,13 @@ const Footer = () => {
               <span className="font-bold text-xl text-background">telederm</span>
             </div>
             <p className="text-sm text-background/60 max-w-xs">
-              Professional dermatology care, delivered digitally. Your skin deserves expert attention.
+              {t("footer.tagline")}
             </p>
           </div>
 
           {/* Company */}
           <div>
-            <h4 className="font-semibold text-background mb-4">Company</h4>
+            <h4 className="font-semibold text-background mb-4">{t("footer.company")}</h4>
             <ul className="space-y-3">
               {links.company.map((link) => (
                 <li key={link.label}>
@@ -75,7 +77,7 @@ const Footer = () => {
 
           {/* Support */}
           <div>
-            <h4 className="font-semibold text-background mb-4">Support</h4>
+            <h4 className="font-semibold text-background mb-4">{t("footer.support")}</h4>
             <ul className="space-y-3">
               {links.support.map((link) => (
                 <li key={link.label}>
@@ -92,7 +94,7 @@ const Footer = () => {
 
           {/* Legal */}
           <div>
-            <h4 className="font-semibold text-background mb-4">Legal</h4>
+            <h4 className="font-semibold text-background mb-4">{t("footer.legal")}</h4>
             <ul className="space-y-3">
               {links.legal.map((link) => (
                 <li key={link.label}>
@@ -109,7 +111,7 @@ const Footer = () => {
 
           {/* Certificates */}
           <div>
-            <h4 className="font-semibold text-background mb-4">Certifications</h4>
+            <h4 className="font-semibold text-background mb-4">{t("footer.certifications")}</h4>
             <ul className="space-y-3">
               {certificates.map((cert) => (
                 <li key={cert.label} className="flex items-center gap-2">
@@ -124,10 +126,10 @@ const Footer = () => {
         {/* Bottom */}
         <div className="pt-8 border-t border-background/10 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-background/60">
-            © {currentYear} Telederm. All rights reserved.
+            {t("footer.copyright", { year: currentYear })}
           </p>
           <p className="text-xs text-background/40">
-            Medical consultations provided by licensed dermatologists.
+            {t("footer.medicalDisclaimer")}
           </p>
         </div>
       </div>

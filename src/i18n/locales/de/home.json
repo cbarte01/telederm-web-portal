@@ -1,0 +1,285 @@
+{
+  "hero": {
+    "badge": "Fachärzte für Dermatologie • 24h Antwort",
+    "title": "Hautpflege vom Experten,",
+    "titleHighlight": "Von Zuhause",
+    "description": "Erhalten Sie eine persönliche Diagnose von approbierten Dermatologen innerhalb von 24 Stunden. Keine Termine, keine Wartezimmer — nur professionelle Betreuung, direkt zu Ihnen.",
+    "howItWorks": "So funktioniert's",
+    "trustBadges": {
+      "diagnosis": "24h Diagnose",
+      "gdpr": "DSGVO-konform",
+      "digital": "100% Digital"
+    }
+  },
+  "howItWorks": {
+    "label": "So funktioniert's",
+    "title": "Professionelle Versorgung in 3 einfachen Schritten",
+    "description": "Überspringen Sie das Wartezimmer und erhalten Sie fachkundige Hautpflege bequem von zu Hause.",
+    "steps": {
+      "step1": {
+        "title": "Fotos hochladen",
+        "description": "Machen Sie klare Fotos des betroffenen Hautbereichs und beschreiben Sie Ihre Symptome mit unserem geführten Fragebogen."
+      },
+      "step2": {
+        "title": "Expertenanalyse",
+        "description": "Unsere approbierten Dermatologen analysieren Ihren Fall sorgfältig und erstellen innerhalb von 24 Stunden eine persönliche Diagnose."
+      },
+      "step3": {
+        "title": "Behandlung erhalten",
+        "description": "Erhalten Sie Ihre Diagnose mit einem detaillierten Behandlungsplan. Rezepte werden bei Bedarf direkt an Ihre Apotheke gesendet."
+      }
+    }
+  },
+  "stats": {
+    "patients": "Patienten geholfen",
+    "responseTime": "Durchschn. Antwortzeit",
+    "satisfaction": "Patientenzufriedenheit",
+    "dermatologists": "Approbierte Dermatologen"
+  },
+  "conditions": {
+    "label": "Was wir behandeln",
+    "title": "Fachkundige Versorgung für alle Hauterkrankungen",
+    "description": "Unsere Fachärzte für Dermatologie sind auf die Diagnose und Behandlung einer Vielzahl von Haut-, Haar- und Nagelerkrankungen spezialisiert. Ob kleinere Beschwerden oder chronische Erkrankungen – wir sind für Sie da.",
+    "featured": {
+      "acne": {
+        "name": "Akne",
+        "description": "Pickel, Mitesser und Zysten im Gesicht und am Körper"
+      },
+      "eczema": {
+        "name": "Ekzem",
+        "description": "Juckende, entzündete Stellen, die überall auftreten können"
+      },
+      "psoriasis": {
+        "name": "Schuppenflechte",
+        "description": "Rote, schuppige Stellen oft an Ellbogen, Knien und Kopfhaut"
+      },
+      "rosacea": {
+        "name": "Rosazea",
+        "description": "Gesichtsrötung und sichtbare Blutgefäße"
+      },
+      "skinRashes": {
+        "name": "Hautausschläge",
+        "description": "Unerklärliche Reizungen, Rötungen oder allergische Reaktionen"
+      },
+      "hairLoss": {
+        "name": "Haarausfall",
+        "description": "Dünner werdendes Haar oder kahle Stellen auf der Kopfhaut"
+      }
+    }
+  },
+  "pricing": {
+    "label": "Preise",
+    "title": "Wählen Sie Ihre Versorgungsstufe",
+    "description": "Transparente Preise ohne versteckte Gebühren. Wählen Sie den Plan, der am besten zu Ihren Bedürfnissen passt.",
+    "oneTime": "einmalig",
+    "responseWithin": "Antwort innerhalb von {{time}}",
+    "mostPopular": "Am beliebtesten",
+    "note": "*Medikamentenpreis nicht inbegriffen. Viele Krankenversicherungen erstatten Telemedizin-Konsultationen — informieren Sie sich bei Ihrer Versicherung.",
+    "plans": {
+      "standard": {
+        "name": "Standard-Anfrage",
+        "description": "Ein Hautproblem ist kürzlich aufgetreten und Sie möchten eine professionelle Einschätzung und Empfehlung? Das ist die richtige Option für Sie!",
+        "features": [
+          "Volle Erstattung für Privatversicherte",
+          "Antwort innerhalb von 48 Stunden (Werktage)",
+          "Rezept bei medizinischer Notwendigkeit",
+          "Lieferung der Medikamente nach Hause*"
+        ]
+      },
+      "urgent": {
+        "name": "Dringende Anfrage",
+        "description": "Brauchen Sie eine dringende Einschätzung Ihrer Hautprobleme? Warten ist keine Option? Erhalten Sie eine Antwort von einem Hautspezialisten innerhalb von 24 Stunden an Werktagen — und sogar am Wochenende!",
+        "features": [
+          "Volle Erstattung für Privatversicherte",
+          "Antwort innerhalb von 24 Stunden (Werktage)",
+          "Rezept bei medizinischer Notwendigkeit",
+          "Lieferung der Medikamente nach Hause*",
+          "Eine Nachfrage inklusive"
+        ]
+      },
+      "expert": {
+        "name": "Experten-Behandlung",
+        "description": "Haben Sie ein hartnäckiges Hautproblem, bei dem die Behandlung nicht gewirkt hat? Unsere Spezialisten kümmern sich um Ihr Problem und erstellen einen individuellen Behandlungsplan.",
+        "features": [
+          "Volle Erstattung für Privatversicherte",
+          "Antwort innerhalb von 24 Stunden (Werktage)",
+          "Rezept bei medizinischer Notwendigkeit",
+          "Lieferung der Medikamente nach Hause*",
+          "Mehrere Nachfragen",
+          "Individueller Behandlungsplan",
+          "Detaillierter Arztbericht"
+        ]
+      }
+    }
+  },
+  "faq": {
+    "label": "FAQ",
+    "title": "Häufig gestellte Fragen",
+    "description": "Alles, was Sie über unseren Telemedizin-Service wissen müssen.",
+    "questions": {
+      "q1": {
+        "question": "Wie funktioniert die Online-Konsultation?",
+        "answer": "Ganz einfach! Laden Sie Fotos Ihres Hautproblems hoch, beantworten Sie einige Fragen zu Ihren Symptomen und Ihrer Krankengeschichte, und unsere Dermatologen werden Ihren Fall prüfen. Sie erhalten eine detaillierte Diagnose und einen Behandlungsplan innerhalb von 24 Stunden über die App."
+      },
+      "q2": {
+        "question": "Wer sind die Dermatologen?",
+        "answer": "Alle unsere Dermatologen sind approbierte Fachärzte mit jahrelanger klinischer Erfahrung. Sie sind zugelassene Ärzte, die eine spezialisierte Ausbildung in Dermatologie absolviert haben und berechtigt sind, Diagnosen zu stellen und Behandlungen zu verschreiben."
+      },
+      "q3": {
+        "question": "Können Sie Medikamente verschreiben?",
+        "answer": "Ja, wenn unsere Dermatologen feststellen, dass ein verschreibungspflichtiges Medikament für Ihre Behandlung notwendig ist, können sie ein Rezept ausstellen. Dieses wird direkt an Ihre bevorzugte Apotheke zur Abholung oder Lieferung gesendet."
+      },
+      "q4": {
+        "question": "Sind meine Daten sicher?",
+        "answer": "Absolut. Wir nehmen Ihre Privatsphäre ernst. Alle Daten werden verschlüsselt und in Übereinstimmung mit DSGVO und medizinischen Datenschutzvorschriften gespeichert. Ihre Informationen sind nur für den behandelnden Dermatologen zugänglich und werden niemals an Dritte weitergegeben."
+      },
+      "q5": {
+        "question": "Welche Erkrankungen können online behandelt werden?",
+        "answer": "Wir behandeln ein breites Spektrum an Hauterkrankungen einschließlich Akne, Ekzeme, Psoriasis, Rosazea, Hautausschläge, Pilzinfektionen, Haarausfall und mehr. Bei Erkrankungen, die eine körperliche Untersuchung oder Eingriffe erfordern, empfehlen wir einen persönlichen Besuch."
+      },
+      "q6": {
+        "question": "Wie lange dauert es, bis ich eine Antwort bekomme?",
+        "answer": "Die meisten Fälle erhalten an Werktagen innerhalb von 24 Stunden eine Diagnose. Dringende Fälle können priorisiert werden. Sie erhalten eine Benachrichtigung, sobald Ihr Dermatologe Ihren Fall geprüft hat."
+      }
+    }
+  },
+  "contact": {
+    "label": "Kontakt",
+    "title": "Haben Sie Fragen? Kontaktieren Sie uns",
+    "description": "Unser Team ist hier, um zu helfen. Senden Sie uns eine Nachricht und wir antworten innerhalb von 24 Stunden.",
+    "info": {
+      "title": "Kontaktinformationen",
+      "email": "E-Mail",
+      "phone": "Telefon",
+      "responseTime": "Antwortzeit",
+      "responseValue": "Innerhalb von 24 Stunden"
+    },
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "Ihr Name",
+      "email": "E-Mail",
+      "emailPlaceholder": "ihre@email.de",
+      "phone": "Telefonnummer",
+      "phonePlaceholder": "+49 123 456 7890",
+      "message": "Nachricht",
+      "messagePlaceholder": "Wie können wir Ihnen helfen?"
+    },
+    "toast": {
+      "title": "Nachricht gesendet!",
+      "description": "Wir melden uns innerhalb von 24 Stunden bei Ihnen."
+    }
+  },
+  "cta": {
+    "title": "Machen Sie den ersten Schritt zu gesünderer Haut",
+    "description": "Schließen Sie sich Tausenden von Patienten an, die bequeme, professionelle dermatologische Versorgung von zu Hause aus entdeckt haben.",
+    "button": "Starten Sie jetzt Ihre Beratung"
+  },
+  "reviews": {
+    "title": "Das sagen unsere Patienten",
+    "description": "Über 10.000 zufriedene Patienten vertrauen Telederm für ihre Hautgesundheit",
+    "viewAll": "Alle Bewertungen auf Google ansehen",
+    "reviews": {
+      "r1": {
+        "name": "Sarah M.",
+        "date": "vor 2 Wochen",
+        "text": "Schnelle und professionelle Diagnose! Innerhalb von wenigen Stunden hatte ich eine Antwort und das richtige Medikament. Sehr empfehlenswert!"
+      },
+      "r2": {
+        "name": "Thomas K.",
+        "date": "vor 1 Monat",
+        "text": "Endlich keine langen Wartezeiten mehr beim Hautarzt. Die App ist super einfach zu bedienen und die Ärzte sind sehr kompetent."
+      },
+      "r3": {
+        "name": "Lisa B.",
+        "date": "vor 3 Wochen",
+        "text": "Hatte ein hartnäckiges Ekzem und bekam sofort die richtige Behandlung. Nach einer Woche war alles weg. Danke Telederm!"
+      },
+      "r4": {
+        "name": "Michael R.",
+        "date": "vor 2 Monaten",
+        "text": "Sehr guter Service. Die Fotos hochladen war einfach und die Diagnose kam schneller als erwartet. Würde es wieder nutzen."
+      },
+      "r5": {
+        "name": "Anna S.",
+        "date": "vor 1 Woche",
+        "text": "Perfekt für Berufstätige! Konnte alles von zuhause aus erledigen, ohne mir einen Tag frei nehmen zu müssen."
+      },
+      "r6": {
+        "name": "David W.",
+        "date": "vor 3 Tagen",
+        "text": "Die Dermatologen sind wirklich Experten auf ihrem Gebiet. Habe mich gut aufgehoben gefühlt und die Behandlung hat sofort gewirkt."
+      }
+    }
+  },
+  "doctors": {
+    "label": "Unser Ärzteteam",
+    "title": "Erfahrene Dermatologen für Ihre Haut",
+    "description": "Alle unsere Ärzte sind approbierte Fachärzte für Dermatologie mit langjähriger Erfahrung in der Behandlung von Hauterkrankungen",
+    "swipeHint": "← Wischen um mehr zu sehen →",
+    "experience": "Jahre Erfahrung",
+    "doctors": {
+      "d1": {
+        "name": "Dr. med. Julia Schneider",
+        "title": "Fachärztin für Dermatologie",
+        "specialty": "Allgemeine Dermatologie, Allergologie"
+      },
+      "d2": {
+        "name": "Dr. med. Markus Weber",
+        "title": "Facharzt für Dermatologie",
+        "specialty": "Akne, Psoriasis, Neurodermitis"
+      },
+      "d3": {
+        "name": "Dr. med. Sarah Hoffmann",
+        "title": "Fachärztin für Dermatologie",
+        "specialty": "Hautkrebs-Vorsorge, Muttermale"
+      },
+      "d4": {
+        "name": "Dr. med. Thomas Müller",
+        "title": "Facharzt für Dermatologie",
+        "specialty": "Ekzeme, Pilzinfektionen"
+      },
+      "d5": {
+        "name": "Dr. med. Anna Fischer",
+        "title": "Fachärztin für Dermatologie",
+        "specialty": "Kinder-Dermatologie, Allergien"
+      }
+    }
+  },
+  "about": {
+    "label": "Über Telederm",
+    "title": "Wir revolutionieren die dermatologische Versorgung",
+    "paragraphs": {
+      "p1": "Telederm wurde 2020 mit einer klaren Vision gegründet: Jedem Menschen in Deutschland schnellen und einfachen Zugang zu qualifizierter dermatologischer Versorgung zu ermöglichen.",
+      "p2": "Lange Wartezeiten auf Hautarzttermine sind ein Problem, das wir lösen wollten. Mit unserem Team aus erfahrenen Dermatologen und modernster Telemedizin-Technologie bieten wir eine schnelle, sichere und professionelle Alternative.",
+      "p3": "Heute vertrauen uns über 50.000 Patienten ihre Hautgesundheit an. Unser Ärzteteam besteht aus mehr als 20 approbierten Fachärzten für Dermatologie, die mit Leidenschaft und Expertise für Sie da sind."
+    },
+    "stats": {
+      "patients": "Patienten",
+      "dermatologists": "Dermatologen",
+      "rating": "Bewertung"
+    },
+    "values": {
+      "patientCentered": {
+        "title": "Patientenzentriert",
+        "description": "Ihre Gesundheit steht bei uns an erster Stelle"
+      },
+      "privacy": {
+        "title": "Datenschutz",
+        "description": "Höchste Standards für Ihre persönlichen Daten"
+      },
+      "innovation": {
+        "title": "Innovation",
+        "description": "Modernste Telemedizin-Technologie"
+      },
+      "accessibility": {
+        "title": "Zugänglichkeit",
+        "description": "Hautarzt für jeden, überall und jederzeit"
+      }
+    },
+    "mission": {
+      "title": "Unsere Mission",
+      "quote": "\"Wir glauben, dass jeder Mensch Zugang zu erstklassiger dermatologischer Versorgung verdient – schnell, einfach und von überall aus. Mit Telederm machen wir diesen Traum zur Realität.\"",
+      "attribution": "— Das Telederm Team"
+    }
+  }
+}

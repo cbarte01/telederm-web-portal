@@ -1,0 +1,285 @@
+{
+  "hero": {
+    "badge": "Board-Certified Dermatologists • 24h Response",
+    "title": "Expert Skin Care,",
+    "titleHighlight": "From Home",
+    "description": "Get a personalized diagnosis from certified dermatologists within 24 hours. No appointments, no waiting rooms — just professional care delivered to you.",
+    "howItWorks": "How It Works",
+    "trustBadges": {
+      "diagnosis": "24h Diagnosis",
+      "gdpr": "GDPR Compliant",
+      "digital": "100% Digital"
+    }
+  },
+  "howItWorks": {
+    "label": "How It Works",
+    "title": "Professional Care in 3 Simple Steps",
+    "description": "Skip the waiting room and get expert skin care from the comfort of your home.",
+    "steps": {
+      "step1": {
+        "title": "Upload Photos",
+        "description": "Take clear photos of the affected skin area and describe your symptoms using our guided questionnaire."
+      },
+      "step2": {
+        "title": "Expert Review",
+        "description": "Our certified dermatologists carefully analyze your case and create a personalized diagnosis within 24 hours."
+      },
+      "step3": {
+        "title": "Get Treatment",
+        "description": "Receive your diagnosis with a detailed treatment plan. Prescriptions are sent directly to your pharmacy if needed."
+      }
+    }
+  },
+  "stats": {
+    "patients": "Patients Helped",
+    "responseTime": "Avg. Response Time",
+    "satisfaction": "Patient Satisfaction",
+    "dermatologists": "Certified Dermatologists"
+  },
+  "conditions": {
+    "label": "What We Treat",
+    "title": "Expert Care for All Skin Conditions",
+    "description": "Our board-certified dermatologists specialize in diagnosing and treating a wide range of skin, hair, and nail conditions. Whether it's a minor concern or a chronic condition, we're here to help.",
+    "featured": {
+      "acne": {
+        "name": "Acne",
+        "description": "Pimples, blackheads, and cysts affecting face and body"
+      },
+      "eczema": {
+        "name": "Eczema",
+        "description": "Itchy, inflamed patches that can appear anywhere"
+      },
+      "psoriasis": {
+        "name": "Psoriasis",
+        "description": "Red, scaly patches often on elbows, knees, and scalp"
+      },
+      "rosacea": {
+        "name": "Rosacea",
+        "description": "Facial redness and visible blood vessels"
+      },
+      "skinRashes": {
+        "name": "Skin Rashes",
+        "description": "Unexplained irritation, redness, or allergic reactions"
+      },
+      "hairLoss": {
+        "name": "Hair Loss",
+        "description": "Thinning hair or bald patches on scalp"
+      }
+    }
+  },
+  "pricing": {
+    "label": "Pricing Plans",
+    "title": "Choose Your Care Level",
+    "description": "Transparent pricing with no hidden fees. Select the plan that best fits your needs.",
+    "oneTime": "one-time",
+    "responseWithin": "Response within {{time}}",
+    "mostPopular": "Most Popular",
+    "note": "*Price of medication not included. Many health insurance plans reimburse telemedicine consultations — check with your provider for coverage details.",
+    "plans": {
+      "standard": {
+        "name": "Standard Request",
+        "description": "A skin concern has recently appeared and you want a professional assessment and recommendation? This is the right option for you!",
+        "features": [
+          "Full reimbursement for private insurance",
+          "Response within 48 hours (weekdays)",
+          "Prescription if medically necessary",
+          "Home delivery of medication*"
+        ]
+      },
+      "urgent": {
+        "name": "Urgent Request",
+        "description": "Need an urgent assessment of your skin concerns? Waiting is not an option? Get a response from a skin specialist within 24 hours on weekdays — and even on weekends!",
+        "features": [
+          "Full reimbursement for private insurance",
+          "Response within 24 hours (weekdays)",
+          "Prescription if medically necessary",
+          "Home delivery of medication*",
+          "One follow-up question included"
+        ]
+      },
+      "expert": {
+        "name": "Expert Treatment",
+        "description": "Have a persistent skin problem where treatment hasn't worked? Our specialists will take care of your issue and create an individualized treatment plan.",
+        "features": [
+          "Full reimbursement for private insurance",
+          "Response within 24 hours (weekdays)",
+          "Prescription if medically necessary",
+          "Home delivery of medication*",
+          "Multiple follow-up questions",
+          "Individualized treatment plan",
+          "Detailed medical report"
+        ]
+      }
+    }
+  },
+  "faq": {
+    "label": "FAQ",
+    "title": "Frequently Asked Questions",
+    "description": "Everything you need to know about our telemedicine service.",
+    "questions": {
+      "q1": {
+        "question": "How does the online consultation work?",
+        "answer": "It's simple! Upload photos of your skin concern, answer a few questions about your symptoms and medical history, and our dermatologists will review your case. You'll receive a detailed diagnosis and treatment plan within 24 hours via the app."
+      },
+      "q2": {
+        "question": "Who are the dermatologists?",
+        "answer": "All our dermatologists are board-certified specialists with years of clinical experience. They are licensed physicians who have completed specialized training in dermatology and are authorized to diagnose and prescribe treatments."
+      },
+      "q3": {
+        "question": "Can you prescribe medication?",
+        "answer": "Yes, if our dermatologists determine that prescription medication is necessary for your treatment, they can issue a prescription. This will be sent directly to your preferred pharmacy for pickup or delivery."
+      },
+      "q4": {
+        "question": "Is my data secure?",
+        "answer": "Absolutely. We take your privacy seriously. All data is encrypted and stored in compliance with GDPR and medical data protection regulations. Your information is only accessible to the treating dermatologist and is never shared with third parties."
+      },
+      "q5": {
+        "question": "What conditions can be treated online?",
+        "answer": "We treat a wide range of skin conditions including acne, eczema, psoriasis, rosacea, rashes, fungal infections, hair loss, and more. For conditions that require physical examination or procedures, we'll recommend an in-person visit."
+      },
+      "q6": {
+        "question": "How long does it take to get a response?",
+        "answer": "Most cases receive a diagnosis within 24 hours during weekdays. Urgent cases may be prioritized. You'll receive a notification as soon as your dermatologist has reviewed your case."
+      }
+    }
+  },
+  "contact": {
+    "label": "Get in Touch",
+    "title": "Have Questions? Contact Us",
+    "description": "Our team is here to help. Send us a message and we'll respond within 24 hours.",
+    "info": {
+      "title": "Contact Information",
+      "email": "Email",
+      "phone": "Phone",
+      "responseTime": "Response Time",
+      "responseValue": "Within 24 hours"
+    },
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "Your name",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "phone": "Phone Number",
+      "phonePlaceholder": "+49 123 456 7890",
+      "message": "Message",
+      "messagePlaceholder": "How can we help you?"
+    },
+    "toast": {
+      "title": "Message sent!",
+      "description": "We'll get back to you within 24 hours."
+    }
+  },
+  "cta": {
+    "title": "Take the First Step Towards Healthier Skin",
+    "description": "Join thousands of patients who've discovered convenient, professional dermatology care from home.",
+    "button": "Start Your Consultation Now"
+  },
+  "reviews": {
+    "title": "What Our Patients Say",
+    "description": "Over 10,000 satisfied patients trust Telederm for their skin health",
+    "viewAll": "View all reviews on Google",
+    "reviews": {
+      "r1": {
+        "name": "Sarah M.",
+        "date": "2 weeks ago",
+        "text": "Quick and professional diagnosis! Within a few hours I had a response and the right medication. Highly recommended!"
+      },
+      "r2": {
+        "name": "Thomas K.",
+        "date": "1 month ago",
+        "text": "Finally no more long waiting times at the dermatologist. The app is super easy to use and the doctors are very competent."
+      },
+      "r3": {
+        "name": "Lisa B.",
+        "date": "3 weeks ago",
+        "text": "Had a stubborn eczema and immediately got the right treatment. After a week everything was gone. Thanks Telederm!"
+      },
+      "r4": {
+        "name": "Michael R.",
+        "date": "2 months ago",
+        "text": "Very good service. Uploading the photos was easy and the diagnosis came faster than expected. Would use it again."
+      },
+      "r5": {
+        "name": "Anna S.",
+        "date": "1 week ago",
+        "text": "Perfect for working professionals! I could do everything from home without having to take a day off."
+      },
+      "r6": {
+        "name": "David W.",
+        "date": "3 days ago",
+        "text": "The dermatologists are truly experts in their field. I felt well taken care of and the treatment worked immediately."
+      }
+    }
+  },
+  "doctors": {
+    "label": "Our Medical Team",
+    "title": "Experienced Dermatologists for Your Skin",
+    "description": "All our doctors are licensed dermatology specialists with years of experience in treating skin conditions",
+    "swipeHint": "← Swipe to see more →",
+    "experience": "years of experience",
+    "doctors": {
+      "d1": {
+        "name": "Dr. Julia Schneider",
+        "title": "Dermatology Specialist",
+        "specialty": "General Dermatology, Allergology"
+      },
+      "d2": {
+        "name": "Dr. Markus Weber",
+        "title": "Dermatology Specialist",
+        "specialty": "Acne, Psoriasis, Eczema"
+      },
+      "d3": {
+        "name": "Dr. Sarah Hoffmann",
+        "title": "Dermatology Specialist",
+        "specialty": "Skin Cancer Prevention, Moles"
+      },
+      "d4": {
+        "name": "Dr. Thomas Müller",
+        "title": "Dermatology Specialist",
+        "specialty": "Eczema, Fungal Infections"
+      },
+      "d5": {
+        "name": "Dr. Anna Fischer",
+        "title": "Dermatology Specialist",
+        "specialty": "Pediatric Dermatology, Allergies"
+      }
+    }
+  },
+  "about": {
+    "label": "About Telederm",
+    "title": "We're Revolutionizing Dermatological Care",
+    "paragraphs": {
+      "p1": "Telederm was founded in 2020 with a clear vision: To provide everyone with quick and easy access to qualified dermatological care.",
+      "p2": "Long waiting times for dermatologist appointments are a problem we wanted to solve. With our team of experienced dermatologists and state-of-the-art telemedicine technology, we offer a fast, secure, and professional alternative.",
+      "p3": "Today, over 50,000 patients trust us with their skin health. Our medical team consists of more than 20 licensed dermatology specialists who are here for you with passion and expertise."
+    },
+    "stats": {
+      "patients": "Patients",
+      "dermatologists": "Dermatologists",
+      "rating": "Rating"
+    },
+    "values": {
+      "patientCentered": {
+        "title": "Patient-Centered",
+        "description": "Your health is our top priority"
+      },
+      "privacy": {
+        "title": "Data Privacy",
+        "description": "Highest standards for your personal data"
+      },
+      "innovation": {
+        "title": "Innovation",
+        "description": "State-of-the-art telemedicine technology"
+      },
+      "accessibility": {
+        "title": "Accessibility",
+        "description": "Dermatologist for everyone, everywhere, anytime"
+      }
+    },
+    "mission": {
+      "title": "Our Mission",
+      "quote": "\"We believe that everyone deserves access to first-class dermatological care — fast, easy, and from anywhere. With Telederm, we're making this dream a reality.\"",
+      "attribution": "— The Telederm Team"
+    }
+  }
+}

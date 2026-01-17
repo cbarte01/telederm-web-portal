@@ -1,0 +1,58 @@
+{
+  "page": {
+    "badge": "Skin Health Resources",
+    "title": "Skin Blog",
+    "description": "Expert insights, treatment guides, and skincare tips from our board-certified dermatologists. Stay informed about your skin health."
+  },
+  "categories": {
+    "all": "All Topics",
+    "skinCare": "Skin Care",
+    "conditions": "Conditions",
+    "treatments": "Treatments",
+    "lifestyle": "Lifestyle"
+  },
+  "newsletter": {
+    "title": "Get Skin Health Tips in Your Inbox",
+    "description": "Subscribe to our newsletter and receive 20% off your first consultation, plus weekly skincare insights from our dermatologists.",
+    "placeholder": "Enter your email",
+    "noSpam": "No spam. Unsubscribe anytime."
+  },
+  "posts": {
+    "post1": {
+      "title": "ABCDE Rule: How to Check Your Moles for Skin Cancer",
+      "excerpt": "Learn the simple ABCDE method dermatologists use to identify potentially dangerous moles and when to seek professional help."
+    },
+    "post2": {
+      "title": "Understanding Acne: Causes, Types, and Effective Treatments",
+      "excerpt": "From hormonal acne to cystic breakouts, discover what causes different types of acne and the most effective treatment options available."
+    },
+    "post3": {
+      "title": "The Ultimate Guide to Building a Skincare Routine",
+      "excerpt": "Step-by-step guidance on creating a personalized skincare routine that addresses your unique skin concerns and goals."
+    },
+    "post4": {
+      "title": "Eczema Management: Tips for Living with Atopic Dermatitis",
+      "excerpt": "Practical advice for managing eczema flare-ups, including trigger identification, moisturizing strategies, and treatment options."
+    },
+    "post5": {
+      "title": "How Diet Affects Your Skin: Foods That Help and Harm",
+      "excerpt": "Explore the connection between nutrition and skin health, plus discover which foods can improve or worsen common skin conditions."
+    },
+    "post6": {
+      "title": "Psoriasis Treatment Options: From Topicals to Biologics",
+      "excerpt": "A comprehensive overview of psoriasis treatments, including the latest advances in biologic therapies and lifestyle modifications."
+    },
+    "post7": {
+      "title": "Sun Protection 101: SPF, UVA, UVB Explained",
+      "excerpt": "Everything you need to know about protecting your skin from sun damage, including how to choose and apply sunscreen correctly."
+    },
+    "post8": {
+      "title": "Stress and Skin: How Mental Health Impacts Your Complexion",
+      "excerpt": "Understand the science behind stress-related skin issues and learn strategies to maintain healthy skin during challenging times."
+    },
+    "post9": {
+      "title": "Rosacea: Triggers, Symptoms, and Treatment Approaches",
+      "excerpt": "Learn to identify rosacea triggers and discover effective treatment strategies to manage this common but often misunderstood condition."
+    }
+  }
+}
