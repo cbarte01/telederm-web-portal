@@ -1,62 +1,72 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Clock, Shield, Smartphone } from "lucide-react";
+import heroImage from "@/assets/hero-skin.jpg";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center pt-20 pb-16 overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-secondary/50 via-background to-background" />
+    <section className="relative min-h-screen flex items-center overflow-hidden">
+      {/* Full-screen background image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${heroImage})` }}
+      />
       
-      {/* Decorative circles */}
-      <div className="absolute top-20 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-80 h-80 bg-accent/5 rounded-full blur-3xl" />
+      {/* Dark overlay for text readability */}
+      <div className="absolute inset-0 bg-gradient-to-r from-foreground/80 via-foreground/60 to-foreground/30" />
+      
+      {/* Decorative gradient accent */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
 
-      <div className="container relative">
-        <div className="max-w-3xl mx-auto text-center">
+      <div className="container relative z-10 pt-24 pb-16">
+        <div className="max-w-2xl">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-secondary rounded-full px-4 py-2 mb-6 animate-fade-up">
+          <div className="inline-flex items-center gap-2 bg-card/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6 animate-fade-up border border-card/30">
             <span className="w-2 h-2 bg-primary rounded-full animate-pulse-soft" />
-            <span className="text-sm font-medium text-secondary-foreground">
+            <span className="text-sm font-medium text-card">
               Certified Dermatologists • 24h Diagnosis
             </span>
           </div>
 
           {/* Headline */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 text-balance animate-fade-up" style={{ animationDelay: "0.1s" }}>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-card mb-6 animate-fade-up" style={{ animationDelay: "0.1s" }}>
             Your Online Dermatologist,{" "}
             <span className="text-primary">Without the Wait</span>
           </h1>
 
           {/* Subheadline */}
-          <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto text-balance animate-fade-up" style={{ animationDelay: "0.2s" }}>
+          <p className="text-lg md:text-xl text-card/90 mb-10 max-w-xl animate-fade-up" style={{ animationDelay: "0.2s" }}>
             Get expert skin diagnosis from certified dermatologists within 24 hours. 
             No appointments, no waiting rooms — just professional care from your phone.
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-fade-up" style={{ animationDelay: "0.3s" }}>
+          <div className="flex flex-col sm:flex-row gap-4 mb-12 animate-fade-up" style={{ animationDelay: "0.3s" }}>
             <Button variant="hero" size="xl" className="group">
               Start Your Consultation
               <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
             </Button>
-            <Button variant="hero-outline" size="xl">
+            <Button 
+              variant="outline" 
+              size="xl" 
+              className="bg-transparent border-card/50 text-card hover:bg-card/10 hover:text-card"
+            >
               Learn More
             </Button>
           </div>
 
           {/* Trust indicators */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8 max-w-2xl mx-auto animate-fade-up" style={{ animationDelay: "0.4s" }}>
-            <div className="flex items-center justify-center gap-3 p-4 rounded-xl bg-card shadow-soft">
-              <Clock className="w-5 h-5 text-primary flex-shrink-0" />
-              <span className="text-sm font-medium text-foreground">24h Diagnosis</span>
+          <div className="flex flex-wrap gap-4 animate-fade-up" style={{ animationDelay: "0.4s" }}>
+            <div className="flex items-center gap-2 bg-card/10 backdrop-blur-sm rounded-full px-4 py-2 border border-card/20">
+              <Clock className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-card">24h Diagnosis</span>
             </div>
-            <div className="flex items-center justify-center gap-3 p-4 rounded-xl bg-card shadow-soft">
-              <Shield className="w-5 h-5 text-primary flex-shrink-0" />
-              <span className="text-sm font-medium text-foreground">GDPR Compliant</span>
+            <div className="flex items-center gap-2 bg-card/10 backdrop-blur-sm rounded-full px-4 py-2 border border-card/20">
+              <Shield className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-card">GDPR Compliant</span>
             </div>
-            <div className="flex items-center justify-center gap-3 p-4 rounded-xl bg-card shadow-soft">
-              <Smartphone className="w-5 h-5 text-primary flex-shrink-0" />
-              <span className="text-sm font-medium text-foreground">100% Digital</span>
+            <div className="flex items-center gap-2 bg-card/10 backdrop-blur-sm rounded-full px-4 py-2 border border-card/20">
+              <Smartphone className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-card">100% Digital</span>
             </div>
           </div>
         </div>
