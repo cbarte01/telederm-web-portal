@@ -15,14 +15,15 @@ import {
 import { Search } from "lucide-react";
 import {
   conditions,
-  categoryLabels,
   categoryColors,
   type ConditionCategory,
 } from "@/data/conditions";
+import { useTranslation } from "react-i18next";
 
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
 const ConditionsLibrary = () => {
+  const { t } = useTranslation("conditions");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<ConditionCategory | "all">("all");
   const [activeLetter, setActiveLetter] = useState<string | null>(null);
@@ -86,6 +87,13 @@ const ConditionsLibrary = () => {
     setActiveLetter(null);
   };
 
+  const getCategoryLabel = (category: ConditionCategory | "all") => {
+    if (category === "all") {
+      return t("page.allConditions");
+    }
+    return t(`categories.${category}`);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -97,21 +105,21 @@ const ConditionsLibrary = () => {
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to="/">Home</Link>
+                  <Link to="/">{t("breadcrumb.home", "Home")}</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>Conditions</BreadcrumbPage>
+                <BreadcrumbPage>{t("breadcrumb.conditions", "Conditions")}</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
 
           <h1 className="text-4xl md:text-5xl lg:text-6xl text-foreground mb-6">
-            Skin Conditions Library
+            {t("page.title")}
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mb-8">
-            Explore our comprehensive guide to dermatological conditions. Find information about symptoms, causes, and available treatments.
+            {t("page.description")}
           </p>
 
           {/* Search Bar */}
@@ -119,7 +127,7 @@ const ConditionsLibrary = () => {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <Input
               type="text"
-              placeholder="Search conditions..."
+              placeholder={t("page.searchPlaceholder")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-12 h-14 text-lg bg-card border-border/60 shadow-soft"
@@ -145,7 +153,7 @@ const ConditionsLibrary = () => {
                     : ""
                 }
               >
-                {category === "all" ? "All Conditions" : categoryLabels[category]}
+                {getCategoryLabel(category)}
               </Button>
             ))}
           </div>
@@ -179,7 +187,7 @@ const ConditionsLibrary = () => {
                 onClick={clearFilters}
                 className="ml-2 text-primary hover:text-primary"
               >
-                Clear filters
+                {t("page.clearFilters", "Clear filters")}
               </Button>
             )}
           </div>
@@ -192,10 +200,10 @@ const ConditionsLibrary = () => {
           {filteredConditions.length === 0 ? (
             <div className="text-center py-16">
               <p className="text-lg text-muted-foreground mb-4">
-                No conditions found matching your criteria.
+                {t("page.noResults")}
               </p>
               <Button variant="outline" onClick={clearFilters}>
-                Clear all filters
+                {t("page.clearAllFilters", "Clear all filters")}
               </Button>
             </div>
           ) : (
@@ -222,7 +230,7 @@ const ConditionsLibrary = () => {
                                 categoryColors[condition.category]
                               }`}
                             >
-                              {categoryLabels[condition.category]}
+                              {getCategoryLabel(condition.category)}
                             </span>
                           </div>
                           <p className="text-sm text-muted-foreground leading-relaxed">
@@ -239,7 +247,7 @@ const ConditionsLibrary = () => {
           {/* Results count */}
           <div className="mt-12 pt-8 border-t border-border text-center">
             <p className="text-muted-foreground">
-              Showing {filteredConditions.length} of {conditions.length} conditions
+              {t("page.showing", { count: filteredConditions.length, total: conditions.length })}
             </p>
           </div>
         </div>
@@ -249,13 +257,13 @@ const ConditionsLibrary = () => {
       <section className="py-16 md:py-20 bg-gradient-warm">
         <div className="container text-center">
           <h2 className="text-3xl md:text-4xl text-foreground mb-6">
-            Need Expert Advice?
+            {t("page.needAdvice")}
           </h2>
           <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Our board-certified dermatologists are ready to help diagnose and treat your skin condition. Get personalized care from the comfort of your home.
+            {t("page.needAdviceDescription")}
           </p>
           <Button variant="hero" size="lg" className="shadow-soft">
-            Start Your Consultation
+            {t("page.startConsultation", "Start Your Consultation")}
           </Button>
         </div>
       </section>

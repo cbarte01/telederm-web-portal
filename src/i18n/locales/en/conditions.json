@@ -1,13 +1,20 @@
 {
+  "breadcrumb": {
+    "home": "Home",
+    "conditions": "Conditions"
+  },
   "page": {
     "title": "Skin Conditions Library",
     "description": "Explore our comprehensive guide to dermatological conditions. Find information about symptoms, causes, and available treatments.",
     "searchPlaceholder": "Search conditions...",
     "allConditions": "All Conditions",
     "noResults": "No conditions found matching your criteria.",
+    "clearFilters": "Clear filters",
+    "clearAllFilters": "Clear all filters",
     "showing": "Showing {{count}} of {{total}} conditions",
     "needAdvice": "Need Expert Advice?",
-    "needAdviceDescription": "Our board-certified dermatologists are ready to help diagnose and treat your skin condition. Get personalized care from the comfort of your home."
+    "needAdviceDescription": "Our board-certified dermatologists are ready to help diagnose and treat your skin condition. Get personalized care from the comfort of your home.",
+    "startConsultation": "Start Your Consultation"
   },
   "categories": {
     "skin": "Skin Conditions",
