@@ -31,13 +31,7 @@ const Hero = () => {
       {/* Decorative gradient accent */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
 
-      <div 
-        className="container relative z-10 pt-24 pb-16 transition-all duration-100"
-        style={{ 
-          opacity: Math.max(0, 1 - scrollY / 500),
-          transform: `translateY(${scrollY * 0.15}px)`
-        }}
-      >
+      <div className="container relative z-10 pt-24 pb-16">
         <div className="max-w-2xl">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-card/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6 animate-fade-up border border-card/30">
