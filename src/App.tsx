@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import SkinBlog from "./pages/SkinBlog";
 import ConditionsLibrary from "./pages/ConditionsLibrary";
 import NotFound from "./pages/NotFound";
+import ScrollToHash from "./components/ScrollToHash";
 
 const queryClient = new QueryClient();
 
@@ -16,6 +17,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToHash />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/skin-blog" element={<SkinBlog />} />
