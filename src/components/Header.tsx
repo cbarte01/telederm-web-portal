@@ -29,6 +29,7 @@ const Header = () => {
 
   const pageLinks = [
     { href: "/skin-blog", label: t("nav.skinBlog") },
+    { href: "/for-doctors", label: t("nav.forDoctors") },
   ];
 
   // Determine header style based on scroll and page

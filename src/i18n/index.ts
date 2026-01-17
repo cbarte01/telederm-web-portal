@@ -6,11 +6,13 @@ import enCommon from './locales/en/common.json';
 import enHome from './locales/en/home.json';
 import enConditions from './locales/en/conditions.json';
 import enBlog from './locales/en/blog.json';
+import enDoctors from './locales/en/doctors.json';
 
 import deCommon from './locales/de/common.json';
 import deHome from './locales/de/home.json';
 import deConditions from './locales/de/conditions.json';
 import deBlog from './locales/de/blog.json';
+import deDoctors from './locales/de/doctors.json';
 
 const resources = {
   en: {
@@ -18,12 +20,14 @@ const resources = {
     home: enHome,
     conditions: enConditions,
     blog: enBlog,
+    doctors: enDoctors,
   },
   de: {
     common: deCommon,
     home: deHome,
     conditions: deConditions,
     blog: deBlog,
+    doctors: deDoctors,
   },
 };
 
@@ -34,7 +38,7 @@ i18n
     resources,
     fallbackLng: 'en',
     defaultNS: 'common',
-    ns: ['common', 'home', 'conditions', 'blog'],
+    ns: ['common', 'home', 'conditions', 'blog', 'doctors'],
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],

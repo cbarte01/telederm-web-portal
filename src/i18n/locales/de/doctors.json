@@ -1,0 +1,124 @@
+{
+  "breadcrumb": {
+    "home": "Startseite",
+    "forDoctors": "Für Ärzte"
+  },
+  "page": {
+    "badge": "Für medizinische Fachkräfte",
+    "title": "Werden Sie Teil unseres Dermatologen-Netzwerks",
+    "description": "Verdienen Sie flexibel mit Teledermatologie. Keine Fixkosten, keine Abonnements – nur hochwertige Patientenversorgung nach Ihren Vorstellungen."
+  },
+  "stats": {
+    "doctors": "750+",
+    "doctorsLabel": "Partner-Ärzte",
+    "treatments": "500.000+",
+    "treatmentsLabel": "Behandlungen",
+    "insurances": "60+",
+    "insurancesLabel": "Partner-Versicherungen"
+  },
+  "benefits": {
+    "title": "Warum Ärzte Telederm wählen",
+    "description": "Schließen Sie sich einem wachsenden Netzwerk von Dermatologen an, die ihre Praxis mit Teledermatologie transformieren.",
+    "income": {
+      "title": "Extrabudgetäres Einkommen",
+      "description": "Verdienen Sie zusätzliches Einkommen außerhalb Ihres regulären Budgets. Keine Fixkosten, keine Mindestverpflichtungen – Bezahlung pro Fall."
+    },
+    "flexibility": {
+      "title": "Maximale Flexibilität",
+      "description": "Arbeiten Sie von überall mit einem 48-Stunden-Bearbeitungsfenster. Passen Sie Konsultationen an Ihren Zeitplan an."
+    },
+    "organization": {
+      "title": "Besseres Praxismanagement",
+      "description": "Entlasten Sie Ihr Personal und verwalten Sie den Patientenfluss effizienter. Reduzieren Sie Wartezeiten."
+    },
+    "support": {
+      "title": "Volle Marketing-Unterstützung",
+      "description": "Erhalten Sie professionelle Marketingmaterialien wie Visitenkarten, Flyer und digitale Assets."
+    },
+    "compliance": {
+      "title": "DSGVO-konform",
+      "description": "Alle Daten werden auf EU-Servern verarbeitet. Volle Einhaltung der medizinischen Datenschutzbestimmungen."
+    },
+    "training": {
+      "title": "Umfassende Schulung",
+      "description": "Werden Sie mit unserer 45-minütigen Schulung vollständig eingearbeitet. Laufende Unterstützung, wann immer Sie sie brauchen."
+    }
+  },
+  "howItWorks": {
+    "title": "In 3 einfachen Schritten starten",
+    "description": "Von der Registrierung bis zum ersten Patienten – wir machen das Onboarding schnell und einfach.",
+    "steps": {
+      "register": {
+        "step": "Schritt 1",
+        "title": "Online registrieren",
+        "description": "Schließen Sie Ihre Registrierung in nur 10 Minuten ab. Geben Sie Ihre LANR, BSNR und Bankdaten an."
+      },
+      "training": {
+        "step": "Schritt 2",
+        "title": "Schulung absolvieren",
+        "description": "Planen Sie eine 45-minütige Online-Schulung nach Ihrem Zeitplan. Lernen Sie unsere Plattform von Grund auf kennen."
+      },
+      "start": {
+        "step": "Schritt 3",
+        "title": "Mit der Behandlung beginnen",
+        "description": "Schließen Sie einen Testfall ab und Sie sind startklar. Beginnen Sie sofort mit der Behandlung von Patienten."
+      }
+    }
+  },
+  "faq": {
+    "title": "Häufig gestellte Fragen",
+    "description": "Alles, was Sie über den Beitritt zu unserem Netzwerk wissen müssen.",
+    "items": {
+      "requirements": {
+        "question": "Was sind die Voraussetzungen für die Teilnahme?",
+        "answer": "Sie benötigen eine gültige Approbation, eine LANR (Lebenslange Arztnummer), BSNR (Betriebsstättennummer) und eine Berufshaftpflichtversicherung, die Telemedizin abdeckt."
+      },
+      "billing": {
+        "question": "Wie funktioniert die Abrechnung?",
+        "answer": "Wir übernehmen die gesamte Abrechnung für Sie. Fälle werden nach GOÄ (Gebührenordnung für Ärzte) abgerechnet. Sie erhalten monatliche Auszahlungen direkt auf Ihr Bankkonto."
+      },
+      "eprescription": {
+        "question": "Kann ich E-Rezepte ausstellen?",
+        "answer": "Ja, unsere Plattform unterstützt E-Rezepte vollständig. Sie können digitale Rezepte direkt über die Telederm-Oberfläche ausstellen."
+      },
+      "liability": {
+        "question": "Bin ich haftpflichtversichert?",
+        "answer": "Sie sollten eine Berufshaftpflichtversicherung haben, die ausdrücklich telemedizinische Konsultationen abdeckt. Wir können bei Bedarf Dokumentation für Ihren Versicherer bereitstellen."
+      },
+      "time": {
+        "question": "Wie viel Zeit muss ich investieren?",
+        "answer": "Es gibt keine Mindestverpflichtung. Sie haben 48 Stunden Zeit, jeden Fall zu bearbeiten, und können wählen, wann und wie viele Fälle Sie annehmen."
+      },
+      "platform": {
+        "question": "Welche technischen Anforderungen gibt es?",
+        "answer": "Sie benötigen nur einen Computer oder ein Tablet mit Internetzugang. Unsere Plattform ist webbasiert – keine spezielle Softwareinstallation erforderlich."
+      }
+    }
+  },
+  "contact": {
+    "title": "Weitere Informationen anfordern",
+    "description": "Hinterlassen Sie Ihre Daten und wir senden Ihnen umfassende Informationen über den Beitritt zu unserem Netzwerk.",
+    "form": {
+      "firstName": "Vorname",
+      "firstNamePlaceholder": "Dr. Anna",
+      "lastName": "Nachname",
+      "lastNamePlaceholder": "Schmidt",
+      "email": "E-Mail-Adresse",
+      "emailPlaceholder": "dr.schmidt@praxis.de",
+      "phone": "Telefon (optional)",
+      "phonePlaceholder": "+49 30 1234567",
+      "submit": "Informationen anfordern",
+      "submitting": "Wird gesendet..."
+    },
+    "success": {
+      "title": "Vielen Dank!",
+      "description": "Wir haben Ihre Anfrage erhalten und werden uns innerhalb von 24 Stunden bei Ihnen melden."
+    }
+  },
+  "cta": {
+    "title": "Bereit, Ihre Praxis zu transformieren?",
+    "description": "Schließen Sie sich 750+ Dermatologen an, die bereits mit Telederm verdienen. Die Registrierung dauert nur 10 Minuten.",
+    "button": "Als Arzt registrieren",
+    "secondary": "Erst kontaktieren"
+  }
+}

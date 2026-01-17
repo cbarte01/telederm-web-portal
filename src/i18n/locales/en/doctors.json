@@ -1,0 +1,124 @@
+{
+  "breadcrumb": {
+    "home": "Home",
+    "forDoctors": "For Doctors"
+  },
+  "page": {
+    "badge": "For Medical Professionals",
+    "title": "Join Our Dermatology Network",
+    "description": "Earn extra income with flexible teledermatology. No fixed costs, no subscriptions – just high-quality patient care on your terms."
+  },
+  "stats": {
+    "doctors": "750+",
+    "doctorsLabel": "Partner Doctors",
+    "treatments": "500,000+",
+    "treatmentsLabel": "Treatments Completed",
+    "insurances": "60+",
+    "insurancesLabel": "Partner Insurances"
+  },
+  "benefits": {
+    "title": "Why Doctors Choose Telederm",
+    "description": "Join a growing network of dermatologists who are transforming their practice with teledermatology.",
+    "income": {
+      "title": "Extra-Budgetary Income",
+      "description": "Earn additional income outside your regular budget. No fixed costs, no minimum commitments – get paid per case."
+    },
+    "flexibility": {
+      "title": "Maximum Flexibility",
+      "description": "Work from anywhere with a 48-hour processing window. Fit consultations around your schedule."
+    },
+    "organization": {
+      "title": "Better Practice Management",
+      "description": "Relieve your staff and manage patient flow more efficiently. Reduce waiting room congestion."
+    },
+    "support": {
+      "title": "Full Marketing Support",
+      "description": "Receive professional marketing materials including business cards, flyers, and digital assets."
+    },
+    "compliance": {
+      "title": "GDPR Compliant",
+      "description": "All data processed on EU-based servers. Full compliance with medical data protection regulations."
+    },
+    "training": {
+      "title": "Comprehensive Training",
+      "description": "Get fully onboarded with our 45-minute training session. Ongoing support whenever you need it."
+    }
+  },
+  "howItWorks": {
+    "title": "Get Started in 3 Simple Steps",
+    "description": "From registration to your first patient – we make onboarding fast and simple.",
+    "steps": {
+      "register": {
+        "step": "Step 1",
+        "title": "Register Online",
+        "description": "Complete your registration in just 10 minutes. Provide your LANR, BSNR, and bank details."
+      },
+      "training": {
+        "step": "Step 2",
+        "title": "Complete Training",
+        "description": "Schedule a 45-minute online training session at your convenience. Learn our platform inside and out."
+      },
+      "start": {
+        "step": "Step 3",
+        "title": "Start Treating",
+        "description": "Complete a test case and you're ready to go. Start receiving and treating patients immediately."
+      }
+    }
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "description": "Everything you need to know about joining our network.",
+    "items": {
+      "requirements": {
+        "question": "What are the requirements to join?",
+        "answer": "You need a valid medical license (Approbation), a LANR (Lebenslange Arztnummer), BSNR (Betriebsstättennummer), and professional liability insurance that covers telemedicine."
+      },
+      "billing": {
+        "question": "How does billing work?",
+        "answer": "We handle all billing for you. Cases are billed according to GOÄ (Gebührenordnung für Ärzte). You receive monthly payouts directly to your bank account."
+      },
+      "eprescription": {
+        "question": "Can I issue e-prescriptions?",
+        "answer": "Yes, our platform fully supports e-prescriptions (E-Rezept). You can issue digital prescriptions directly through the telederm interface."
+      },
+      "liability": {
+        "question": "Am I covered for liability?",
+        "answer": "You should have professional liability insurance that explicitly covers telemedicine consultations. We can provide documentation for your insurer if needed."
+      },
+      "time": {
+        "question": "How much time do I need to commit?",
+        "answer": "There's no minimum commitment. You have 48 hours to process each case, and you can choose when and how many cases to accept."
+      },
+      "platform": {
+        "question": "What technical requirements are there?",
+        "answer": "You just need a computer or tablet with internet access. Our platform is web-based – no special software installation required."
+      }
+    }
+  },
+  "contact": {
+    "title": "Request More Information",
+    "description": "Leave your details and we'll send you comprehensive information about joining our network.",
+    "form": {
+      "firstName": "First Name",
+      "firstNamePlaceholder": "Dr. Anna",
+      "lastName": "Last Name",
+      "lastNamePlaceholder": "Schmidt",
+      "email": "Email Address",
+      "emailPlaceholder": "dr.schmidt@praxis.de",
+      "phone": "Phone (optional)",
+      "phonePlaceholder": "+49 30 1234567",
+      "submit": "Request Information",
+      "submitting": "Sending..."
+    },
+    "success": {
+      "title": "Thank you!",
+      "description": "We've received your request and will be in touch within 24 hours."
+    }
+  },
+  "cta": {
+    "title": "Ready to Transform Your Practice?",
+    "description": "Join 750+ dermatologists already earning with telederm. Registration takes just 10 minutes.",
+    "button": "Register as Doctor",
+    "secondary": "Contact Us First"
+  }
+}
