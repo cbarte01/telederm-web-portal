@@ -1,31 +1,28 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Clock, Shield, Smartphone } from "lucide-react";
+import { Clock, Shield, Smartphone } from "lucide-react";
 import heroImage from "@/assets/hero-skin.jpg";
-
 const Hero = () => {
   const [scrollY, setScrollY] = useState(0);
-  const { t } = useTranslation("home");
-
+  const {
+    t
+  } = useTranslation("home");
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
     };
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll, {
+      passive: true
+    });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
+  return <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Full-screen background image with parallax */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-110"
-        style={{ 
-          backgroundImage: `url(${heroImage})`,
-          transform: `translateY(${scrollY * 0.4}px) scale(1.1)`
-        }}
-      />
+      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-110" style={{
+      backgroundImage: `url(${heroImage})`,
+      transform: `translateY(${scrollY * 0.4}px) scale(1.1)`
+    }} />
       
       {/* Warm, sophisticated overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-foreground/85 via-foreground/65 to-foreground/35" />
@@ -44,35 +41,39 @@ const Hero = () => {
           </div>
 
           {/* Headline - using serif font */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-card mb-8 animate-fade-up leading-[1.1]" style={{ animationDelay: "0.1s" }}>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-card mb-8 animate-fade-up leading-[1.1]" style={{
+          animationDelay: "0.1s"
+        }}>
             {t("hero.title")}{" "}
             <span className="text-primary">{t("hero.titleHighlight")}</span>
           </h1>
 
           {/* Subheadline - better readability */}
-          <p className="text-lg md:text-xl text-card/85 mb-12 max-w-xl animate-fade-up leading-relaxed font-normal" style={{ animationDelay: "0.2s" }}>
+          <p className="text-lg md:text-xl text-card/85 mb-12 max-w-xl animate-fade-up leading-relaxed font-normal" style={{
+          animationDelay: "0.2s"
+        }}>
             {t("hero.description")}
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-14 animate-fade-up" style={{ animationDelay: "0.3s" }}>
+          <div className="flex flex-col sm:flex-row gap-4 mb-14 animate-fade-up" style={{
+          animationDelay: "0.3s"
+        }}>
             <Button variant="hero" size="xl" className="group shadow-elevated">
               {t("common:buttons.startConsultation")}
-              <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+              
             </Button>
             <a href="#how-it-works">
-              <Button 
-                variant="outline" 
-                size="xl" 
-                className="bg-card/10 backdrop-blur-sm border-card/30 text-card hover:bg-card/20 hover:border-card/40"
-              >
+              <Button variant="outline" size="xl" className="bg-card/10 backdrop-blur-sm border-card/30 text-card hover:bg-card/20 hover:border-card/40">
                 {t("hero.howItWorks")}
               </Button>
             </a>
           </div>
 
           {/* Trust indicators - refined styling */}
-          <div className="flex flex-wrap gap-3 animate-fade-up" style={{ animationDelay: "0.4s" }}>
+          <div className="flex flex-wrap gap-3 animate-fade-up" style={{
+          animationDelay: "0.4s"
+        }}>
             <div className="flex items-center gap-2.5 bg-card/10 backdrop-blur-md rounded-full px-5 py-2.5 border border-card/15">
               <Clock className="w-4 h-4 text-primary" />
               <span className="text-sm font-medium text-card/90">{t("hero.trustBadges.diagnosis")}</span>
@@ -88,8 +89,6 @@ const Hero = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default Hero;
