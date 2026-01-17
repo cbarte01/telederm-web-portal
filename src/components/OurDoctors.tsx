@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import {
   Carousel,
   CarouselContent,
@@ -7,68 +8,60 @@ import {
 } from "@/components/ui/carousel";
 import { Award, GraduationCap, Languages } from "lucide-react";
 
-const doctors = [
-  {
-    name: "Dr. med. Julia Schneider",
-    title: "Fachärztin für Dermatologie",
-    specialty: "Allgemeine Dermatologie, Allergologie",
-    experience: "12 Jahre Erfahrung",
-    languages: ["Deutsch", "Englisch"],
-    education: "Charité Berlin",
-    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop&crop=face",
-  },
-  {
-    name: "Dr. med. Markus Weber",
-    title: "Facharzt für Dermatologie",
-    specialty: "Akne, Psoriasis, Neurodermitis",
-    experience: "15 Jahre Erfahrung",
-    languages: ["Deutsch", "Englisch", "Französisch"],
-    education: "LMU München",
-    image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop&crop=face",
-  },
-  {
-    name: "Dr. med. Sarah Hoffmann",
-    title: "Fachärztin für Dermatologie",
-    specialty: "Hautkrebs-Vorsorge, Muttermale",
-    experience: "10 Jahre Erfahrung",
-    languages: ["Deutsch", "Englisch"],
-    education: "Universität Heidelberg",
-    image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=400&fit=crop&crop=face",
-  },
-  {
-    name: "Dr. med. Thomas Müller",
-    title: "Facharzt für Dermatologie",
-    specialty: "Ekzeme, Pilzinfektionen",
-    experience: "18 Jahre Erfahrung",
-    languages: ["Deutsch"],
-    education: "Universität Freiburg",
-    image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=400&fit=crop&crop=face",
-  },
-  {
-    name: "Dr. med. Anna Fischer",
-    title: "Fachärztin für Dermatologie",
-    specialty: "Kinder-Dermatologie, Allergien",
-    experience: "8 Jahre Erfahrung",
-    languages: ["Deutsch", "Englisch", "Spanisch"],
-    education: "Universität Köln",
-    image: "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=400&h=400&fit=crop&crop=face",
-  },
-];
-
 const OurDoctors = () => {
+  const { t, i18n } = useTranslation("home");
+  const isEnglish = i18n.language === 'en';
+
+  const doctors = [
+    {
+      key: "d1",
+      experience: 12,
+      languages: isEnglish ? ["German", "English"] : ["Deutsch", "Englisch"],
+      education: "Charité Berlin",
+      image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop&crop=face",
+    },
+    {
+      key: "d2",
+      experience: 15,
+      languages: isEnglish ? ["German", "English", "French"] : ["Deutsch", "Englisch", "Französisch"],
+      education: "LMU München",
+      image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop&crop=face",
+    },
+    {
+      key: "d3",
+      experience: 10,
+      languages: isEnglish ? ["German", "English"] : ["Deutsch", "Englisch"],
+      education: "Universität Heidelberg",
+      image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=400&fit=crop&crop=face",
+    },
+    {
+      key: "d4",
+      experience: 18,
+      languages: isEnglish ? ["German"] : ["Deutsch"],
+      education: "Universität Freiburg",
+      image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=400&fit=crop&crop=face",
+    },
+    {
+      key: "d5",
+      experience: 8,
+      languages: isEnglish ? ["German", "English", "Spanish"] : ["Deutsch", "Englisch", "Spanisch"],
+      education: "Universität Köln",
+      image: "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=400&h=400&fit=crop&crop=face",
+    },
+  ];
+
   return (
     <section id="doctors" className="py-16 md:py-24 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">
-            Unser Ärzteteam
+            {t("doctors.label")}
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Erfahrene Dermatologen für Ihre Haut
+            {t("doctors.title")}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Alle unsere Ärzte sind approbierte Fachärzte für Dermatologie mit 
-            langjähriger Erfahrung in der Behandlung von Hauterkrankungen
+            {t("doctors.description")}
           </p>
         </div>
 
@@ -87,25 +80,25 @@ const OurDoctors = () => {
                     <div className="aspect-[4/3] overflow-hidden">
                       <img
                         src={doctor.image}
-                        alt={doctor.name}
+                        alt={t(`doctors.doctors.${doctor.key}.name`)}
                         className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                       />
                     </div>
                     <div className="p-6">
                       <h3 className="text-xl font-bold text-foreground mb-1">
-                        {doctor.name}
+                        {t(`doctors.doctors.${doctor.key}.name`)}
                       </h3>
                       <p className="text-primary font-medium text-sm mb-3">
-                        {doctor.title}
+                        {t(`doctors.doctors.${doctor.key}.title`)}
                       </p>
                       <p className="text-muted-foreground text-sm mb-4">
-                        {doctor.specialty}
+                        {t(`doctors.doctors.${doctor.key}.specialty`)}
                       </p>
                       
                       <div className="space-y-2 text-sm">
                         <div className="flex items-center gap-2 text-muted-foreground">
                           <Award className="w-4 h-4 text-primary" />
-                          <span>{doctor.experience}</span>
+                          <span>{doctor.experience} {t("doctors.experience")}</span>
                         </div>
                         <div className="flex items-center gap-2 text-muted-foreground">
                           <GraduationCap className="w-4 h-4 text-primary" />
@@ -127,7 +120,7 @@ const OurDoctors = () => {
           
           {/* Mobile swipe indicator */}
           <p className="text-center text-sm text-muted-foreground mt-6 md:hidden">
-            ← Wischen um mehr zu sehen →
+            {t("doctors.swipeHint")}
           </p>
         </div>
       </div>
