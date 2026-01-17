@@ -19,12 +19,12 @@ const Header = () => {
 
   const navLinks = [
     { href: "/#how-it-works", label: "How It Works" },
+    { href: "/#conditions", label: "Conditions" },
     { href: "/#pricing", label: "Pricing" },
     { href: "/#faq", label: "FAQ" },
   ];
 
   const pageLinks = [
-    { href: "/conditions", label: "Conditions" },
     { href: "/skin-blog", label: "Skin Blog" },
   ];
 
