@@ -16,8 +16,8 @@ const LanguageSwitcher = ({ variant = 'default' }: LanguageSwitcherProps) => {
   const { i18n } = useTranslation();
 
   const languages = [
-    { code: 'en', label: 'English', flag: '🇬🇧' },
-    { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
+    { code: 'en', label: 'English' },
+    { code: 'de', label: 'Deutsch' },
   ];
 
   const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[0];
@@ -39,8 +39,7 @@ const LanguageSwitcher = ({ variant = 'default' }: LanguageSwitcherProps) => {
           }`}
         >
           <Globe className="w-4 h-4" />
-          <span className="hidden sm:inline">{currentLanguage.flag}</span>
-          <span className="uppercase text-xs">{currentLanguage.code}</span>
+          <span className="uppercase text-xs font-medium">{currentLanguage.code}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-[140px]">
@@ -52,7 +51,6 @@ const LanguageSwitcher = ({ variant = 'default' }: LanguageSwitcherProps) => {
               i18n.language === lang.code ? 'bg-accent' : ''
             }`}
           >
-            <span>{lang.flag}</span>
             <span>{lang.label}</span>
           </DropdownMenuItem>
         ))}
