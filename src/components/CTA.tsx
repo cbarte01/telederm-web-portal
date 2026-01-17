@@ -21,9 +21,9 @@ const CTA = () => {
             {t("cta.description")}
           </p>
           <Button
-            variant="default"
+            variant="hero"
             size="xl"
-            className="bg-background text-foreground hover:bg-background/90 shadow-elevated group"
+            className="bg-card text-foreground hover:bg-card/90 shadow-elevated group font-bold"
           >
             {t("cta.button")}
             <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />

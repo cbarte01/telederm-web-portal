@@ -15,8 +15,8 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        // Hero CTA - prominent accent button
-        hero: "bg-accent text-accent-foreground hover:bg-accent/90 shadow-elevated hover:shadow-card hover:-translate-y-0.5 active:translate-y-0",
+        // Hero CTA - prominent primary button with gradient
+        hero: "bg-primary text-primary-foreground hover:bg-primary/85 shadow-elevated hover:shadow-card hover:-translate-y-0.5 active:translate-y-0 font-bold",
         // Secondary hero - outlined style
         "hero-outline": "border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground",
         // Floating CTA for sticky buttons
