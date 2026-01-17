@@ -1,51 +1,13 @@
 import { Star, Quote } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-const reviews = [
-  {
-    name: "Sarah M.",
-    rating: 5,
-    date: "vor 2 Wochen",
-    text: "Schnelle und professionelle Diagnose! Innerhalb von wenigen Stunden hatte ich eine Antwort und das richtige Medikament. Sehr empfehlenswert!",
-    avatar: "S",
-  },
-  {
-    name: "Thomas K.",
-    rating: 5,
-    date: "vor 1 Monat",
-    text: "Endlich keine langen Wartezeiten mehr beim Hautarzt. Die App ist super einfach zu bedienen und die Ärzte sind sehr kompetent.",
-    avatar: "T",
-  },
-  {
-    name: "Lisa B.",
-    rating: 5,
-    date: "vor 3 Wochen",
-    text: "Hatte ein hartnäckiges Ekzem und bekam sofort die richtige Behandlung. Nach einer Woche war alles weg. Danke Telederm!",
-    avatar: "L",
-  },
-  {
-    name: "Michael R.",
-    rating: 4,
-    date: "vor 2 Monaten",
-    text: "Sehr guter Service. Die Fotos hochladen war einfach und die Diagnose kam schneller als erwartet. Würde es wieder nutzen.",
-    avatar: "M",
-  },
-  {
-    name: "Anna S.",
-    rating: 5,
-    date: "vor 1 Woche",
-    text: "Perfekt für Berufstätige! Konnte alles von zuhause aus erledigen, ohne mir einen Tag frei nehmen zu müssen.",
-    avatar: "A",
-  },
-  {
-    name: "David W.",
-    rating: 5,
-    date: "vor 3 Tagen",
-    text: "Die Dermatologen sind wirklich Experten auf ihrem Gebiet. Habe mich gut aufgehoben gefühlt und die Behandlung hat sofort gewirkt.",
-    avatar: "D",
-  },
-];
+const reviewKeys = ["r1", "r2", "r3", "r4", "r5", "r6"];
+const avatars = ["S", "T", "L", "M", "A", "D"];
+const ratings = [5, 5, 5, 4, 5, 5];
 
 const Reviews = () => {
+  const { t } = useTranslation("home");
+
   return (
     <section id="reviews" className="py-16 md:py-24 bg-secondary/30">
       <div className="container mx-auto px-4">
@@ -65,34 +27,38 @@ const Reviews = () => {
             <span className="text-muted-foreground text-sm">4.9/5</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Das sagen unsere Patienten
+            {t("reviews.title")}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Über 10.000 zufriedene Patienten vertrauen Telederm für ihre Hautgesundheit
+            {t("reviews.description")}
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {reviews.map((review, index) => (
+          {reviewKeys.map((key, index) => (
             <div
-              key={index}
+              key={key}
               className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300"
             >
               <div className="flex items-start gap-4 mb-4">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-lg">
-                  {review.avatar}
+                  {avatars[index]}
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-semibold text-foreground">{review.name}</h4>
-                    <span className="text-sm text-muted-foreground">{review.date}</span>
+                    <h4 className="font-semibold text-foreground">
+                      {t(`reviews.reviews.${key}.name`)}
+                    </h4>
+                    <span className="text-sm text-muted-foreground">
+                      {t(`reviews.reviews.${key}.date`)}
+                    </span>
                   </div>
                   <div className="flex items-center gap-0.5 mt-1">
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
                         className={`w-4 h-4 ${
-                          i < review.rating
+                          i < ratings[index]
                             ? "fill-yellow-400 text-yellow-400"
                             : "fill-gray-200 text-gray-200"
                         }`}
@@ -103,7 +69,9 @@ const Reviews = () => {
               </div>
               <div className="relative">
                 <Quote className="absolute -top-2 -left-1 w-6 h-6 text-primary/20" />
-                <p className="text-muted-foreground pl-4">{review.text}</p>
+                <p className="text-muted-foreground pl-4">
+                  {t(`reviews.reviews.${key}.text`)}
+                </p>
               </div>
             </div>
           ))}
@@ -116,7 +84,7 @@ const Reviews = () => {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-medium transition-colors"
           >
-            Alle Bewertungen auf Google ansehen
+            {t("reviews.viewAll")}
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg>
