@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
-const conditions = [
+const featuredConditions = [
   {
     name: "Acne",
     description: "Pimples, blackheads, and cysts affecting face and body",
@@ -44,15 +45,17 @@ const Conditions = () => {
             <p className="text-lg text-muted-foreground mb-10 leading-relaxed">
               Our board-certified dermatologists specialize in diagnosing and treating a wide range of skin, hair, and nail conditions. Whether it's a minor concern or a chronic condition, we're here to help.
             </p>
-            <Button variant="hero" size="lg" className="group shadow-soft">
-              View All Conditions
-              <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+            <Button variant="hero" size="lg" className="group shadow-soft" asChild>
+              <Link to="/conditions">
+                View All Conditions
+                <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+              </Link>
             </Button>
           </div>
 
           {/* Right - Conditions Grid */}
           <div className="grid sm:grid-cols-2 gap-4">
-            {conditions.map((condition) => (
+            {featuredConditions.map((condition) => (
               <div
                 key={condition.name}
                 className="p-6 rounded-xl bg-card border border-border/60 hover:border-primary/40 hover:shadow-card transition-all duration-400 cursor-pointer group"
