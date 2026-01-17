@@ -24,10 +24,10 @@ const Footer = () => {
   };
 
   const certificates = [
-    { label: "DSGVO-Compliance", icon: ShieldCheck },
+    { label: "GDPR Compliant", icon: ShieldCheck },
     { label: "ISO/IEC 27001", icon: Lock },
-    { label: "Telemedizin-Zertifikate", icon: Award },
-    { label: "CE-Kennzeichnung", icon: BadgeCheck },
+    { label: "Telemedicine Certified", icon: Award },
+    { label: "CE Marked Software", icon: BadgeCheck },
   ];
 
   return (
@@ -109,7 +109,7 @@ const Footer = () => {
 
           {/* Certificates */}
           <div>
-            <h4 className="font-semibold text-background mb-4">Zertifizierungen</h4>
+            <h4 className="font-semibold text-background mb-4">Certifications</h4>
             <ul className="space-y-3">
               {certificates.map((cert) => (
                 <li key={cert.label} className="flex items-center gap-2">
