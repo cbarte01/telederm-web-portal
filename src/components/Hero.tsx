@@ -60,13 +60,15 @@ const Hero = () => {
               {t("common:buttons.startConsultation")}
               <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
             </Button>
-            <Button 
-              variant="outline" 
-              size="xl" 
-              className="bg-card/10 backdrop-blur-sm border-card/30 text-card hover:bg-card/20 hover:border-card/40"
-            >
-              {t("hero.howItWorks")}
-            </Button>
+            <a href="#how-it-works">
+              <Button 
+                variant="outline" 
+                size="xl" 
+                className="bg-card/10 backdrop-blur-sm border-card/30 text-card hover:bg-card/20 hover:border-card/40"
+              >
+                {t("hero.howItWorks")}
+              </Button>
+            </a>
           </div>
 
           {/* Trust indicators - refined styling */}
