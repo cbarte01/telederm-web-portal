@@ -1,7 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -9,129 +7,130 @@
 
 @layer base {
   :root {
-    /* Medical teal palette */
-    --background: 209 40% 96%;
-    --foreground: 222 47% 11%;
+    /* Warm cream and navy palette - professional dermatology */
+    --background: 40 33% 98%;
+    --foreground: 220 30% 18%;
 
-    --card: 210 40% 98%;
-    --card-foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 30% 18%;
 
-    --popover: 214 31% 91%;
-    --popover-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 30% 18%;
 
-    /* Teal primary - calming, medical */
-    --primary: 200 98% 39%;
-    --primary-foreground: 204 100% 97%;
+    /* Sophisticated teal primary */
+    --primary: 175 42% 38%;
+    --primary-foreground: 0 0% 100%;
 
-    /* Light teal secondary */
-    --secondary: 215 24% 26%;
-    --secondary-foreground: 210 40% 98%;
+    /* Warm slate secondary */
+    --secondary: 220 15% 92%;
+    --secondary-foreground: 220 30% 18%;
 
-    /* Muted tones */
-    --muted: 215 20% 65%;
-    --muted-foreground: 222 47% 11%;
+    /* Muted tones for better readability */
+    --muted: 220 15% 92%;
+    --muted-foreground: 220 15% 45%;
 
-    /* Warm coral accent for CTAs */
-    --accent: 210 40% 98%;
-    --accent-foreground: 215 19% 34%;
+    /* Soft accent */
+    --accent: 40 30% 95%;
+    --accent-foreground: 220 30% 18%;
 
-    --destructive: 0 72% 50%;
-    --destructive-foreground: 0 85% 97%;
+    --destructive: 0 65% 50%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 212 26% 83%;
-    --input: 212 26% 83%;
-    --ring: 200 98% 39%;
+    --border: 220 15% 88%;
+    --input: 220 15% 88%;
+    --ring: 175 42% 38%;
 
-    --radius: 0.5rem;
+    --radius: 0.625rem;
 
-    /* Custom tokens */
-    --gradient-hero: linear-gradient(135deg, hsl(174 62% 47%) 0%, hsl(190 60% 50%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(180 20% 98%) 100%);
-    --gradient-trust: linear-gradient(180deg, hsl(174 40% 97%) 0%, hsl(180 20% 99%) 100%);
-    --shadow-soft: 0 4px 20px -4px hsl(200 25% 15% / 0.08);
-    --shadow-card: 0 8px 30px -8px hsl(200 25% 15% / 0.12);
-    --shadow-elevated: 0 20px 50px -15px hsl(200 25% 15% / 0.15);
+    /* Warm gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(175 42% 38%) 0%, hsl(185 45% 42%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(40 33% 98%) 100%);
+    --gradient-warm: linear-gradient(135deg, hsl(40 30% 96%) 0%, hsl(30 25% 94%) 100%);
+    
+    /* Elegant shadows */
+    --shadow-soft: 0 2px 15px -3px hsl(220 30% 18% / 0.06), 0 4px 6px -4px hsl(220 30% 18% / 0.04);
+    --shadow-card: 0 4px 25px -5px hsl(220 30% 18% / 0.08), 0 8px 12px -8px hsl(220 30% 18% / 0.05);
+    --shadow-elevated: 0 12px 40px -10px hsl(220 30% 18% / 0.12);
 
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 222 47% 11%;
-    --sidebar-primary: 200 98% 39%;
-    --sidebar-primary-foreground: 204 100% 97%;
-    --sidebar-accent: 215 24% 26%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 212 26% 83%;
-    --sidebar-ring: 200 98% 39%;
-    --chart-1: 198 93% 59%;
-    --chart-2: 213 93% 67%;
-    --chart-3: 215 20% 65%;
-    --chart-4: 215 16% 46%;
-    --chart-5: 215 19% 34%;
-    --sidebar: 210 40% 98%;
-    --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-    --font-serif: 'Lora', ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
-    --font-mono: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
-    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
-    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
-    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+    --sidebar-foreground: 220 30% 18%;
+    --sidebar-primary: 175 42% 38%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 15% 92%;
+    --sidebar-accent-foreground: 220 30% 18%;
+    --sidebar-border: 220 15% 88%;
+    --sidebar-ring: 175 42% 38%;
+    --chart-1: 175 42% 38%;
+    --chart-2: 185 45% 42%;
+    --chart-3: 220 15% 65%;
+    --chart-4: 220 15% 50%;
+    --chart-5: 220 15% 35%;
+    --sidebar: 0 0% 100%;
+    --font-sans: 'DM Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-serif: 'Playfair Display', ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+    --shadow-2xs: 0 1px 2px 0px hsl(220 30% 18% / 0.03);
+    --shadow-xs: 0 1px 3px 0px hsl(220 30% 18% / 0.04);
+    --shadow-sm: 0 2px 4px 0px hsl(220 30% 18% / 0.05);
+    --shadow: 0 4px 8px -2px hsl(220 30% 18% / 0.06);
+    --shadow-md: 0 6px 12px -3px hsl(220 30% 18% / 0.08);
+    --shadow-lg: 0 10px 20px -5px hsl(220 30% 18% / 0.1);
+    --shadow-xl: 0 16px 32px -8px hsl(220 30% 18% / 0.12);
+    --shadow-2xl: 0 24px 48px -12px hsl(220 30% 18% / 0.15);
     --tracking-normal: 0em;
     --spacing: 0.25rem;
   }
 
   .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
+    --background: 220 25% 10%;
+    --foreground: 40 20% 95%;
 
-    --card: 217 32% 17%;
-    --card-foreground: 210 40% 98%;
+    --card: 220 20% 14%;
+    --card-foreground: 40 20% 95%;
 
-    --popover: 215 24% 26%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 220 20% 14%;
+    --popover-foreground: 40 20% 95%;
 
-    --primary: 198 93% 59%;
-    --primary-foreground: 204 80% 15%;
+    --primary: 175 50% 50%;
+    --primary-foreground: 220 25% 10%;
 
-    --secondary: 212 26% 83%;
-    --secondary-foreground: 228 84% 4%;
+    --secondary: 220 15% 22%;
+    --secondary-foreground: 40 20% 95%;
 
-    --muted: 215 16% 46%;
-    --muted-foreground: 210 40% 98%;
+    --muted: 220 15% 22%;
+    --muted-foreground: 220 10% 60%;
 
-    --accent: 228 84% 4%;
-    --accent-foreground: 215 20% 65%;
+    --accent: 220 15% 18%;
+    --accent-foreground: 40 20% 95%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 85% 97%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 215 19% 34%;
-    --input: 215 19% 34%;
-    --ring: 198 93% 59%;
+    --border: 220 15% 25%;
+    --input: 220 15% 25%;
+    --ring: 175 50% 50%;
 
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 198 93% 59%;
-    --sidebar-primary-foreground: 204 80% 15%;
-    --sidebar-accent: 215 20% 65%;
-    --sidebar-accent-foreground: 228 84% 4%;
-    --sidebar-border: 215 19% 34%;
-    --sidebar-ring: 198 93% 59%;
-    --chart-1: 199 95% 73%;
-    --chart-2: 211 96% 78%;
-    --chart-3: 215 20% 65%;
-    --chart-4: 215 16% 46%;
-    --chart-5: 215 19% 34%;
-    --sidebar: 217 32% 17%;
-    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
-    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
-    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
-    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+    --sidebar-background: 220 20% 12%;
+    --sidebar-foreground: 40 20% 95%;
+    --sidebar-primary: 175 50% 50%;
+    --sidebar-primary-foreground: 220 25% 10%;
+    --sidebar-accent: 220 15% 22%;
+    --sidebar-accent-foreground: 40 20% 95%;
+    --sidebar-border: 220 15% 25%;
+    --sidebar-ring: 175 50% 50%;
+    --chart-1: 175 50% 50%;
+    --chart-2: 185 50% 55%;
+    --chart-3: 220 15% 55%;
+    --chart-4: 220 15% 45%;
+    --chart-5: 220 15% 35%;
+    --sidebar: 220 20% 14%;
+    --shadow-2xs: 0 1px 2px 0px hsl(0 0% 0% / 0.15);
+    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.2);
+    --shadow-sm: 0 2px 4px 0px hsl(0 0% 0% / 0.25);
+    --shadow: 0 4px 8px -2px hsl(0 0% 0% / 0.3);
+    --shadow-md: 0 6px 12px -3px hsl(0 0% 0% / 0.35);
+    --shadow-lg: 0 10px 20px -5px hsl(0 0% 0% / 0.4);
+    --shadow-xl: 0 16px 32px -8px hsl(0 0% 0% / 0.45);
+    --shadow-2xl: 0 24px 48px -12px hsl(0 0% 0% / 0.5);
   }
 }
 
@@ -145,12 +144,20 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Manrope', system-ui, sans-serif;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    letter-spacing: -0.01em;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1, h2, h3 {
+    font-family: 'Playfair Display', ui-serif, Georgia, serif;
     @apply font-semibold tracking-tight;
+    letter-spacing: -0.02em;
+  }
+  
+  h4, h5, h6 {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    @apply font-semibold;
   }
 }
 
@@ -163,8 +170,8 @@
     background: var(--gradient-card);
   }
 
-  .gradient-trust {
-    background: var(--gradient-trust);
+  .gradient-warm {
+    background: var(--gradient-warm);
   }
 
   .shadow-soft {
@@ -181,5 +188,13 @@
 
   .text-balance {
     text-wrap: balance;
+  }
+  
+  .section-padding {
+    @apply py-20 md:py-28 lg:py-32;
+  }
+  
+  .section-header {
+    @apply text-center mb-14 md:mb-20;
   }
 }

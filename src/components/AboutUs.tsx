@@ -25,18 +25,18 @@ const values = [
 
 const AboutUs = () => {
   return (
-    <section id="about" className="py-16 md:py-24 bg-gradient-to-b from-white to-secondary/30">
-      <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+    <section id="about" className="section-padding gradient-warm">
+      <div className="container">
+        <div className="grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
           {/* Content */}
           <div>
-            <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">
+            <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium mb-5">
               Über Telederm
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl text-foreground mb-7">
               Wir revolutionieren die dermatologische Versorgung
             </h2>
-            <div className="space-y-4 text-muted-foreground">
+            <div className="space-y-5 text-muted-foreground leading-relaxed">
               <p>
                 Telederm wurde 2020 mit einer klaren Vision gegründet: Jedem Menschen 
                 in Deutschland schnellen und einfachen Zugang zu qualifizierter 
@@ -56,50 +56,50 @@ const AboutUs = () => {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-6 mt-8 pt-8 border-t border-border">
+            <div className="grid grid-cols-3 gap-8 mt-10 pt-10 border-t border-border">
               <div>
-                <div className="text-3xl font-bold text-primary">50k+</div>
-                <div className="text-sm text-muted-foreground">Patienten</div>
+                <div className="text-3xl lg:text-4xl font-serif font-bold text-primary">50k+</div>
+                <div className="text-sm text-muted-foreground mt-1">Patienten</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-primary">20+</div>
-                <div className="text-sm text-muted-foreground">Dermatologen</div>
+                <div className="text-3xl lg:text-4xl font-serif font-bold text-primary">20+</div>
+                <div className="text-sm text-muted-foreground mt-1">Dermatologen</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-primary">4.9</div>
-                <div className="text-sm text-muted-foreground">Bewertung</div>
+                <div className="text-3xl lg:text-4xl font-serif font-bold text-primary">4.9</div>
+                <div className="text-sm text-muted-foreground mt-1">Bewertung</div>
               </div>
             </div>
           </div>
 
           {/* Values Grid */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-5">
             {values.map((value, index) => (
               <div
                 key={index}
-                className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300"
+                className="bg-card rounded-2xl p-7 shadow-soft hover:shadow-card transition-all duration-400 border border-border/50"
               >
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                  <value.icon className="w-6 h-6 text-primary" />
+                <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-5">
+                  <value.icon className="w-7 h-7 text-primary" />
                 </div>
-                <h3 className="font-semibold text-foreground mb-2">{value.title}</h3>
-                <p className="text-sm text-muted-foreground">{value.description}</p>
+                <h3 className="font-serif font-semibold text-lg text-foreground mb-2">{value.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{value.description}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* Mission Statement */}
-        <div className="mt-16 bg-primary rounded-2xl p-8 md:p-12 text-center">
-          <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">
+        <div className="mt-20 gradient-hero rounded-3xl p-10 md:p-14 text-center shadow-elevated">
+          <h3 className="text-2xl md:text-3xl lg:text-4xl font-serif text-primary-foreground mb-5">
             Unsere Mission
           </h3>
-          <p className="text-lg text-white/90 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-primary-foreground/90 max-w-3xl mx-auto leading-relaxed">
             "Wir glauben, dass jeder Mensch Zugang zu erstklassiger dermatologischer 
             Versorgung verdient – schnell, einfach und von überall aus. Mit Telederm 
             machen wir diesen Traum zur Realität."
           </p>
-          <p className="text-white/70 mt-4">— Das Telederm Team</p>
+          <p className="text-primary-foreground/70 mt-5 font-medium">— Das Telederm Team</p>
         </div>
       </div>
     </section>
