@@ -8,6 +8,7 @@ import OurDoctors from "@/components/OurDoctors";
 import Pricing from "@/components/Pricing";
 import FAQ from "@/components/FAQ";
 import CTA from "@/components/CTA";
+import ContactForm from "@/components/ContactForm";
 import AboutUs from "@/components/AboutUs";
 import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
@@ -26,6 +27,7 @@ const Index = () => {
         <Pricing />
         <FAQ />
         <CTA />
+        <ContactForm />
         <AboutUs />
       </main>
       <Footer />
