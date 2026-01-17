@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { ShieldCheck, Lock, Award, BadgeCheck } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -22,10 +23,17 @@ const Footer = () => {
     ],
   };
 
+  const certificates = [
+    { label: "DSGVO-Compliance", icon: ShieldCheck },
+    { label: "ISO/IEC 27001", icon: Lock },
+    { label: "Telemedizin-Zertifikate", icon: Award },
+    { label: "CE-Kennzeichnung", icon: BadgeCheck },
+  ];
+
   return (
     <footer className="bg-foreground text-background/80 py-16">
       <div className="container">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
@@ -94,6 +102,19 @@ const Footer = () => {
                   >
                     {link.label}
                   </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Certificates */}
+          <div>
+            <h4 className="font-semibold text-background mb-4">Zertifizierungen</h4>
+            <ul className="space-y-3">
+              {certificates.map((cert) => (
+                <li key={cert.label} className="flex items-center gap-2">
+                  <cert.icon className="w-4 h-4 text-primary" />
+                  <span className="text-sm">{cert.label}</span>
                 </li>
               ))}
             </ul>
