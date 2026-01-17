@@ -38,6 +38,7 @@ import {
   MapPin,
   Star,
 } from "lucide-react";
+import { ScrollReveal } from "@/hooks/use-scroll-reveal";
 
 // Doctor images
 import drMueller from "@/assets/doctors/dr-mueller.jpg";
@@ -201,68 +202,73 @@ const ForDoctors = () => {
       {/* Stats Bar */}
       <section className="py-8 bg-card border-y border-border">
         <div className="container">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4">
-            <div className="text-center">
-              <div className="flex items-center justify-center gap-3">
-                <Users className="w-8 h-8 text-primary" />
-                <div>
-                  <p className="text-3xl font-bold text-foreground">{t("stats.doctors")}</p>
-                  <p className="text-sm text-muted-foreground">{t("stats.doctorsLabel")}</p>
+          <ScrollReveal>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4">
+              <div className="text-center">
+                <div className="flex items-center justify-center gap-3">
+                  <Users className="w-8 h-8 text-primary" />
+                  <div>
+                    <p className="text-3xl font-bold text-foreground">{t("stats.doctors")}</p>
+                    <p className="text-sm text-muted-foreground">{t("stats.doctorsLabel")}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="flex items-center justify-center gap-3">
+                  <TrendingUp className="w-8 h-8 text-primary" />
+                  <div>
+                    <p className="text-3xl font-bold text-foreground">{t("stats.treatments")}</p>
+                    <p className="text-sm text-muted-foreground">{t("stats.treatmentsLabel")}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="flex items-center justify-center gap-3">
+                  <Shield className="w-8 h-8 text-primary" />
+                  <div>
+                    <p className="text-3xl font-bold text-foreground">{t("stats.insurances")}</p>
+                    <p className="text-sm text-muted-foreground">{t("stats.insurancesLabel")}</p>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="text-center">
-              <div className="flex items-center justify-center gap-3">
-                <TrendingUp className="w-8 h-8 text-primary" />
-                <div>
-                  <p className="text-3xl font-bold text-foreground">{t("stats.treatments")}</p>
-                  <p className="text-sm text-muted-foreground">{t("stats.treatmentsLabel")}</p>
-                </div>
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="flex items-center justify-center gap-3">
-                <Shield className="w-8 h-8 text-primary" />
-                <div>
-                  <p className="text-3xl font-bold text-foreground">{t("stats.insurances")}</p>
-                  <p className="text-sm text-muted-foreground">{t("stats.insurancesLabel")}</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
 
       {/* Benefits Section */}
       <section className="py-20 md:py-28 bg-background">
         <div className="container">
-          <div className="text-center mb-16">
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
-              {t("benefits.title")}
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              {t("benefits.description")}
-            </p>
-          </div>
+          <ScrollReveal>
+            <div className="text-center mb-16">
+              <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
+                {t("benefits.title")}
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                {t("benefits.description")}
+              </p>
+            </div>
+          </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {benefits.map((benefit) => (
-              <div
-                key={benefit.key}
-                className="group relative bg-card rounded-2xl p-8 border border-border hover:border-primary/30 transition-all duration-300 hover:shadow-lg"
-              >
+            {benefits.map((benefit, index) => (
+              <ScrollReveal key={benefit.key} delay={index * 100}>
                 <div
-                  className={`w-14 h-14 rounded-xl bg-gradient-to-br ${benefit.gradient} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}
+                  className="group relative bg-card rounded-2xl p-8 border border-border hover:border-primary/30 transition-all duration-300 hover:shadow-lg h-full"
                 >
-                  <benefit.icon className="w-7 h-7 text-white" />
+                  <div
+                    className={`w-14 h-14 rounded-xl bg-gradient-to-br ${benefit.gradient} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}
+                  >
+                    <benefit.icon className="w-7 h-7 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-foreground mb-3">
+                    {t(`benefits.${benefit.key}.title`)}
+                  </h3>
+                  <p className="text-muted-foreground">
+                    {t(`benefits.${benefit.key}.description`)}
+                  </p>
                 </div>
-                <h3 className="text-xl font-semibold text-foreground mb-3">
-                  {t(`benefits.${benefit.key}.title`)}
-                </h3>
-                <p className="text-muted-foreground">
-                  {t(`benefits.${benefit.key}.description`)}
-                </p>
-              </div>
+              </ScrollReveal>
             ))}
           </div>
         </div>
@@ -271,18 +277,20 @@ const ForDoctors = () => {
       {/* Testimonials Section */}
       <section className="py-20 md:py-28 bg-gradient-to-b from-muted/30 to-background overflow-hidden">
         <div className="container">
-          <div className="text-center mb-12">
-            <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">
-              <Star className="w-3 h-3 mr-1 fill-primary" />
-              Trusted by 750+ Doctors
-            </Badge>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
-              {t("testimonials.title")}
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              {t("testimonials.description")}
-            </p>
-          </div>
+          <ScrollReveal>
+            <div className="text-center mb-12">
+              <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">
+                <Star className="w-3 h-3 mr-1 fill-primary" />
+                Trusted by 750+ Doctors
+              </Badge>
+              <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
+                {t("testimonials.title")}
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                {t("testimonials.description")}
+              </p>
+            </div>
+          </ScrollReveal>
 
           {/* Carousel */}
           <div className="relative max-w-6xl mx-auto">
@@ -394,38 +402,42 @@ const ForDoctors = () => {
       {/* How It Works Section */}
       <section className="py-20 md:py-28 bg-muted/30">
         <div className="container">
-          <div className="text-center mb-16">
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
-              {t("howItWorks.title")}
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              {t("howItWorks.description")}
-            </p>
-          </div>
+          <ScrollReveal>
+            <div className="text-center mb-16">
+              <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
+                {t("howItWorks.title")}
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                {t("howItWorks.description")}
+              </p>
+            </div>
+          </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {steps.map((step, index) => (
-              <div key={step} className="relative">
-                {/* Connector line */}
-                {index < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-16 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-primary/50 to-primary/20" />
-                )}
+              <ScrollReveal key={step} delay={index * 150}>
+                <div className="relative">
+                  {/* Connector line */}
+                  {index < steps.length - 1 && (
+                    <div className="hidden md:block absolute top-16 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-primary/50 to-primary/20" />
+                  )}
 
-                <div className="text-center">
-                  <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center border-2 border-primary/20">
-                    <span className="text-5xl font-bold text-primary">{index + 1}</span>
+                  <div className="text-center">
+                    <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center border-2 border-primary/20">
+                      <span className="text-5xl font-bold text-primary">{index + 1}</span>
+                    </div>
+                    <Badge variant="outline" className="mb-4">
+                      {t(`howItWorks.steps.${step}.step`)}
+                    </Badge>
+                    <h3 className="text-xl font-semibold text-foreground mb-3">
+                      {t(`howItWorks.steps.${step}.title`)}
+                    </h3>
+                    <p className="text-muted-foreground">
+                      {t(`howItWorks.steps.${step}.description`)}
+                    </p>
                   </div>
-                  <Badge variant="outline" className="mb-4">
-                    {t(`howItWorks.steps.${step}.step`)}
-                  </Badge>
-                  <h3 className="text-xl font-semibold text-foreground mb-3">
-                    {t(`howItWorks.steps.${step}.title`)}
-                  </h3>
-                  <p className="text-muted-foreground">
-                    {t(`howItWorks.steps.${step}.description`)}
-                  </p>
                 </div>
-              </div>
+              </ScrollReveal>
             ))}
           </div>
         </div>
@@ -435,29 +447,32 @@ const ForDoctors = () => {
       <section className="py-20 md:py-28 bg-background">
         <div className="container">
           <div className="max-w-3xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
-                {t("faq.title")}
-              </h2>
-              <p className="text-lg text-muted-foreground">
-                {t("faq.description")}
-              </p>
-            </div>
+            <ScrollReveal>
+              <div className="text-center mb-12">
+                <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
+                  {t("faq.title")}
+                </h2>
+                <p className="text-lg text-muted-foreground">
+                  {t("faq.description")}
+                </p>
+              </div>
+            </ScrollReveal>
 
             <Accordion type="single" collapsible className="space-y-4">
-              {faqItems.map((item) => (
-                <AccordionItem
-                  key={item}
-                  value={item}
-                  className="bg-card rounded-xl border border-border px-6 data-[state=open]:border-primary/30"
-                >
-                  <AccordionTrigger className="text-left font-medium hover:no-underline py-5">
-                    {t(`faq.items.${item}.question`)}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground pb-5">
-                    {t(`faq.items.${item}.answer`)}
-                  </AccordionContent>
-                </AccordionItem>
+              {faqItems.map((item, index) => (
+                <ScrollReveal key={item} delay={index * 75}>
+                  <AccordionItem
+                    value={item}
+                    className="bg-card rounded-xl border border-border px-6 data-[state=open]:border-primary/30"
+                  >
+                    <AccordionTrigger className="text-left font-medium hover:no-underline py-5">
+                      {t(`faq.items.${item}.question`)}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground pb-5">
+                      {t(`faq.items.${item}.answer`)}
+                    </AccordionContent>
+                  </AccordionItem>
+                </ScrollReveal>
               ))}
             </Accordion>
           </div>
@@ -468,91 +483,93 @@ const ForDoctors = () => {
       <section className="py-20 md:py-28 bg-muted/30">
         <div className="container">
           <div className="max-w-2xl mx-auto">
-            <div className="bg-card rounded-3xl p-8 md:p-12 border border-border shadow-lg">
-              {isSubmitted ? (
-                <div className="text-center py-8">
-                  <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
-                    <CheckCircle2 className="w-10 h-10 text-green-600" />
-                  </div>
-                  <h3 className="text-2xl font-semibold text-foreground mb-3">
-                    {t("contact.success.title")}
-                  </h3>
-                  <p className="text-muted-foreground">
-                    {t("contact.success.description")}
-                  </p>
-                </div>
-              ) : (
-                <>
-                  <div className="text-center mb-8">
-                    <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">
-                      {t("contact.title")}
-                    </h2>
+            <ScrollReveal>
+              <div className="bg-card rounded-3xl p-8 md:p-12 border border-border shadow-lg">
+                {isSubmitted ? (
+                  <div className="text-center py-8">
+                    <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
+                      <CheckCircle2 className="w-10 h-10 text-green-600" />
+                    </div>
+                    <h3 className="text-2xl font-semibold text-foreground mb-3">
+                      {t("contact.success.title")}
+                    </h3>
                     <p className="text-muted-foreground">
-                      {t("contact.description")}
+                      {t("contact.success.description")}
                     </p>
                   </div>
+                ) : (
+                  <>
+                    <div className="text-center mb-8">
+                      <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">
+                        {t("contact.title")}
+                      </h2>
+                      <p className="text-muted-foreground">
+                        {t("contact.description")}
+                      </p>
+                    </div>
 
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-foreground mb-2">
+                            {t("contact.form.firstName")}
+                          </label>
+                          <Input
+                            type="text"
+                            placeholder={t("contact.form.firstNamePlaceholder")}
+                            required
+                            className="h-12"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-foreground mb-2">
+                            {t("contact.form.lastName")}
+                          </label>
+                          <Input
+                            type="text"
+                            placeholder={t("contact.form.lastNamePlaceholder")}
+                            required
+                            className="h-12"
+                          />
+                        </div>
+                      </div>
+
                       <div>
                         <label className="block text-sm font-medium text-foreground mb-2">
-                          {t("contact.form.firstName")}
+                          {t("contact.form.email")}
                         </label>
                         <Input
-                          type="text"
-                          placeholder={t("contact.form.firstNamePlaceholder")}
+                          type="email"
+                          placeholder={t("contact.form.emailPlaceholder")}
                           required
                           className="h-12"
                         />
                       </div>
+
                       <div>
                         <label className="block text-sm font-medium text-foreground mb-2">
-                          {t("contact.form.lastName")}
+                          {t("contact.form.phone")}
                         </label>
                         <Input
-                          type="text"
-                          placeholder={t("contact.form.lastNamePlaceholder")}
-                          required
+                          type="tel"
+                          placeholder={t("contact.form.phonePlaceholder")}
                           className="h-12"
                         />
                       </div>
-                    </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-foreground mb-2">
-                        {t("contact.form.email")}
-                      </label>
-                      <Input
-                        type="email"
-                        placeholder={t("contact.form.emailPlaceholder")}
-                        required
-                        className="h-12"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-foreground mb-2">
-                        {t("contact.form.phone")}
-                      </label>
-                      <Input
-                        type="tel"
-                        placeholder={t("contact.form.phonePlaceholder")}
-                        className="h-12"
-                      />
-                    </div>
-
-                    <Button
-                      type="submit"
-                      size="lg"
-                      className="w-full h-14 text-base"
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? t("contact.form.submitting") : t("contact.form.submit")}
-                    </Button>
-                  </form>
-                </>
-              )}
-            </div>
+                      <Button
+                        type="submit"
+                        size="lg"
+                        className="w-full h-14 text-base"
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? t("contact.form.submitting") : t("contact.form.submit")}
+                      </Button>
+                    </form>
+                  </>
+                )}
+              </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
@@ -560,27 +577,29 @@ const ForDoctors = () => {
       {/* Final CTA Section */}
       <section className="py-20 md:py-28 gradient-hero">
         <div className="container">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary-foreground mb-6">
-              {t("cta.title")}
-            </h2>
-            <p className="text-lg text-primary-foreground/90 mb-10">
-              {t("cta.description")}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="xl" className="bg-white text-primary hover:bg-white/90 shadow-lg">
-                {t("cta.button")}
-                <ChevronRight className="w-5 h-5 ml-2" />
-              </Button>
-              <Button
-                size="xl"
-                variant="outline"
-                className="border-white/30 text-white hover:bg-white/10"
-              >
-                {t("cta.secondary")}
-              </Button>
+          <ScrollReveal>
+            <div className="max-w-3xl mx-auto text-center">
+              <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary-foreground mb-6">
+                {t("cta.title")}
+              </h2>
+              <p className="text-lg text-primary-foreground/90 mb-10">
+                {t("cta.description")}
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button size="xl" className="bg-white text-primary hover:bg-white/90 shadow-lg">
+                  {t("cta.button")}
+                  <ChevronRight className="w-5 h-5 ml-2" />
+                </Button>
+                <Button
+                  size="xl"
+                  variant="outline"
+                  className="border-white/30 text-white hover:bg-white/10"
+                >
+                  {t("cta.secondary")}
+                </Button>
+              </div>
             </div>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
 
