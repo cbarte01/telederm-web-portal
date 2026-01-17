@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import useEmblaCarousel from "embla-carousel-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -30,11 +31,19 @@ import {
   Headphones,
   GraduationCap,
   ChevronRight,
+  ChevronLeft,
   CheckCircle2,
   Stethoscope,
   Quote,
   MapPin,
+  Star,
 } from "lucide-react";
+
+// Doctor images
+import drMueller from "@/assets/doctors/dr-mueller.jpg";
+import drWeber from "@/assets/doctors/dr-weber.jpg";
+import drSchmidt from "@/assets/doctors/dr-schmidt.jpg";
+import drBraun from "@/assets/doctors/dr-braun.jpg";
 
 const ForDoctors = () => {
   const { t } = useTranslation("doctors");
@@ -85,7 +94,39 @@ const ForDoctors = () => {
 
   const steps = ["register", "training", "start"];
 
-  const testimonials = ["mueller", "weber", "schmidt", "braun"];
+  const testimonials = [
+    { key: "mueller", image: drMueller },
+    { key: "weber", image: drWeber },
+    { key: "schmidt", image: drSchmidt },
+    { key: "braun", image: drBraun },
+  ];
+
+  // Carousel setup
+  const [emblaRef, emblaApi] = useEmblaCarousel({ 
+    loop: true,
+    align: "center",
+  });
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [canScrollPrev, setCanScrollPrev] = useState(false);
+  const [canScrollNext, setCanScrollNext] = useState(false);
+
+  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
+  const scrollTo = useCallback((index: number) => emblaApi?.scrollTo(index), [emblaApi]);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+    setCanScrollPrev(emblaApi.canScrollPrev());
+    setCanScrollNext(emblaApi.canScrollNext());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    onSelect();
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
+  }, [emblaApi, onSelect]);
 
   const faqItems = [
     "requirements",
@@ -228,9 +269,13 @@ const ForDoctors = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 md:py-28 bg-muted/30">
+      <section className="py-20 md:py-28 bg-gradient-to-b from-muted/30 to-background overflow-hidden">
         <div className="container">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
+            <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">
+              <Star className="w-3 h-3 mr-1 fill-primary" />
+              Trusted by 750+ Doctors
+            </Badge>
             <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
               {t("testimonials.title")}
             </h2>
@@ -239,51 +284,109 @@ const ForDoctors = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-            {testimonials.map((key, index) => (
-              <div
-                key={key}
-                className={`relative bg-card rounded-2xl p-8 border border-border shadow-sm hover:shadow-lg transition-all duration-300 ${
-                  index === 0 ? "md:col-span-2" : ""
-                }`}
-              >
-                {/* Quote icon */}
-                <div className="absolute top-6 right-6 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Quote className="w-6 h-6 text-primary" />
-                </div>
+          {/* Carousel */}
+          <div className="relative max-w-6xl mx-auto">
+            {/* Navigation buttons */}
+            <button
+              onClick={scrollPrev}
+              className="absolute left-0 md:-left-6 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-card border border-border shadow-lg flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 disabled:opacity-50"
+              disabled={!canScrollPrev}
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={scrollNext}
+              className="absolute right-0 md:-right-6 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-card border border-border shadow-lg flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 disabled:opacity-50"
+              disabled={!canScrollNext}
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
 
-                {/* Quote text */}
-                <p className="text-foreground/90 text-lg leading-relaxed mb-6 pr-16">
-                  "{t(`testimonials.items.${key}.quote`)}"
-                </p>
+            {/* Carousel viewport */}
+            <div className="overflow-hidden px-8 md:px-0" ref={emblaRef}>
+              <div className="flex">
+                {testimonials.map((testimonial, index) => (
+                  <div
+                    key={testimonial.key}
+                    className="flex-[0_0_100%] md:flex-[0_0_85%] min-w-0 pl-4 first:pl-0"
+                  >
+                    <div
+                      className={`relative bg-card rounded-3xl p-8 md:p-10 border shadow-lg transition-all duration-500 ${
+                        selectedIndex === index
+                          ? "border-primary/30 scale-100 opacity-100"
+                          : "border-border scale-95 opacity-60"
+                      }`}
+                    >
+                      <div className="flex flex-col md:flex-row gap-8 items-center">
+                        {/* Doctor photo */}
+                        <div className="relative flex-shrink-0">
+                          <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden border-4 border-primary/20 shadow-xl">
+                            <img
+                              src={testimonial.image}
+                              alt={t(`testimonials.items.${testimonial.key}.name`)}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          {/* Quote badge */}
+                          <div className="absolute -bottom-3 -right-3 w-12 h-12 rounded-full bg-primary flex items-center justify-center shadow-lg">
+                            <Quote className="w-5 h-5 text-primary-foreground" />
+                          </div>
+                        </div>
 
-                {/* Doctor info */}
-                <div className="flex items-center gap-4">
-                  {/* Avatar placeholder */}
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center border-2 border-primary/20">
-                    <Stethoscope className="w-6 h-6 text-primary" />
-                  </div>
+                        {/* Content */}
+                        <div className="flex-1 text-center md:text-left">
+                          {/* Stars */}
+                          <div className="flex gap-1 justify-center md:justify-start mb-4">
+                            {[...Array(5)].map((_, i) => (
+                              <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />
+                            ))}
+                          </div>
 
-                  <div className="flex-1">
-                    <p className="font-semibold text-foreground">
-                      {t(`testimonials.items.${key}.name`)}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {t(`testimonials.items.${key}.specialty`)}
-                    </p>
-                    <div className="flex items-center gap-3 mt-1">
-                      <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <MapPin className="w-3 h-3" />
-                        {t(`testimonials.items.${key}.location`)}
-                      </span>
-                      <span className="text-xs text-primary font-medium">
-                        {t(`testimonials.items.${key}.experience`)}
-                      </span>
+                          {/* Quote */}
+                          <p className="text-foreground text-lg md:text-xl leading-relaxed mb-6 italic">
+                            "{t(`testimonials.items.${testimonial.key}.quote`)}"
+                          </p>
+
+                          {/* Doctor info */}
+                          <div>
+                            <p className="font-semibold text-lg text-foreground">
+                              {t(`testimonials.items.${testimonial.key}.name`)}
+                            </p>
+                            <p className="text-primary font-medium">
+                              {t(`testimonials.items.${testimonial.key}.specialty`)}
+                            </p>
+                            <div className="flex items-center gap-4 mt-2 justify-center md:justify-start">
+                              <span className="flex items-center gap-1 text-sm text-muted-foreground">
+                                <MapPin className="w-4 h-4" />
+                                {t(`testimonials.items.${testimonial.key}.location`)}
+                              </span>
+                              <Badge variant="secondary" className="text-xs">
+                                {t(`testimonials.items.${testimonial.key}.experience`)}
+                              </Badge>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
+                ))}
               </div>
-            ))}
+            </div>
+
+            {/* Dots indicator */}
+            <div className="flex justify-center gap-2 mt-8">
+              {testimonials.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => scrollTo(index)}
+                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                    selectedIndex === index
+                      ? "bg-primary w-8"
+                      : "bg-border hover:bg-primary/50"
+                  }`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
