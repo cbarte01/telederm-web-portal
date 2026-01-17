@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogIn } from "lucide-react";
 import LanguageSwitcher from "./LanguageSwitcher";
 import teledermLogo from "@/assets/logo/telederm-logo.png";
 
@@ -86,12 +86,13 @@ const Header = () => {
           ))}
         </nav>
 
-        {/* Right side: Language Switcher + CTA */}
+        {/* Right side: Language Switcher + Login */}
         <div className="hidden md:flex items-center gap-4">
           <LanguageSwitcher variant={showTransparent ? 'transparent' : 'default'} />
           {!isForDoctorsPage && (
-            <Button variant="hero" size="lg">
-              {t("buttons.startTreatment")}
+            <Button variant="ghost" size="lg" className={`gap-2 ${showTransparent ? 'text-card hover:text-card hover:bg-card/10' : ''}`}>
+              <LogIn className="w-4 h-4" />
+              {t("buttons.login")}
             </Button>
           )}
         </div>
@@ -138,8 +139,9 @@ const Header = () => {
               <LanguageSwitcher />
             </div>
             {!isForDoctorsPage && (
-              <Button variant="hero" size="lg" className="mt-2">
-                {t("buttons.startTreatment")}
+              <Button variant="ghost" size="lg" className="mt-2 gap-2 justify-start">
+                <LogIn className="w-4 h-4" />
+                {t("buttons.login")}
               </Button>
             )}
           </nav>

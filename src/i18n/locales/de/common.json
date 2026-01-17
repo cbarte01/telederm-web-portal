@@ -8,6 +8,7 @@
     "forDoctors": "Für Ärzte"
   },
   "buttons": {
+    "login": "Anmelden",
     "startTreatment": "Behandlung starten",
     "startConsultation": "Behandlung starten",
     "startNow": "Jetzt starten",

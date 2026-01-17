@@ -8,6 +8,7 @@
     "forDoctors": "For Doctors"
   },
   "buttons": {
+    "login": "Log In",
     "startTreatment": "Start Treatment",
     "startConsultation": "Start Your Consultation",
     "startNow": "Start Now",
