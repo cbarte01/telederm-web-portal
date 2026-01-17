@@ -1,12 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Check, ArrowRight, Clock, Zap, Crown } from "lucide-react";
+import { useInView } from "@/hooks/use-in-view";
+import { AnimatedCounter } from "@/components/AnimatedCounter";
 
 const plans = [
   {
     name: "Standard Request",
     icon: Clock,
     description: "A skin concern has recently appeared and you want a professional assessment and recommendation? This is the right option for you!",
-    price: "35",
+    price: 35,
     responseTime: "48 hours",
     features: [
       "Full reimbursement for private insurance",
@@ -20,7 +22,7 @@ const plans = [
     name: "Urgent Request",
     icon: Zap,
     description: "Need an urgent assessment of your skin concerns? Waiting is not an option? Get a response from a skin specialist within 24 hours on weekdays — and even on weekends!",
-    price: "49",
+    price: 49,
     responseTime: "24 hours",
     features: [
       "Full reimbursement for private insurance",
@@ -35,7 +37,7 @@ const plans = [
     name: "Expert Treatment",
     icon: Crown,
     description: "Have a persistent skin problem where treatment hasn't worked? Our specialists will take care of your issue and create an individualized treatment plan.",
-    price: "73",
+    price: 73,
     responseTime: "24 hours",
     features: [
       "Full reimbursement for private insurance",
@@ -51,8 +53,10 @@ const plans = [
 ];
 
 const Pricing = () => {
+  const { ref, isInView } = useInView<HTMLElement>({ threshold: 0.15 });
+
   return (
-    <section id="pricing" className="section-padding bg-secondary/30">
+    <section ref={ref} id="pricing" className="section-padding bg-secondary/30">
       <div className="container">
         {/* Section Header */}
         <div className="section-header">
@@ -102,10 +106,16 @@ const Pricing = () => {
                 </p>
               </div>
 
-              {/* Price */}
+              {/* Price with animated counter */}
               <div className="mb-6 pb-6 border-b border-border">
                 <div className="flex items-baseline gap-1">
-                  <span className="text-4xl lg:text-5xl font-serif font-bold text-foreground">€{plan.price}</span>
+                  <span className="text-4xl lg:text-5xl font-serif font-bold text-foreground">
+                    €<AnimatedCounter 
+                      value={plan.price} 
+                      isInView={isInView} 
+                      duration={1200 + plans.indexOf(plan) * 200}
+                    />
+                  </span>
                   <span className="text-muted-foreground text-sm">one-time</span>
                 </div>
                 <p className="text-sm text-primary font-medium mt-2">
