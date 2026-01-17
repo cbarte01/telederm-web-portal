@@ -1,14 +1,28 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Clock, Shield, Smartphone } from "lucide-react";
 import heroImage from "@/assets/hero-skin.jpg";
 
 const Hero = () => {
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
-      {/* Full-screen background image */}
+      {/* Full-screen background image with parallax */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${heroImage})` }}
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-110"
+        style={{ 
+          backgroundImage: `url(${heroImage})`,
+          transform: `translateY(${scrollY * 0.4}px) scale(1.1)`
+        }}
       />
       
       {/* Dark overlay for text readability */}
