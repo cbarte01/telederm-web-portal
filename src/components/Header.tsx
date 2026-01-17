@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 
@@ -19,6 +20,10 @@ const Header = () => {
     { href: "#conditions", label: "Conditions" },
     { href: "#pricing", label: "Pricing" },
     { href: "#faq", label: "FAQ" },
+  ];
+
+  const pageLinks = [
+    { href: "/skin-blog", label: "Skin Blog" },
   ];
 
   return (
@@ -52,6 +57,17 @@ const Header = () => {
             >
               {link.label}
             </a>
+          ))}
+          {pageLinks.map((link) => (
+            <Link
+              key={link.href}
+              to={link.href}
+              className={`text-sm font-medium transition-colors duration-300 hover:text-primary ${
+                isScrolled ? 'text-muted-foreground' : 'text-card/80 hover:text-card'
+              }`}
+            >
+              {link.label}
+            </Link>
           ))}
         </nav>
 
@@ -89,6 +105,16 @@ const Header = () => {
               >
                 {link.label}
               </a>
+            ))}
+            {pageLinks.map((link) => (
+              <Link
+                key={link.href}
+                to={link.href}
+                className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {link.label}
+              </Link>
             ))}
             <Button variant="hero" size="lg" className="mt-2">
               Start Treatment
