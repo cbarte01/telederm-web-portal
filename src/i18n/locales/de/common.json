@@ -5,10 +5,14 @@
     "pricing": "Preise",
     "faq": "FAQ",
     "skinBlog": "Hautblog",
-    "forDoctors": "Für Ärzte"
+    "forDoctors": "Für Ärzte",
+    "benefits": "Vorteile",
+    "testimonials": "Erfahrungen",
+    "apply": "Bewerben"
   },
   "buttons": {
     "login": "Anmelden",
+    "doctorLogin": "Arzt-Login",
     "startTreatment": "Behandlung starten",
     "startConsultation": "Behandlung starten",
     "startNow": "Jetzt starten",

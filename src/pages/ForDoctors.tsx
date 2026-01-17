@@ -306,7 +306,7 @@ const ForDoctors = () => {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20 md:py-28 bg-background">
+      <section id="benefits" className="py-20 md:py-28 bg-background">
         <div className="container">
           <ScrollReveal>
             <div className="text-center mb-16">
@@ -344,7 +344,7 @@ const ForDoctors = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 md:py-28 bg-gradient-to-b from-muted/30 to-background overflow-hidden">
+      <section id="testimonials" className="py-20 md:py-28 bg-gradient-to-b from-muted/30 to-background overflow-hidden">
         <div className="container">
           <ScrollReveal>
             <div className="text-center mb-12">
@@ -469,7 +469,7 @@ const ForDoctors = () => {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-20 md:py-28 bg-muted/30">
+      <section id="how-it-works" className="py-20 md:py-28 bg-muted/30">
         <div className="container">
           <ScrollReveal>
             <div className="text-center mb-16">
@@ -513,7 +513,7 @@ const ForDoctors = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-20 md:py-28 bg-background">
+      <section id="faq" className="py-20 md:py-28 bg-background">
         <div className="container">
           <div className="max-w-3xl mx-auto">
             <ScrollReveal>
@@ -549,7 +549,7 @@ const ForDoctors = () => {
       </section>
 
       {/* Contact Form Section */}
-      <section className="py-20 md:py-28 bg-muted/30">
+      <section id="apply" className="py-20 md:py-28 bg-muted/30">
         <div className="container">
           <div className="max-w-2xl mx-auto">
             <ScrollReveal>
