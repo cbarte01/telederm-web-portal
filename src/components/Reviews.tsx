@@ -60,10 +60,11 @@ const Reviews = () => {
           opts={{
             align: "start",
             loop: true,
+            duration: 30,
           }}
           plugins={[
             Autoplay({
-              delay: 4000,
+              delay: 2500,
               stopOnInteraction: false,
               stopOnMouseEnter: true,
             }),
