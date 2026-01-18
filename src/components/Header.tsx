@@ -25,8 +25,8 @@ const Header = () => {
   // Navigation links for the main homepage
   const homeNavLinks = [
     { href: "/#how-it-works", label: t("nav.howItWorks") },
-    { href: "/#conditions", label: t("nav.conditions") },
-    { href: "/#pricing", label: t("nav.pricing") },
+    { href: "/#conditions", label: t("nav.treatments") },
+    { href: "/#doctors", label: t("nav.doctorTeam") },
     { href: "/#faq", label: t("nav.faq") },
   ];
 
