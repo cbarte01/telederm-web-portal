@@ -1,4 +1,4 @@
-import { Camera, FileText, Stethoscope } from "lucide-react";
+import { Camera, FileText, Stethoscope, ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 
@@ -67,7 +67,10 @@ const HowItWorks = () => {
         {/* CTA Button */}
         <div className="mt-12 text-center">
           <Button variant="hero" size="xl" asChild>
-            <a href="#contact">{t("howItWorks.cta")}</a>
+            <a href="#contact">
+              {t("howItWorks.cta")}
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </a>
           </Button>
         </div>
       </div>
