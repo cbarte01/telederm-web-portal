@@ -1,7 +1,6 @@
-import { Button } from "@/components/ui/button";
-
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { ArrowRight } from "lucide-react";
 
 const conditionKeys = ["acne", "eczema", "psoriasis", "rosacea", "skinRashes", "hairLoss"];
 
@@ -20,14 +19,9 @@ const Conditions = () => {
             <h2 className="text-3xl md:text-4xl lg:text-5xl text-foreground mb-7 text-balance">
               {t("conditions.title")}
             </h2>
-            <p className="text-lg text-muted-foreground mb-10 leading-relaxed">
+            <p className="text-lg text-muted-foreground leading-relaxed">
               {t("conditions.description")}
             </p>
-            <Button variant="outline" size="lg" className="shadow-soft" asChild>
-              <Link to="/conditions">
-                {t("conditions.viewAll", "View All Conditions")}
-              </Link>
-            </Button>
           </div>
 
           {/* Right - Conditions Grid */}
@@ -46,6 +40,17 @@ const Conditions = () => {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* View All Link */}
+        <div className="text-center mt-10">
+          <Link
+            to="/conditions"
+            className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-medium transition-colors"
+          >
+            {t("conditions.viewAll", "View All Conditions")}
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </div>
     </section>
