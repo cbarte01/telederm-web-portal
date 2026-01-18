@@ -65,26 +65,32 @@ const ForDoctors = () => {
     {
       key: "income",
       icon: Euro,
+      bgClass: "bg-gradient-to-br from-emerald-600 to-teal-600",
     },
     {
       key: "flexibility",
       icon: Clock,
+      bgClass: "bg-gradient-to-br from-primary to-primary/80",
     },
     {
       key: "organization",
       icon: Building2,
+      bgClass: "bg-gradient-to-br from-slate-700 to-slate-600",
     },
     {
       key: "support",
       icon: Headphones,
+      bgClass: "bg-gradient-to-br from-amber-600 to-orange-600",
     },
     {
       key: "compliance",
       icon: Shield,
+      bgClass: "bg-gradient-to-br from-sky-600 to-cyan-600",
     },
     {
       key: "training",
       icon: GraduationCap,
+      bgClass: "bg-gradient-to-br from-violet-600 to-indigo-600",
     },
   ];
 
@@ -315,9 +321,9 @@ const ForDoctors = () => {
                   className="group relative bg-card rounded-2xl p-8 border border-border hover:border-primary/30 transition-all duration-300 hover:shadow-lg h-full"
                 >
                   <div
-                    className="w-14 h-14 rounded-xl gradient-hero flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300"
+                    className={`w-14 h-14 rounded-xl ${benefit.bgClass} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-md`}
                   >
-                    <benefit.icon className="w-7 h-7 text-primary-foreground" />
+                    <benefit.icon className="w-7 h-7 text-white" />
                   </div>
                   <h3 className="text-xl font-semibold text-foreground mb-3">
                     {t(`benefits.${benefit.key}.title`)}
