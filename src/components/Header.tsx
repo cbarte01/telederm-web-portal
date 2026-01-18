@@ -32,7 +32,6 @@ const Header = () => {
 
   const homePageLinks = [
     { href: "/skin-blog", label: t("nav.skinBlog") },
-    { href: "/for-doctors", label: t("nav.forDoctors") },
   ];
 
   // Navigation links for the for-doctors page
