@@ -65,32 +65,26 @@ const ForDoctors = () => {
     {
       key: "income",
       icon: Euro,
-      gradient: "from-emerald-500 to-teal-500",
     },
     {
       key: "flexibility",
       icon: Clock,
-      gradient: "from-blue-500 to-cyan-500",
     },
     {
       key: "organization",
       icon: Building2,
-      gradient: "from-violet-500 to-purple-500",
     },
     {
       key: "support",
       icon: Headphones,
-      gradient: "from-orange-500 to-amber-500",
     },
     {
       key: "compliance",
       icon: Shield,
-      gradient: "from-rose-500 to-pink-500",
     },
     {
       key: "training",
       icon: GraduationCap,
-      gradient: "from-indigo-500 to-blue-500",
     },
   ];
 
@@ -321,9 +315,9 @@ const ForDoctors = () => {
                   className="group relative bg-card rounded-2xl p-8 border border-border hover:border-primary/30 transition-all duration-300 hover:shadow-lg h-full"
                 >
                   <div
-                    className={`w-14 h-14 rounded-xl bg-gradient-to-br ${benefit.gradient} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}
+                    className="w-14 h-14 rounded-xl gradient-hero flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300"
                   >
-                    <benefit.icon className="w-7 h-7 text-white" />
+                    <benefit.icon className="w-7 h-7 text-primary-foreground" />
                   </div>
                   <h3 className="text-xl font-semibold text-foreground mb-3">
                     {t(`benefits.${benefit.key}.title`)}
