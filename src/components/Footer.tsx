@@ -17,7 +17,6 @@ const Footer = () => {
     ],
     support: [
       { label: t("nav.faq"), href: "/#faq" },
-      { label: t("footer.contact"), href: "/#contact" },
     ],
     legal: [
       { label: t("footer.privacyPolicy"), href: "#" },
