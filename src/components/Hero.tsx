@@ -59,7 +59,7 @@ const Hero = () => {
           <div className="flex flex-col sm:flex-row gap-4 mb-14 animate-fade-up" style={{
           animationDelay: "0.3s"
         }}>
-            <Button variant="hero" size="xl" className="group shadow-elevated animate-glow-pulse">
+            <Button variant="hero" size="xl" className="group shadow-elevated">
               {t("common:buttons.startConsultation")}
               <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
             </Button>
