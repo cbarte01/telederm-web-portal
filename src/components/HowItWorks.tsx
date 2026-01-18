@@ -1,5 +1,6 @@
 import { Camera, FileText, Stethoscope } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button";
 
 const stepIcons = [Camera, FileText, Stethoscope];
 const stepKeys = ["step1", "step2", "step3"];
@@ -61,6 +62,13 @@ const HowItWorks = () => {
               </div>
             );
           })}
+        </div>
+
+        {/* CTA Button */}
+        <div className="mt-12 text-center">
+          <Button variant="hero" size="xl" asChild>
+            <a href="#contact">{t("howItWorks.cta")}</a>
+          </Button>
         </div>
       </div>
     </section>

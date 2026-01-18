@@ -28,7 +28,8 @@
         "title": "Behandlung erhalten",
         "description": "Erhalten Sie Ihre Diagnose mit einem detaillierten Behandlungsplan. Rezepte werden bei Bedarf direkt an Ihre Apotheke gesendet."
       }
-    }
+    },
+    "cta": "Behandlung Starten"
   },
   "stats": {
     "patients": "Patienten geholfen",

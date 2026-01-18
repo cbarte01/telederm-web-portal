@@ -28,7 +28,8 @@
         "title": "Get Treatment",
         "description": "Receive your diagnosis with a detailed treatment plan. Prescriptions are sent directly to your pharmacy if needed."
       }
-    }
+    },
+    "cta": "Start Treatment"
   },
   "stats": {
     "patients": "Patients Helped",
