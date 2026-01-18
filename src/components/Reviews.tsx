@@ -1,9 +1,30 @@
 import { Star, Quote } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
-const reviewKeys = ["r1", "r2", "r3", "r4", "r5", "r6"];
-const avatars = ["S", "T", "L", "M", "A", "D"];
-const ratings = [5, 5, 5, 4, 5, 5];
+const reviewKeys = [
+  "r1", "r2", "r3", "r4", "r5", "r6",
+  "r7", "r8", "r9", "r10", "r11", "r12",
+  "r13", "r14", "r15", "r16", "r17", "r18"
+];
+
+const avatars = [
+  "S", "T", "L", "M", "A", "D",
+  "K", "J", "P", "C", "N", "H",
+  "E", "F", "R", "B", "V", "G"
+];
+
+const ratings = [
+  5, 5, 5, 4, 5, 5,
+  5, 4, 5, 5, 5, 4,
+  5, 5, 4, 5, 5, 5
+];
 
 const Reviews = () => {
   const { t } = useTranslation("home");
@@ -34,48 +55,59 @@ const Reviews = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {reviewKeys.map((key, index) => (
-            <div
-              key={key}
-              className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300"
-            >
-              <div className="flex items-start gap-4 mb-4">
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-lg">
-                  {avatars[index]}
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-semibold text-foreground">
-                      {t(`reviews.reviews.${key}.name`)}
-                    </h4>
-                    <span className="text-sm text-muted-foreground">
-                      {t(`reviews.reviews.${key}.date`)}
-                    </span>
+        <Carousel
+          opts={{
+            align: "start",
+            loop: true,
+          }}
+          className="w-full"
+        >
+          <CarouselContent className="-ml-4">
+            {reviewKeys.map((key, index) => (
+              <CarouselItem key={key} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 h-full">
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-lg flex-shrink-0">
+                      {avatars[index]}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <h4 className="font-semibold text-foreground truncate">
+                          {t(`reviews.reviews.${key}.name`)}
+                        </h4>
+                        <span className="text-sm text-muted-foreground whitespace-nowrap">
+                          {t(`reviews.reviews.${key}.date`)}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-0.5 mt-1">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`w-4 h-4 ${
+                              i < ratings[index]
+                                ? "fill-yellow-400 text-yellow-400"
+                                : "fill-gray-200 text-gray-200"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-0.5 mt-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-4 h-4 ${
-                          i < ratings[index]
-                            ? "fill-yellow-400 text-yellow-400"
-                            : "fill-gray-200 text-gray-200"
-                        }`}
-                      />
-                    ))}
+                  <div className="relative">
+                    <Quote className="absolute -top-2 -left-1 w-6 h-6 text-primary/20" />
+                    <p className="text-muted-foreground pl-4">
+                      {t(`reviews.reviews.${key}.text`)}
+                    </p>
                   </div>
                 </div>
-              </div>
-              <div className="relative">
-                <Quote className="absolute -top-2 -left-1 w-6 h-6 text-primary/20" />
-                <p className="text-muted-foreground pl-4">
-                  {t(`reviews.reviews.${key}.text`)}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <div className="flex justify-center gap-4 mt-8">
+            <CarouselPrevious className="static translate-y-0" />
+            <CarouselNext className="static translate-y-0" />
+          </div>
+        </Carousel>
 
         <div className="text-center mt-10">
           <a
