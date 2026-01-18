@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { Clock, Shield, Smartphone } from "lucide-react";
+import { Clock, Shield, Smartphone, ArrowRight } from "lucide-react";
 import heroImage from "@/assets/hero-skin.jpg";
 const Hero = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -61,6 +61,7 @@ const Hero = () => {
         }}>
             <Button variant="hero" size="xl" className="group shadow-elevated">
               {t("common:buttons.startConsultation")}
+              <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
             </Button>
           </div>
 
