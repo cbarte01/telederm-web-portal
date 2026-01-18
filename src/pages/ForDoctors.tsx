@@ -46,7 +46,7 @@ import drMueller from "@/assets/doctors/dr-mueller.jpg";
 import drWeber from "@/assets/doctors/dr-weber.jpg";
 import drSchmidt from "@/assets/doctors/dr-schmidt.jpg";
 import drBraun from "@/assets/doctors/dr-braun.jpg";
-import heroDoctors from "@/assets/hero-doctors.jpg";
+import heroDoctors from "@/assets/hero-doctors-masculine.jpg";
 
 const ForDoctors = () => {
   const { t } = useTranslation("doctors");
