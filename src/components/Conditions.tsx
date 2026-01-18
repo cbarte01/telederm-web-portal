@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -23,10 +23,9 @@ const Conditions = () => {
             <p className="text-lg text-muted-foreground mb-10 leading-relaxed">
               {t("conditions.description")}
             </p>
-            <Button variant="hero" size="lg" className="group shadow-soft" asChild>
+            <Button variant="outline" size="lg" className="shadow-soft" asChild>
               <Link to="/conditions">
                 {t("conditions.viewAll", "View All Conditions")}
-                <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
           </div>
