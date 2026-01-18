@@ -55,19 +55,13 @@ const Hero = () => {
             {t("hero.description")}
           </p>
 
-          {/* CTA Buttons */}
+          {/* CTA Button */}
           <div className="flex flex-col sm:flex-row gap-4 mb-14 animate-fade-up" style={{
           animationDelay: "0.3s"
         }}>
             <Button variant="hero" size="xl" className="group shadow-elevated">
               {t("common:buttons.startConsultation")}
-              
             </Button>
-            <a href="#how-it-works">
-              <Button variant="outline" size="xl" className="bg-card/10 backdrop-blur-sm border-card/30 text-card hover:bg-card/20 hover:border-card/40">
-                {t("hero.howItWorks")}
-              </Button>
-            </a>
           </div>
 
           {/* Trust indicators - refined styling */}
