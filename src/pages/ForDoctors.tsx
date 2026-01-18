@@ -209,14 +209,9 @@ const ForDoctors = () => {
               </ul>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="xl" className="bg-white text-primary hover:bg-white/90 shadow-lg font-semibold">
-                  Apply Now
-                  <ChevronRight className="w-5 h-5 ml-2" />
-                </Button>
                 <Button
                   size="xl"
-                  variant="outline"
-                  className="bg-white/20 border-2 border-white text-white hover:bg-white/30 font-medium backdrop-blur-sm"
+                  className="bg-white text-primary hover:bg-white/90 shadow-lg font-semibold"
                 >
                   {t("cta.secondary")}
                 </Button>
