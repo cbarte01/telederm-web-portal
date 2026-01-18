@@ -41,7 +41,6 @@ const Header = () => {
     { href: "/for-doctors#testimonials", label: t("nav.testimonials") },
     { href: "/for-doctors#how-it-works", label: t("nav.howItWorks") },
     { href: "/for-doctors#faq", label: t("nav.faq") },
-    { href: "/for-doctors#apply", label: t("nav.apply") },
   ];
 
   // Select navigation based on current page
