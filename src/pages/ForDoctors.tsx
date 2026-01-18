@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import useEmblaCarousel from "embla-carousel-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AboutUs from "@/components/AboutUs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -637,6 +638,9 @@ const ForDoctors = () => {
           </div>
         </div>
       </section>
+
+      {/* About Telederm Section */}
+      <AboutUs />
 
       {/* Final CTA Section */}
       <section className="py-20 md:py-28 gradient-hero">
