@@ -11,9 +11,7 @@ const Footer = () => {
     company: [
       { label: t("footer.aboutUs"), href: "/#about" },
       { label: t("footer.ourDoctors"), href: "/#doctors" },
-      { label: t("nav.skinBlog"), href: "/skin-blog", isRoute: true },
       { label: t("nav.forDoctors"), href: "/for-doctors", isRoute: true },
-      { label: t("footer.careers"), href: "#" },
     ],
     support: [
       { label: t("nav.faq"), href: "/#faq" },
