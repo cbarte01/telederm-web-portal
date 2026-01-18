@@ -41,17 +41,42 @@ import {
 } from "lucide-react";
 import { ScrollReveal } from "@/hooks/use-scroll-reveal";
 
+import Autoplay from "embla-carousel-autoplay";
+
 // Doctor images
 import drMueller from "@/assets/doctors/dr-mueller.jpg";
 import drWeber from "@/assets/doctors/dr-weber.jpg";
 import drSchmidt from "@/assets/doctors/dr-schmidt.jpg";
 import drBraun from "@/assets/doctors/dr-braun.jpg";
-import heroDoctors from "@/assets/hero-doctors-masculine.jpg";
+import heroDoctorsMasculine from "@/assets/hero-doctors-masculine.jpg";
+import heroDoctors from "@/assets/hero-doctors.jpg";
+
+const heroImages = [heroDoctorsMasculine, heroDoctors];
 
 const ForDoctors = () => {
   const { t } = useTranslation("doctors");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [currentHeroSlide, setCurrentHeroSlide] = useState(0);
+
+  // Hero carousel
+  const [heroCarouselRef, heroCarouselApi] = useEmblaCarousel(
+    { loop: true },
+    [Autoplay({ delay: 5000, stopOnInteraction: false })]
+  );
+
+  useEffect(() => {
+    if (!heroCarouselApi) return;
+    
+    const onSelect = () => {
+      setCurrentHeroSlide(heroCarouselApi.selectedScrollSnap());
+    };
+    
+    heroCarouselApi.on("select", onSelect);
+    return () => {
+      heroCarouselApi.off("select", onSelect);
+    };
+  }, [heroCarouselApi]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -146,13 +171,21 @@ const ForDoctors = () => {
 
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-        {/* Background image with overlay */}
+        {/* Background carousel with overlay */}
         <div className="absolute inset-0">
-          <img
-            src={heroDoctors}
-            alt="Dermatologist using telemedicine platform"
-            className="w-full h-full object-cover"
-          />
+          <div className="overflow-hidden h-full" ref={heroCarouselRef}>
+            <div className="flex h-full">
+              {heroImages.map((image, index) => (
+                <div key={index} className="flex-[0_0_100%] min-w-0 h-full">
+                  <img
+                    src={image}
+                    alt={`Dermatologist using telemedicine platform ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
           <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/85 to-primary/40" />
           <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent" />
         </div>
