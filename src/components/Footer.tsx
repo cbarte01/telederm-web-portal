@@ -11,7 +11,11 @@ const Footer = () => {
     company: [
       { label: t("footer.aboutUs"), href: "/#about" },
       { label: t("footer.ourDoctors"), href: "/#doctors" },
+    ],
+    services: [
+      { label: t("footer.forPatients"), href: "/", isRoute: true },
       { label: t("nav.forDoctors"), href: "/for-doctors", isRoute: true },
+      { label: t("footer.forCompanies"), href: "#" },
     ],
     support: [
       { label: t("nav.faq"), href: "/#faq" },
@@ -34,7 +38,7 @@ const Footer = () => {
   return (
     <footer className="bg-foreground text-background/80 py-16">
       <div className="container">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-8 mb-12">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4">
@@ -55,6 +59,32 @@ const Footer = () => {
             <h4 className="font-semibold text-background mb-4">{t("footer.company")}</h4>
             <ul className="space-y-3">
               {links.company.map((link) => (
+                <li key={link.label}>
+                  {'isRoute' in link && link.isRoute ? (
+                    <Link
+                      to={link.href}
+                      className="text-sm hover:text-background transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a
+                      href={link.href}
+                      className="text-sm hover:text-background transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Services */}
+          <div>
+            <h4 className="font-semibold text-background mb-4">{t("footer.services")}</h4>
+            <ul className="space-y-3">
+              {links.services.map((link) => (
                 <li key={link.label}>
                   {'isRoute' in link && link.isRoute ? (
                     <Link
