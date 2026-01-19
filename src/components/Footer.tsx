@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ShieldCheck, Lock, Award, BadgeCheck } from "lucide-react";
 import teledermLogo from "@/assets/logo/telederm-logo.png";
@@ -6,10 +6,12 @@ import teledermLogo from "@/assets/logo/telederm-logo.png";
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   const { t } = useTranslation("common");
+  const location = useLocation();
+  const isForDoctorsPage = location.pathname === "/for-doctors";
 
   const links = {
     company: [
-      { label: t("footer.aboutUs"), href: "/#about" },
+      { label: t("footer.aboutUs"), href: isForDoctorsPage ? "/for-doctors#about" : "/#about" },
       { label: t("footer.ourDoctors"), href: "/#doctors" },
     ],
     services: [
