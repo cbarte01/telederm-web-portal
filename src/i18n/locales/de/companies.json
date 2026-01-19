@@ -1,0 +1,219 @@
+{
+  "breadcrumb": {
+    "home": "Startseite",
+    "forCompanies": "Für Unternehmen"
+  },
+  "page": {
+    "badge": "Betriebliches Gesundheitsmanagement",
+    "title": "Hautgesundheit als Mitarbeiter-Benefit",
+    "description": "Bieten Sie Ihren Mitarbeitern schnellen Zugang zu dermatologischer Versorgung. Reduzieren Sie Fehlzeiten, steigern Sie die Zufriedenheit und stärken Sie Ihre Arbeitgebermarke.",
+    "heroBenefits": {
+      "reducedAbsence": "Reduzierte Fehlzeiten",
+      "employeeSatisfaction": "Höhere Mitarbeiterzufriedenheit",
+      "noWaiting": "Keine langen Wartezeiten"
+    }
+  },
+  "stats": {
+    "employees": "25%",
+    "employeesLabel": "der Arbeitnehmer betroffen von Hauterkrankungen",
+    "savings": "40%",
+    "savingsLabel": "weniger Fehlzeiten durch schnelle Behandlung",
+    "satisfaction": "4.8/5",
+    "satisfactionLabel": "durchschnittliche Mitarbeiterzufriedenheit"
+  },
+  "benefits": {
+    "title": "Warum Telederm für Ihr Unternehmen?",
+    "description": "Gesunde Mitarbeiter sind zufriedene Mitarbeiter. Mit Telederm investieren Sie in das Wohlbefinden Ihres Teams.",
+    "health": {
+      "title": "Mitarbeitergesundheit fördern",
+      "description": "Schneller Zugang zu Fachärzten bedeutet schnellere Diagnose und Behandlung. Hautprobleme werden frühzeitig erkannt und behandelt."
+    },
+    "productivity": {
+      "title": "Produktivität steigern",
+      "description": "Weniger Arztbesuche während der Arbeitszeit. Mitarbeiter können Konsultationen flexibel von zu Hause oder unterwegs durchführen."
+    },
+    "employer": {
+      "title": "Arbeitgebermarke stärken",
+      "description": "Positionieren Sie sich als moderner, gesundheitsbewusster Arbeitgeber und gewinnen Sie im Wettbewerb um die besten Talente."
+    },
+    "costs": {
+      "title": "Kosten senken",
+      "description": "Reduzieren Sie indirekte Kosten durch Produktionsausfälle und Fehlzeiten. Prävention ist günstiger als Behandlung."
+    },
+    "simple": {
+      "title": "Einfache Integration",
+      "description": "Nahtlose Integration in Ihr bestehendes BGM. Wir kümmern uns um alles – von der Einrichtung bis zur Mitarbeiterkommunikation."
+    },
+    "data": {
+      "title": "Anonyme Auswertungen",
+      "description": "Erhalten Sie anonymisierte Berichte über die Nutzung und Gesundheitstrends, ohne persönliche Daten zu sehen."
+    }
+  },
+  "howItWorks": {
+    "title": "So funktioniert es",
+    "description": "In drei einfachen Schritten zur Hautgesundheit für Ihr Team",
+    "steps": {
+      "step1": {
+        "title": "Partnerschaft starten",
+        "description": "Kontaktieren Sie uns für ein unverbindliches Beratungsgespräch. Wir erstellen ein maßgeschneidertes Angebot für Ihr Unternehmen."
+      },
+      "step2": {
+        "title": "Mitarbeiter informieren",
+        "description": "Wir unterstützen Sie bei der internen Kommunikation mit Materialien, Präsentationen und einem eigenen Unternehmensportal."
+      },
+      "step3": {
+        "title": "Sofort nutzen",
+        "description": "Ihre Mitarbeiter erhalten Zugang zur Telederm-Plattform und können sofort professionelle Hautberatung in Anspruch nehmen."
+      }
+    }
+  },
+  "packages": {
+    "title": "Unsere Unternehmenspakete",
+    "description": "Flexible Lösungen für Unternehmen jeder Größe",
+    "perEmployee": "pro Mitarbeiter/Monat",
+    "features": {
+      "unlimitedConsultations": "Unbegrenzte Konsultationen",
+      "priorityResponse": "Prioritäts-Antwort",
+      "dedicatedManager": "Dedizierter Account Manager",
+      "customReporting": "Individuelles Reporting",
+      "onboarding": "Onboarding-Support",
+      "integration": "HR-System Integration"
+    },
+    "basic": {
+      "name": "Starter",
+      "description": "Ideal für kleine und mittlere Unternehmen",
+      "price": "9,90€",
+      "features": [
+        "Unbegrenzte Konsultationen",
+        "48h Antwortzeit",
+        "E-Mail Support",
+        "Basis-Reporting"
+      ]
+    },
+    "professional": {
+      "name": "Professional",
+      "description": "Für wachsende Unternehmen mit höheren Anforderungen",
+      "price": "14,90€",
+      "features": [
+        "Unbegrenzte Konsultationen",
+        "24h Antwortzeit",
+        "Dedizierter Account Manager",
+        "Erweitertes Reporting",
+        "Onboarding-Support"
+      ]
+    },
+    "enterprise": {
+      "name": "Enterprise",
+      "description": "Maßgeschneiderte Lösung für Großunternehmen",
+      "price": "Auf Anfrage",
+      "features": [
+        "Unbegrenzte Konsultationen",
+        "Prioritäts-Antwort (12h)",
+        "Dedizierter Account Manager",
+        "Individuelles Reporting",
+        "Vollständiges Onboarding",
+        "HR-System Integration",
+        "Vor-Ort Schulungen"
+      ]
+    },
+    "cta": "Angebot anfordern"
+  },
+  "partners": {
+    "title": "Unsere Partner vertrauen uns",
+    "description": "Führende Unternehmen setzen auf Telederm für die Hautgesundheit ihrer Mitarbeiter"
+  },
+  "testimonials": {
+    "title": "Das sagen HR-Manager",
+    "description": "Erfahren Sie, wie andere Unternehmen von Telederm profitieren",
+    "items": {
+      "t1": {
+        "name": "Sabine K.",
+        "role": "HR-Direktorin",
+        "company": "Tech-Unternehmen, 500+ Mitarbeiter",
+        "quote": "Seit wir Telederm eingeführt haben, sind die krankheitsbedingten Fehltage durch Hautprobleme um 35% gesunken. Die Mitarbeiter schätzen den einfachen Zugang enorm."
+      },
+      "t2": {
+        "name": "Michael B.",
+        "role": "Geschäftsführer",
+        "company": "Produktionsbetrieb, 200 Mitarbeiter",
+        "quote": "Berufsbedingte Hauterkrankungen sind in unserer Branche ein großes Thema. Mit Telederm können wir präventiv handeln und unsere Mitarbeiter optimal unterstützen."
+      },
+      "t3": {
+        "name": "Dr. Christina W.",
+        "role": "Betriebsärztin",
+        "company": "Versicherungskonzern",
+        "quote": "Als Betriebsärztin empfehle ich Telederm ohne Einschränkung. Die Qualität der Diagnosen ist exzellent und entlastet unser betriebsärztliches Team."
+      }
+    }
+  },
+  "faq": {
+    "title": "Häufig gestellte Fragen",
+    "description": "Antworten auf die wichtigsten Fragen zum Unternehmensangebot",
+    "questions": {
+      "q1": {
+        "question": "Wie schnell können wir starten?",
+        "answer": "Nach Vertragsabschluss können wir innerhalb von 2-3 Wochen live gehen. Wir übernehmen das komplette Setup und unterstützen Sie bei der internen Kommunikation."
+      },
+      "q2": {
+        "question": "Gibt es eine Mindestanzahl an Mitarbeitern?",
+        "answer": "Unser Starter-Paket ist ab 50 Mitarbeitern verfügbar. Für kleinere Unternehmen bieten wir individuelle Lösungen an – sprechen Sie uns einfach an."
+      },
+      "q3": {
+        "question": "Wie ist der Datenschutz geregelt?",
+        "answer": "Alle medizinischen Daten sind streng vertraulich und DSGVO-konform gespeichert. Sie als Arbeitgeber erhalten nur anonymisierte, aggregierte Nutzungsdaten."
+      },
+      "q4": {
+        "question": "Können Mitarbeiter auch Familienangehörige mitversichern?",
+        "answer": "Ja, gegen einen geringen Aufpreis können Mitarbeiter ihre Partner und Kinder in den Service einschließen."
+      },
+      "q5": {
+        "question": "Welche Hauterkrankungen werden behandelt?",
+        "answer": "Unsere Dermatologen behandeln das gesamte Spektrum der Dermatologie: von Akne und Ekzemen bis zu berufsbedingten Hauterkrankungen und Hautkrebs-Vorsorge."
+      },
+      "q6": {
+        "question": "Wie erfolgt die Abrechnung?",
+        "answer": "Die Abrechnung erfolgt monatlich auf Basis der aktiven Mitarbeiter. Sie erhalten eine übersichtliche Rechnung und detaillierte Nutzungsstatistiken."
+      }
+    }
+  },
+  "contact": {
+    "title": "Jetzt unverbindlich anfragen",
+    "description": "Erfahren Sie, wie Telederm die Hautgesundheit in Ihrem Unternehmen verbessern kann. Unsere Unternehmensberater freuen sich auf Ihr Gespräch.",
+    "form": {
+      "company": "Unternehmen",
+      "companyPlaceholder": "Ihr Unternehmen",
+      "name": "Ansprechpartner",
+      "namePlaceholder": "Ihr Name",
+      "email": "Geschäftliche E-Mail",
+      "emailPlaceholder": "name@unternehmen.de",
+      "phone": "Telefon",
+      "phonePlaceholder": "+49 123 456 7890",
+      "employees": "Anzahl Mitarbeiter",
+      "employeesPlaceholder": "Wählen Sie...",
+      "employeesOptions": {
+        "small": "50-100 Mitarbeiter",
+        "medium": "100-500 Mitarbeiter",
+        "large": "500-2000 Mitarbeiter",
+        "enterprise": "2000+ Mitarbeiter"
+      },
+      "message": "Nachricht (optional)",
+      "messagePlaceholder": "Ihre spezifischen Anforderungen oder Fragen",
+      "submit": "Angebot anfordern",
+      "sending": "Wird gesendet..."
+    },
+    "benefits": {
+      "callback": "Rückruf innerhalb von 24h",
+      "demo": "Kostenlose Demo",
+      "noObligation": "Unverbindliches Angebot"
+    },
+    "success": {
+      "title": "Vielen Dank für Ihre Anfrage!",
+      "description": "Wir haben Ihre Anfrage erhalten und werden uns innerhalb von 24 Stunden bei Ihnen melden."
+    }
+  },
+  "cta": {
+    "title": "Bereit für gesündere Mitarbeiter?",
+    "description": "Starten Sie noch heute und bieten Sie Ihrem Team den Zugang zu erstklassiger dermatologischer Versorgung.",
+    "button": "Jetzt Kontakt aufnehmen"
+  }
+}

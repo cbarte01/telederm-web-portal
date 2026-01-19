@@ -1,0 +1,219 @@
+{
+  "breadcrumb": {
+    "home": "Home",
+    "forCompanies": "For Companies"
+  },
+  "page": {
+    "badge": "Corporate Health Management",
+    "title": "Skin Health as an Employee Benefit",
+    "description": "Provide your employees with fast access to dermatological care. Reduce absenteeism, increase satisfaction, and strengthen your employer brand.",
+    "heroBenefits": {
+      "reducedAbsence": "Reduced absenteeism",
+      "employeeSatisfaction": "Higher employee satisfaction",
+      "noWaiting": "No long waiting times"
+    }
+  },
+  "stats": {
+    "employees": "25%",
+    "employeesLabel": "of employees affected by skin conditions",
+    "savings": "40%",
+    "savingsLabel": "fewer sick days through quick treatment",
+    "satisfaction": "4.8/5",
+    "satisfactionLabel": "average employee satisfaction"
+  },
+  "benefits": {
+    "title": "Why Telederm for Your Company?",
+    "description": "Healthy employees are happy employees. With Telederm, you invest in your team's wellbeing.",
+    "health": {
+      "title": "Promote Employee Health",
+      "description": "Fast access to specialists means faster diagnosis and treatment. Skin problems are detected and treated early."
+    },
+    "productivity": {
+      "title": "Increase Productivity",
+      "description": "Fewer doctor visits during work hours. Employees can conduct consultations flexibly from home or on the go."
+    },
+    "employer": {
+      "title": "Strengthen Employer Brand",
+      "description": "Position yourself as a modern, health-conscious employer and win in the competition for the best talent."
+    },
+    "costs": {
+      "title": "Reduce Costs",
+      "description": "Reduce indirect costs from production losses and absenteeism. Prevention is cheaper than treatment."
+    },
+    "simple": {
+      "title": "Easy Integration",
+      "description": "Seamless integration into your existing health management. We take care of everything – from setup to employee communication."
+    },
+    "data": {
+      "title": "Anonymous Reports",
+      "description": "Receive anonymized reports on usage and health trends without seeing personal data."
+    }
+  },
+  "howItWorks": {
+    "title": "How It Works",
+    "description": "Three simple steps to skin health for your team",
+    "steps": {
+      "step1": {
+        "title": "Start Partnership",
+        "description": "Contact us for a no-obligation consultation. We'll create a customized offer for your company."
+      },
+      "step2": {
+        "title": "Inform Employees",
+        "description": "We support you with internal communication through materials, presentations, and a dedicated company portal."
+      },
+      "step3": {
+        "title": "Start Using",
+        "description": "Your employees get access to the Telederm platform and can immediately receive professional skin consultations."
+      }
+    }
+  },
+  "packages": {
+    "title": "Our Corporate Packages",
+    "description": "Flexible solutions for companies of all sizes",
+    "perEmployee": "per employee/month",
+    "features": {
+      "unlimitedConsultations": "Unlimited consultations",
+      "priorityResponse": "Priority response",
+      "dedicatedManager": "Dedicated Account Manager",
+      "customReporting": "Custom reporting",
+      "onboarding": "Onboarding support",
+      "integration": "HR system integration"
+    },
+    "basic": {
+      "name": "Starter",
+      "description": "Ideal for small and medium-sized businesses",
+      "price": "€9.90",
+      "features": [
+        "Unlimited consultations",
+        "48h response time",
+        "Email support",
+        "Basic reporting"
+      ]
+    },
+    "professional": {
+      "name": "Professional",
+      "description": "For growing companies with higher requirements",
+      "price": "€14.90",
+      "features": [
+        "Unlimited consultations",
+        "24h response time",
+        "Dedicated Account Manager",
+        "Advanced reporting",
+        "Onboarding support"
+      ]
+    },
+    "enterprise": {
+      "name": "Enterprise",
+      "description": "Customized solution for large enterprises",
+      "price": "On request",
+      "features": [
+        "Unlimited consultations",
+        "Priority response (12h)",
+        "Dedicated Account Manager",
+        "Custom reporting",
+        "Full onboarding",
+        "HR system integration",
+        "On-site training"
+      ]
+    },
+    "cta": "Request Quote"
+  },
+  "partners": {
+    "title": "Trusted by Our Partners",
+    "description": "Leading companies rely on Telederm for their employees' skin health"
+  },
+  "testimonials": {
+    "title": "What HR Managers Say",
+    "description": "Learn how other companies benefit from Telederm",
+    "items": {
+      "t1": {
+        "name": "Sabine K.",
+        "role": "HR Director",
+        "company": "Tech company, 500+ employees",
+        "quote": "Since introducing Telederm, sick days due to skin problems have dropped by 35%. Employees greatly appreciate the easy access."
+      },
+      "t2": {
+        "name": "Michael B.",
+        "role": "Managing Director",
+        "company": "Manufacturing, 200 employees",
+        "quote": "Occupational skin diseases are a major issue in our industry. With Telederm, we can act preventively and optimally support our employees."
+      },
+      "t3": {
+        "name": "Dr. Christina W.",
+        "role": "Company Doctor",
+        "company": "Insurance corporation",
+        "quote": "As a company doctor, I recommend Telederm without reservation. The quality of diagnoses is excellent and relieves our occupational health team."
+      }
+    }
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "description": "Answers to the most important questions about our corporate offering",
+    "questions": {
+      "q1": {
+        "question": "How quickly can we start?",
+        "answer": "After signing the contract, we can go live within 2-3 weeks. We handle the complete setup and support you with internal communication."
+      },
+      "q2": {
+        "question": "Is there a minimum number of employees?",
+        "answer": "Our Starter package is available from 50 employees. For smaller companies, we offer individual solutions – just contact us."
+      },
+      "q3": {
+        "question": "How is data protection handled?",
+        "answer": "All medical data is strictly confidential and stored in GDPR compliance. As an employer, you only receive anonymized, aggregated usage data."
+      },
+      "q4": {
+        "question": "Can employees include family members?",
+        "answer": "Yes, for a small additional fee, employees can include their partners and children in the service."
+      },
+      "q5": {
+        "question": "Which skin conditions are treated?",
+        "answer": "Our dermatologists treat the full spectrum of dermatology: from acne and eczema to occupational skin diseases and skin cancer screening."
+      },
+      "q6": {
+        "question": "How does billing work?",
+        "answer": "Billing is monthly based on active employees. You receive a clear invoice and detailed usage statistics."
+      }
+    }
+  },
+  "contact": {
+    "title": "Request a Quote",
+    "description": "Find out how Telederm can improve skin health in your company. Our business consultants look forward to speaking with you.",
+    "form": {
+      "company": "Company",
+      "companyPlaceholder": "Your company",
+      "name": "Contact Person",
+      "namePlaceholder": "Your name",
+      "email": "Business Email",
+      "emailPlaceholder": "name@company.com",
+      "phone": "Phone",
+      "phonePlaceholder": "+49 123 456 7890",
+      "employees": "Number of Employees",
+      "employeesPlaceholder": "Select...",
+      "employeesOptions": {
+        "small": "50-100 employees",
+        "medium": "100-500 employees",
+        "large": "500-2000 employees",
+        "enterprise": "2000+ employees"
+      },
+      "message": "Message (optional)",
+      "messagePlaceholder": "Your specific requirements or questions",
+      "submit": "Request Quote",
+      "sending": "Sending..."
+    },
+    "benefits": {
+      "callback": "Callback within 24h",
+      "demo": "Free demo",
+      "noObligation": "No-obligation quote"
+    },
+    "success": {
+      "title": "Thank you for your inquiry!",
+      "description": "We have received your request and will contact you within 24 hours."
+    }
+  },
+  "cta": {
+    "title": "Ready for Healthier Employees?",
+    "description": "Start today and give your team access to first-class dermatological care.",
+    "button": "Contact Us Now"
+  }
+}
