@@ -1,5 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap");
+/* Premium Typography - Cormorant Garamond (elegant serif) + Source Sans 3 (refined sans) */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,79 +7,79 @@
 
 @layer base {
   :root {
-    /* Warm cream and navy palette - professional dermatology */
-    --background: 40 33% 98%;
-    --foreground: 220 30% 18%;
+    /* Warm cream and navy palette - premium dermatology */
+    --background: 42 40% 97%;
+    --foreground: 220 35% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 30% 18%;
+    --card-foreground: 220 35% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 30% 18%;
+    --popover-foreground: 220 35% 15%;
 
-    /* Sophisticated teal primary */
-    --primary: 175 42% 38%;
+    /* Sophisticated teal primary - slightly deeper */
+    --primary: 175 45% 35%;
     --primary-foreground: 0 0% 100%;
 
-    /* Warm Coral CTA - stands out for action buttons */
-    --cta: 20 85% 55%;
+    /* Warm Coral CTA - refined */
+    --cta: 18 80% 52%;
     --cta-foreground: 0 0% 100%;
 
     /* Warm slate secondary */
-    --secondary: 220 15% 92%;
-    --secondary-foreground: 220 30% 18%;
+    --secondary: 220 18% 94%;
+    --secondary-foreground: 220 35% 15%;
 
     /* Muted tones for better readability */
     --muted: 220 15% 92%;
-    --muted-foreground: 220 15% 45%;
+    --muted-foreground: 220 12% 50%;
 
-    /* Soft accent */
-    --accent: 40 30% 95%;
-    --accent-foreground: 220 30% 18%;
+    /* Soft accent - warmer */
+    --accent: 38 35% 96%;
+    --accent-foreground: 220 35% 15%;
 
     --destructive: 0 65% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 15% 88%;
-    --input: 220 15% 88%;
-    --ring: 175 42% 38%;
+    --border: 220 18% 90%;
+    --input: 220 18% 90%;
+    --ring: 175 45% 35%;
 
-    --radius: 0.625rem;
+    --radius: 0.5rem;
 
-    /* Warm gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(175 42% 38%) 0%, hsl(185 45% 42%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(40 33% 98%) 100%);
-    --gradient-warm: linear-gradient(135deg, hsl(40 30% 96%) 0%, hsl(30 25% 94%) 100%);
+    /* Premium gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(175 45% 35%) 0%, hsl(185 48% 40%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(42 40% 97%) 100%);
+    --gradient-warm: linear-gradient(135deg, hsl(42 35% 97%) 0%, hsl(32 30% 95%) 100%);
     
-    /* Elegant shadows */
-    --shadow-soft: 0 2px 15px -3px hsl(220 30% 18% / 0.06), 0 4px 6px -4px hsl(220 30% 18% / 0.04);
-    --shadow-card: 0 4px 25px -5px hsl(220 30% 18% / 0.08), 0 8px 12px -8px hsl(220 30% 18% / 0.05);
-    --shadow-elevated: 0 12px 40px -10px hsl(220 30% 18% / 0.12);
+    /* Elegant shadows - softer, more refined */
+    --shadow-soft: 0 2px 20px -4px hsl(220 35% 15% / 0.05), 0 4px 8px -4px hsl(220 35% 15% / 0.03);
+    --shadow-card: 0 8px 30px -8px hsl(220 35% 15% / 0.08), 0 10px 16px -10px hsl(220 35% 15% / 0.04);
+    --shadow-elevated: 0 16px 50px -12px hsl(220 35% 15% / 0.12);
 
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 220 30% 18%;
-    --sidebar-primary: 175 42% 38%;
+    --sidebar-foreground: 220 35% 15%;
+    --sidebar-primary: 175 45% 35%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 15% 92%;
-    --sidebar-accent-foreground: 220 30% 18%;
-    --sidebar-border: 220 15% 88%;
-    --sidebar-ring: 175 42% 38%;
-    --chart-1: 175 42% 38%;
-    --chart-2: 185 45% 42%;
+    --sidebar-accent: 220 18% 94%;
+    --sidebar-accent-foreground: 220 35% 15%;
+    --sidebar-border: 220 18% 90%;
+    --sidebar-ring: 175 45% 35%;
+    --chart-1: 175 45% 35%;
+    --chart-2: 185 48% 40%;
     --chart-3: 220 15% 65%;
     --chart-4: 220 15% 50%;
     --chart-5: 220 15% 35%;
     --sidebar: 0 0% 100%;
-    --font-sans: 'DM Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    --font-serif: 'Playfair Display', ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
-    --shadow-2xs: 0 1px 2px 0px hsl(220 30% 18% / 0.03);
-    --shadow-xs: 0 1px 3px 0px hsl(220 30% 18% / 0.04);
-    --shadow-sm: 0 2px 4px 0px hsl(220 30% 18% / 0.05);
-    --shadow: 0 4px 8px -2px hsl(220 30% 18% / 0.06);
-    --shadow-md: 0 6px 12px -3px hsl(220 30% 18% / 0.08);
-    --shadow-lg: 0 10px 20px -5px hsl(220 30% 18% / 0.1);
-    --shadow-xl: 0 16px 32px -8px hsl(220 30% 18% / 0.12);
-    --shadow-2xl: 0 24px 48px -12px hsl(220 30% 18% / 0.15);
+    --font-sans: 'Source Sans 3', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-serif: 'Cormorant Garamond', ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+    --shadow-2xs: 0 1px 2px 0px hsl(220 35% 15% / 0.02);
+    --shadow-xs: 0 1px 3px 0px hsl(220 35% 15% / 0.03);
+    --shadow-sm: 0 2px 6px 0px hsl(220 35% 15% / 0.04);
+    --shadow: 0 4px 12px -2px hsl(220 35% 15% / 0.05);
+    --shadow-md: 0 8px 20px -4px hsl(220 35% 15% / 0.06);
+    --shadow-lg: 0 12px 28px -6px hsl(220 35% 15% / 0.08);
+    --shadow-xl: 0 20px 40px -10px hsl(220 35% 15% / 0.10);
+    --shadow-2xl: 0 28px 56px -14px hsl(220 35% 15% / 0.12);
     --tracking-normal: 0em;
     --spacing: 0.25rem;
   }
@@ -152,19 +152,43 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'DM Sans', system-ui, sans-serif;
-    letter-spacing: -0.01em;
+    font-family: 'Source Sans 3', system-ui, sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    line-height: 1.7;
   }
 
-  h1, h2, h3 {
-    font-family: 'Playfair Display', ui-serif, Georgia, serif;
-    @apply font-semibold tracking-tight;
+  /* Premium headline typography */
+  h1 {
+    font-family: 'Cormorant Garamond', ui-serif, Georgia, serif;
+    @apply font-semibold;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+  }
+  
+  h2 {
+    font-family: 'Cormorant Garamond', ui-serif, Georgia, serif;
+    @apply font-semibold;
     letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+  
+  h3 {
+    font-family: 'Cormorant Garamond', ui-serif, Georgia, serif;
+    @apply font-medium;
+    letter-spacing: -0.015em;
+    line-height: 1.25;
   }
   
   h4, h5, h6 {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: 'Source Sans 3', system-ui, sans-serif;
     @apply font-semibold;
+    letter-spacing: 0em;
+  }
+
+  /* Refined paragraph spacing */
+  p {
+    line-height: 1.75;
   }
 }
 
@@ -197,12 +221,24 @@
     text-wrap: balance;
   }
   
+  /* Premium section spacing - more generous */
   .section-padding {
-    @apply py-20 md:py-28 lg:py-32;
+    @apply py-24 md:py-32 lg:py-40;
   }
   
+  /* Elegant section header with refined spacing */
   .section-header {
-    @apply text-center mb-14 md:mb-20;
+    @apply text-center mb-16 md:mb-24;
+  }
+
+  /* Section label styling - premium uppercase */
+  .section-label {
+    @apply text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-5 block;
+  }
+
+  /* Elegant section divider */
+  .section-divider {
+    @apply w-16 h-px bg-primary/30 mx-auto mt-6;
   }
 }
 

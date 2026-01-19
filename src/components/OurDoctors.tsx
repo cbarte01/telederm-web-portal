@@ -56,18 +56,19 @@ const OurDoctors = () => {
   ];
 
   return (
-    <section id="doctors" className="py-16 md:py-24 bg-white">
+    <section id="doctors" className="section-padding bg-card">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">
+        <div className="section-header">
+          <span className="section-label">
             {t("doctors.label")}
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl text-foreground mb-6">
             {t("doctors.title")}
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-light">
             {t("doctors.description")}
           </p>
+          <div className="section-divider" />
         </div>
 
         <div className="relative px-4 md:px-12">
@@ -81,7 +82,7 @@ const OurDoctors = () => {
             <CarouselContent className="-ml-4">
               {doctors.map((doctor, index) => (
                 <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                  <div className="bg-secondary/30 rounded-2xl overflow-hidden h-full">
+                  <div className="bg-secondary/30 rounded-2xl overflow-hidden h-full shadow-soft hover:shadow-card transition-all duration-300">
                     <div className="aspect-[4/3] overflow-hidden">
                       <img
                         src={doctor.image}
@@ -89,8 +90,8 @@ const OurDoctors = () => {
                         className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                       />
                     </div>
-                    <div className="p-6">
-                      <h3 className="text-xl font-bold text-foreground mb-1">
+                    <div className="p-7">
+                      <h3 className="text-2xl text-foreground mb-2">
                         <a 
                           href={doctor.website} 
                           target="_blank" 

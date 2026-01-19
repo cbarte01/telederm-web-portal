@@ -12,20 +12,21 @@ const FAQ = () => {
   const { t } = useTranslation("home");
 
   return (
-    <section id="faq" className="py-20 md:py-28">
+    <section id="faq" className="section-padding">
       <div className="container">
         <div className="max-w-3xl mx-auto">
           {/* Section Header */}
-          <div className="text-center mb-12">
-            <span className="text-sm font-semibold text-primary uppercase tracking-wider mb-3 block">
+          <div className="section-header">
+            <span className="section-label">
               {t("faq.label")}
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4 text-balance">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl text-foreground mb-6 text-balance">
               {t("faq.title")}
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-muted-foreground font-light">
               {t("faq.description")}
             </p>
+            <div className="section-divider" />
           </div>
 
           {/* Accordion */}
