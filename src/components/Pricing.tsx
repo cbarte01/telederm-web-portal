@@ -79,7 +79,7 @@ const Pricing = () => {
                   <h3 className="text-2xl text-foreground mb-3">
                     {t(`pricing.plans.${plan.key}.name`)}
                   </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed min-h-[4.5rem] font-light">
+                  <p className="text-base text-muted-foreground leading-relaxed min-h-[4.5rem] font-light">
                     {t(`pricing.plans.${plan.key}.description`)}
                   </p>
                 </div>
@@ -104,7 +104,7 @@ const Pricing = () => {
                       }`}>
                         <Check className={`w-3 h-3 ${plan.popular ? "text-primary-foreground" : "text-primary"}`} />
                       </div>
-                      <span className="text-sm text-foreground leading-relaxed font-light">{feature}</span>
+                      <span className="text-base text-foreground leading-relaxed font-light">{feature}</span>
                     </li>
                   ))}
                 </ul>

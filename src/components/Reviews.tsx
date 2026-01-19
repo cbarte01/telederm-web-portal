@@ -105,7 +105,7 @@ const Reviews = () => {
                   </div>
                   <div className="relative">
                     <Quote className="absolute -top-2 -left-1 w-6 h-6 text-primary/15" />
-                    <p className="text-muted-foreground pl-5 font-light leading-relaxed">
+                    <p className="text-muted-foreground text-base pl-5 font-light leading-relaxed">
                       {t(`reviews.reviews.${key}.text`)}
                     </p>
                   </div>
