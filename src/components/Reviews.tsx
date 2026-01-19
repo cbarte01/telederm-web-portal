@@ -31,29 +31,30 @@ const Reviews = () => {
   const { t } = useTranslation("home");
 
   return (
-    <section id="reviews" className="py-16 md:py-24 bg-secondary/30">
+    <section id="reviews" className="section-padding bg-secondary/20">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-white rounded-full px-4 py-2 shadow-sm mb-4">
+        <div className="section-header">
+          <div className="inline-flex items-center gap-2.5 bg-white rounded-full px-5 py-2.5 shadow-soft mb-6">
             <img 
               src="https://www.google.com/favicon.ico" 
               alt="Google" 
               className="w-5 h-5"
             />
-            <span className="font-semibold text-foreground">Google Reviews</span>
+            <span className="font-medium text-foreground">Google Reviews</span>
             <div className="flex items-center gap-0.5">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
               ))}
             </div>
-            <span className="text-muted-foreground text-sm">4.9/5</span>
+            <span className="text-muted-foreground text-sm font-light">4.9/5</span>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl text-foreground mb-6">
             {t("reviews.title")}
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-light">
             {t("reviews.description")}
           </p>
+          <div className="section-divider" />
         </div>
 
         <Carousel
@@ -74,21 +75,21 @@ const Reviews = () => {
           <CarouselContent className="-ml-4">
             {reviewKeys.map((key, index) => (
               <CarouselItem key={key} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 h-full">
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-lg flex-shrink-0">
+                <div className="bg-white rounded-2xl p-7 shadow-soft hover:shadow-card transition-shadow duration-300 h-full border border-border/30">
+                  <div className="flex items-start gap-4 mb-5">
+                    <div className="w-12 h-12 rounded-full bg-primary/8 flex items-center justify-center text-primary font-medium text-lg flex-shrink-0">
                       {avatars[index]}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2">
-                        <h4 className="font-semibold text-foreground truncate">
+                        <h4 className="font-medium text-foreground truncate">
                           {t(`reviews.reviews.${key}.name`)}
                         </h4>
-                        <span className="text-sm text-muted-foreground whitespace-nowrap">
+                        <span className="text-sm text-muted-foreground whitespace-nowrap font-light">
                           {t(`reviews.reviews.${key}.date`)}
                         </span>
                       </div>
-                      <div className="flex items-center gap-0.5 mt-1">
+                      <div className="flex items-center gap-0.5 mt-1.5">
                         {[...Array(5)].map((_, i) => (
                           <Star
                             key={i}
@@ -103,8 +104,8 @@ const Reviews = () => {
                     </div>
                   </div>
                   <div className="relative">
-                    <Quote className="absolute -top-2 -left-1 w-6 h-6 text-primary/20" />
-                    <p className="text-muted-foreground pl-4">
+                    <Quote className="absolute -top-2 -left-1 w-6 h-6 text-primary/15" />
+                    <p className="text-muted-foreground pl-5 font-light leading-relaxed">
                       {t(`reviews.reviews.${key}.text`)}
                     </p>
                   </div>

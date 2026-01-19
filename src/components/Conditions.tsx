@@ -19,34 +19,34 @@ const Conditions = () => {
   return (
     <section id="conditions" className="section-padding">
       <div className="container">
-        <div className="grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
+        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           {/* Left - Content */}
           <div>
-            <span className="text-sm font-semibold text-primary uppercase tracking-widest mb-4 block">
+            <span className="section-label">
               {t("conditions.label")}
             </span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl text-foreground mb-7 text-balance">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl text-foreground mb-8 text-balance">
               {t("conditions.title")}
             </h2>
-            <p className="text-lg text-muted-foreground leading-relaxed">
+            <p className="text-lg text-muted-foreground leading-relaxed font-light">
               {t("conditions.description")}
             </p>
           </div>
 
           {/* Right - Conditions Grid */}
-          <div className="grid sm:grid-cols-2 gap-4">
+          <div className="grid sm:grid-cols-2 gap-5">
             {conditionConfigs.map(({ key, letterEN, letterDE }) => {
               const letter = isGerman ? letterDE : letterEN;
               return (
                 <Link
                   key={key}
                   to={`/conditions#letter-${letter}`}
-                  className="p-6 rounded-xl bg-card border border-border/60 hover:border-primary/40 hover:shadow-card transition-all duration-400 cursor-pointer group block"
+                  className="p-7 rounded-2xl bg-card border border-border/50 hover:border-primary/40 hover:shadow-card transition-all duration-400 cursor-pointer group block"
                 >
-                  <h3 className="font-serif font-semibold text-lg text-foreground mb-2 group-hover:text-primary transition-colors">
+                  <h3 className="text-xl text-foreground mb-3 group-hover:text-primary transition-colors">
                     {t(`conditions.featured.${key}.name`)}
                   </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-muted-foreground leading-relaxed font-light">
                     {t(`conditions.featured.${key}.description`)}
                   </p>
                 </Link>

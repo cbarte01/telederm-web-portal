@@ -15,7 +15,7 @@ export default {
   	extend: {
 		fontFamily: {
 			sans: [
-				'DM Sans',
+				'Source Sans 3',
 				'ui-sans-serif',
 				'system-ui',
 				'-apple-system',
@@ -27,7 +27,7 @@ export default {
 				'sans-serif'
 			],
 			serif: [
-				'Playfair Display',
+				'Cormorant Garamond',
 				'ui-serif',
 				'Georgia',
 				'Cambria',
