@@ -56,7 +56,7 @@ const HowItWorks = () => {
                   <h3 className="text-2xl text-foreground mb-4">
                     {t(`howItWorks.steps.${key}.title`)}
                   </h3>
-                  <p className="text-muted-foreground leading-relaxed font-light">
+                  <p className="text-muted-foreground text-base leading-relaxed font-light">
                     {t(`howItWorks.steps.${key}.description`)}
                   </p>
                 </div>

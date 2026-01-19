@@ -66,7 +66,7 @@ const Header = () => {
             alt="Telederm" 
             className="w-9 h-9 rounded-lg"
           />
-          <span className={`font-serif font-bold text-xl transition-colors duration-300 ${
+          <span className={`font-serif font-bold text-2xl transition-colors duration-300 ${
             showTransparent ? 'text-card' : 'text-foreground'
           }`}>telederm</span>
         </Link>
@@ -77,7 +77,7 @@ const Header = () => {
             <a
               key={link.href}
               href={link.href}
-            className={`text-sm font-medium transition-colors duration-300 hover:text-primary ${
+              className={`text-base font-medium transition-colors duration-300 hover:text-primary ${
                 showTransparent ? 'text-card/80 hover:text-card' : 'text-muted-foreground'
               }`}
             >
@@ -88,7 +88,7 @@ const Header = () => {
             <Link
               key={link.href}
               to={link.href}
-              className={`text-sm font-medium transition-colors duration-300 hover:text-primary ${
+              className={`text-base font-medium transition-colors duration-300 hover:text-primary ${
                 location.pathname === link.href 
                   ? 'text-primary' 
                   : showTransparent ? 'text-card/80 hover:text-card' : 'text-muted-foreground'
