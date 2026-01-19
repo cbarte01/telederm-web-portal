@@ -19,6 +19,7 @@ const OurDoctors = () => {
       languages: isEnglish ? ["German", "English"] : ["Deutsch", "Englisch"],
       education: "Charité Berlin",
       image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop&crop=face",
+      website: "https://www.charite.de",
     },
     {
       key: "d2",
@@ -26,6 +27,7 @@ const OurDoctors = () => {
       languages: isEnglish ? ["German", "English", "French"] : ["Deutsch", "Englisch", "Französisch"],
       education: "LMU München",
       image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop&crop=face",
+      website: "https://www.lmu-klinikum.de",
     },
     {
       key: "d3",
@@ -33,6 +35,7 @@ const OurDoctors = () => {
       languages: isEnglish ? ["German", "English"] : ["Deutsch", "Englisch"],
       education: "Universität Heidelberg",
       image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=400&fit=crop&crop=face",
+      website: "https://www.klinikum.uni-heidelberg.de",
     },
     {
       key: "d4",
@@ -40,6 +43,7 @@ const OurDoctors = () => {
       languages: isEnglish ? ["German"] : ["Deutsch"],
       education: "Universität Freiburg",
       image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=400&fit=crop&crop=face",
+      website: "https://www.uniklinik-freiburg.de",
     },
     {
       key: "d5",
@@ -47,6 +51,7 @@ const OurDoctors = () => {
       languages: isEnglish ? ["German", "English", "Spanish"] : ["Deutsch", "Englisch", "Spanisch"],
       education: "Universität Köln",
       image: "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=400&h=400&fit=crop&crop=face",
+      website: "https://www.uk-koeln.de",
     },
   ];
 
@@ -86,7 +91,14 @@ const OurDoctors = () => {
                     </div>
                     <div className="p-6">
                       <h3 className="text-xl font-bold text-foreground mb-1">
-                        {t(`doctors.doctors.${doctor.key}.name`)}
+                        <a 
+                          href={doctor.website} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="hover:text-primary transition-colors underline-offset-2 hover:underline"
+                        >
+                          {t(`doctors.doctors.${doctor.key}.name`)}
+                        </a>
                       </h3>
                       <p className="text-primary font-medium text-sm mb-3">
                         {t(`doctors.doctors.${doctor.key}.title`)}
