@@ -577,8 +577,11 @@ const ForDoctors = () => {
         </div>
       </section>
 
+      {/* About Telederm Section */}
+      <AboutUs />
+
       {/* Contact Form Section */}
-      <section id="apply" className="py-20 md:py-28 bg-muted/30">
+      <section id="contact" className="py-20 md:py-28 gradient-hero">
         <div className="container">
           <div className="max-w-2xl mx-auto">
             <ScrollReveal>
@@ -599,7 +602,7 @@ const ForDoctors = () => {
                   <>
                     <div className="text-center mb-8">
                       <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">
-                        {t("contact.title")}
+                        {t("cta.title")}
                       </h2>
                       <p className="text-muted-foreground">
                         {t("contact.description")}
@@ -669,33 +672,6 @@ const ForDoctors = () => {
               </div>
             </ScrollReveal>
           </div>
-        </div>
-      </section>
-
-      {/* About Telederm Section */}
-      <AboutUs />
-
-      {/* Final CTA Section */}
-      <section className="py-20 md:py-28 gradient-hero">
-        <div className="container">
-          <ScrollReveal>
-            <div className="max-w-3xl mx-auto text-center">
-              <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary-foreground mb-6">
-                {t("cta.title")}
-              </h2>
-              <p className="text-lg text-primary-foreground/90 mb-10">
-                {t("cta.description")}
-              </p>
-              <div className="flex justify-center">
-                <Button
-                  size="xl"
-                  className="bg-white text-primary hover:bg-white/90 shadow-lg font-semibold"
-                >
-                  {t("cta.secondary")}
-                </Button>
-              </div>
-            </div>
-          </ScrollReveal>
         </div>
       </section>
 
