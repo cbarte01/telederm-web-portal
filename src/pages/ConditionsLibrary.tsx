@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ScrollToHash from "@/components/ScrollToHash";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -96,6 +97,7 @@ const ConditionsLibrary = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <ScrollToHash />
       <Header />
 
       {/* Hero Section */}
