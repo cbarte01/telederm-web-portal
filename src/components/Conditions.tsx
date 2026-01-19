@@ -2,7 +2,15 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowRight } from "lucide-react";
 
-const conditionKeys = ["acne", "eczema", "psoriasis", "rosacea", "skinRashes", "hairLoss"];
+// Map condition keys to their first letter for anchor navigation
+const conditionConfigs = [
+  { key: "acne", letter: "A" },
+  { key: "eczema", letter: "E" },
+  { key: "psoriasis", letter: "P" },
+  { key: "rosacea", letter: "R" },
+  { key: "skinRashes", letter: "C" }, // Contact Dermatitis / Skin Rashes start with C
+  { key: "hairLoss", letter: "A" }, // Androgenetic Alopecia starts with A
+];
 
 const Conditions = () => {
   const { t } = useTranslation("home");
@@ -26,10 +34,11 @@ const Conditions = () => {
 
           {/* Right - Conditions Grid */}
           <div className="grid sm:grid-cols-2 gap-4">
-            {conditionKeys.map((key) => (
-              <div
+            {conditionConfigs.map(({ key, letter }) => (
+              <Link
                 key={key}
-                className="p-6 rounded-xl bg-card border border-border/60 hover:border-primary/40 hover:shadow-card transition-all duration-400 cursor-pointer group"
+                to={`/conditions#letter-${letter}`}
+                className="p-6 rounded-xl bg-card border border-border/60 hover:border-primary/40 hover:shadow-card transition-all duration-400 cursor-pointer group block"
               >
                 <h3 className="font-serif font-semibold text-lg text-foreground mb-2 group-hover:text-primary transition-colors">
                   {t(`conditions.featured.${key}.name`)}
@@ -37,7 +46,7 @@ const Conditions = () => {
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {t(`conditions.featured.${key}.description`)}
                 </p>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
