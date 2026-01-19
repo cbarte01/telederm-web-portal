@@ -24,7 +24,8 @@ import { useTranslation } from "react-i18next";
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
 const ConditionsLibrary = () => {
-  const { t } = useTranslation("conditions");
+  const { t, i18n } = useTranslation("conditions");
+  const isGerman = i18n.language === "de";
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<ConditionCategory | "all">("all");
   const [activeLetter, setActiveLetter] = useState<string | null>(null);
@@ -39,35 +40,45 @@ const ConditionsLibrary = () => {
     "pigmentation",
   ];
 
+  // Helper to get localized name
+  const getConditionName = (condition: typeof conditions[0]) => 
+    isGerman ? condition.nameDE : condition.name;
+
+  // Helper to get localized description
+  const getConditionDescription = (condition: typeof conditions[0]) => 
+    isGerman ? condition.descriptionDE : condition.description;
+
   const filteredConditions = useMemo(() => {
     return conditions.filter((condition) => {
-      const matchesSearch = condition.name
+      const name = getConditionName(condition);
+      const matchesSearch = name
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
       const matchesCategory =
         activeCategory === "all" || condition.category === activeCategory;
       const matchesLetter =
-        !activeLetter || condition.name.toUpperCase().startsWith(activeLetter);
+        !activeLetter || name.toUpperCase().startsWith(activeLetter);
       return matchesSearch && matchesCategory && matchesLetter;
     });
-  }, [searchQuery, activeCategory, activeLetter]);
+  }, [searchQuery, activeCategory, activeLetter, isGerman]);
 
   // Group conditions by first letter for display
   const groupedConditions = useMemo(() => {
     const grouped: Record<string, typeof conditions> = {};
     filteredConditions.forEach((condition) => {
-      const letter = condition.name[0].toUpperCase();
+      const name = getConditionName(condition);
+      const letter = name[0].toUpperCase();
       if (!grouped[letter]) {
         grouped[letter] = [];
       }
       grouped[letter].push(condition);
     });
     return grouped;
-  }, [filteredConditions]);
+  }, [filteredConditions, isGerman]);
 
   const availableLetters = useMemo(() => {
-    return new Set(conditions.map((c) => c.name[0].toUpperCase()));
-  }, []);
+    return new Set(conditions.map((c) => getConditionName(c)[0].toUpperCase()));
+  }, [isGerman]);
 
   const handleLetterClick = (letter: string) => {
     if (activeLetter === letter) {
@@ -225,7 +236,7 @@ const ConditionsLibrary = () => {
                         >
                           <div className="flex items-start justify-between gap-3 mb-3">
                             <h3 className="font-serif font-semibold text-lg text-foreground">
-                              {condition.name}
+                              {getConditionName(condition)}
                             </h3>
                             <span
                               className={`shrink-0 px-2.5 py-1 text-xs font-medium rounded-full ${
@@ -236,7 +247,7 @@ const ConditionsLibrary = () => {
                             </span>
                           </div>
                           <p className="text-sm text-muted-foreground leading-relaxed">
-                            {condition.description}
+                            {getConditionDescription(condition)}
                           </p>
                         </div>
                       ))}
