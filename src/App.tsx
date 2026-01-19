@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import SkinBlog from "./pages/SkinBlog";
 import ConditionsLibrary from "./pages/ConditionsLibrary";
 import ForDoctors from "./pages/ForDoctors";
+import ForCompanies from "./pages/ForCompanies";
 import NotFound from "./pages/NotFound";
 import ScrollToHash from "./components/ScrollToHash";
 
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/skin-blog" element={<SkinBlog />} />
           <Route path="/conditions" element={<ConditionsLibrary />} />
           <Route path="/for-doctors" element={<ForDoctors />} />
+          <Route path="/for-companies" element={<ForCompanies />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

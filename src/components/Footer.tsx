@@ -8,20 +8,28 @@ const Footer = () => {
   const { t } = useTranslation("common");
   const location = useLocation();
   const isForDoctorsPage = location.pathname === "/for-doctors";
+  const isForCompaniesPage = location.pathname === "/for-companies";
+
+  // Determine the correct hash link base for context-aware navigation
+  const getContextHref = (hash: string) => {
+    if (isForDoctorsPage) return `/for-doctors#${hash}`;
+    if (isForCompaniesPage) return `/for-companies#${hash}`;
+    return `/#${hash}`;
+  };
 
   const links = {
     company: [
-      { label: t("footer.aboutUs"), href: isForDoctorsPage ? "/for-doctors#about" : "/#about" },
+      { label: t("footer.aboutUs"), href: getContextHref("about") },
       { label: t("footer.ourDoctors"), href: isForDoctorsPage ? "/for-doctors#doctors" : "/#doctors" },
     ],
     services: [
       { label: t("footer.forPatients"), href: "/", isRoute: true },
       { label: t("nav.forDoctors"), href: "/for-doctors", isRoute: true },
-      { label: t("footer.forCompanies"), href: "#" },
+      { label: t("footer.forCompanies"), href: "/for-companies", isRoute: true },
     ],
     support: [
-      { label: t("nav.faq"), href: isForDoctorsPage ? "/for-doctors#faq" : "/#faq" },
-      { label: t("footer.contact"), href: isForDoctorsPage ? "/for-doctors#contact" : "/#contact" },
+      { label: t("nav.faq"), href: getContextHref("faq") },
+      { label: t("footer.contact"), href: getContextHref("contact") },
     ],
     legal: [
       { label: t("footer.privacyPolicy"), href: "#" },

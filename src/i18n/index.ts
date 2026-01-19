@@ -7,12 +7,14 @@ import enHome from './locales/en/home.json';
 import enConditions from './locales/en/conditions.json';
 import enBlog from './locales/en/blog.json';
 import enDoctors from './locales/en/doctors.json';
+import enCompanies from './locales/en/companies.json';
 
 import deCommon from './locales/de/common.json';
 import deHome from './locales/de/home.json';
 import deConditions from './locales/de/conditions.json';
 import deBlog from './locales/de/blog.json';
 import deDoctors from './locales/de/doctors.json';
+import deCompanies from './locales/de/companies.json';
 
 const resources = {
   en: {
@@ -21,6 +23,7 @@ const resources = {
     conditions: enConditions,
     blog: enBlog,
     doctors: enDoctors,
+    companies: enCompanies,
   },
   de: {
     common: deCommon,
@@ -28,6 +31,7 @@ const resources = {
     conditions: deConditions,
     blog: deBlog,
     doctors: deDoctors,
+    companies: deCompanies,
   },
 };
 
@@ -38,7 +42,7 @@ i18n
     resources,
     fallbackLng: 'en',
     defaultNS: 'common',
-    ns: ['common', 'home', 'conditions', 'blog', 'doctors'],
+    ns: ['common', 'home', 'conditions', 'blog', 'doctors', 'companies'],
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],
