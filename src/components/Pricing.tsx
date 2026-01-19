@@ -95,7 +95,7 @@ const Pricing = () => {
                 </div>
 
                 {/* Features */}
-                <ul className="space-y-3 mb-8">
+                <ul className="space-y-3">
                   {features.map((feature, index) => (
                     <li key={index} className="flex items-start gap-3">
                       <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
@@ -107,25 +107,25 @@ const Pricing = () => {
                     </li>
                   ))}
                 </ul>
-
-                {/* CTA Button */}
-                <Button
-                  variant={plan.popular ? "hero" : "outline"}
-                  size="lg"
-                  className={`w-full group ${
-                    plan.popular ? "shadow-soft" : "border-border hover:border-primary hover:bg-primary/5"
-                  }`}
-                >
-                  {t("pricing.selectPlan", "Select Plan")}
-                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                </Button>
               </div>
             );
           })}
         </div>
 
+        {/* Centralized CTA Button */}
+        <div className="flex justify-center mt-10">
+          <Button
+            variant="hero"
+            size="xl"
+            className="shadow-soft group"
+          >
+            {t("pricing.startTreatment", "Start Treatment")}
+            <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+          </Button>
+        </div>
+
         {/* Insurance Note */}
-        <p className="text-sm text-muted-foreground text-center mt-10 max-w-2xl mx-auto">
+        <p className="text-sm text-muted-foreground text-center mt-6 max-w-2xl mx-auto">
           {t("pricing.note")}
         </p>
       </div>

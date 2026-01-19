@@ -77,6 +77,7 @@
     "responseWithin": "Response within {{time}}",
     "mostPopular": "Most Popular",
     "selectPlan": "Select Plan",
+    "startTreatment": "Start Treatment",
     "note": "*Price of medication not included. Many health insurance plans reimburse telemedicine consultations — check with your provider for coverage details.",
     "plans": {
       "standard": {
