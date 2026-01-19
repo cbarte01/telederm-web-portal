@@ -20,8 +20,8 @@ const Footer = () => {
       { label: t("footer.forCompanies"), href: "#" },
     ],
     support: [
-      { label: t("nav.faq"), href: "/#faq" },
-      { label: t("footer.contact"), href: "/#contact" },
+      { label: t("nav.faq"), href: isForDoctorsPage ? "/for-doctors#faq" : "/#faq" },
+      { label: t("footer.contact"), href: isForDoctorsPage ? "/for-doctors#contact" : "/#contact" },
     ],
     legal: [
       { label: t("footer.privacyPolicy"), href: "#" },
