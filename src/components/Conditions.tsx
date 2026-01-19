@@ -2,18 +2,19 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowRight } from "lucide-react";
 
-// Map condition keys to their first letter for anchor navigation
+// Map condition keys to their first letter for anchor navigation (EN and DE)
 const conditionConfigs = [
-  { key: "acne", letter: "A" },
-  { key: "eczema", letter: "E" },
-  { key: "psoriasis", letter: "P" },
-  { key: "rosacea", letter: "R" },
-  { key: "skinRashes", letter: "C" }, // Contact Dermatitis / Skin Rashes start with C
-  { key: "hairLoss", letter: "A" }, // Androgenetic Alopecia starts with A
+  { key: "acne", letterEN: "A", letterDE: "A" }, // Acne / Akne
+  { key: "eczema", letterEN: "E", letterDE: "E" }, // Eczema / Ekzem
+  { key: "psoriasis", letterEN: "P", letterDE: "S" }, // Psoriasis / Schuppenflechte
+  { key: "rosacea", letterEN: "R", letterDE: "R" }, // Rosacea / Rosazea
+  { key: "skinRashes", letterEN: "S", letterDE: "H" }, // Skin Rashes / Hautausschläge
+  { key: "hairLoss", letterEN: "H", letterDE: "H" }, // Hair Loss / Haarausfall
 ];
 
 const Conditions = () => {
-  const { t } = useTranslation("home");
+  const { t, i18n } = useTranslation("home");
+  const isGerman = i18n.language === "de";
 
   return (
     <section id="conditions" className="section-padding">
@@ -34,20 +35,23 @@ const Conditions = () => {
 
           {/* Right - Conditions Grid */}
           <div className="grid sm:grid-cols-2 gap-4">
-            {conditionConfigs.map(({ key, letter }) => (
-              <Link
-                key={key}
-                to={`/conditions#letter-${letter}`}
-                className="p-6 rounded-xl bg-card border border-border/60 hover:border-primary/40 hover:shadow-card transition-all duration-400 cursor-pointer group block"
-              >
-                <h3 className="font-serif font-semibold text-lg text-foreground mb-2 group-hover:text-primary transition-colors">
-                  {t(`conditions.featured.${key}.name`)}
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {t(`conditions.featured.${key}.description`)}
-                </p>
-              </Link>
-            ))}
+            {conditionConfigs.map(({ key, letterEN, letterDE }) => {
+              const letter = isGerman ? letterDE : letterEN;
+              return (
+                <Link
+                  key={key}
+                  to={`/conditions#letter-${letter}`}
+                  className="p-6 rounded-xl bg-card border border-border/60 hover:border-primary/40 hover:shadow-card transition-all duration-400 cursor-pointer group block"
+                >
+                  <h3 className="font-serif font-semibold text-lg text-foreground mb-2 group-hover:text-primary transition-colors">
+                    {t(`conditions.featured.${key}.name`)}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {t(`conditions.featured.${key}.description`)}
+                  </p>
+                </Link>
+              );
+            })}
           </div>
         </div>
 
