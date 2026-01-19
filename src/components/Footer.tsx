@@ -12,7 +12,7 @@ const Footer = () => {
   const links = {
     company: [
       { label: t("footer.aboutUs"), href: isForDoctorsPage ? "/for-doctors#about" : "/#about" },
-      { label: t("footer.ourDoctors"), href: "/#doctors" },
+      { label: t("footer.ourDoctors"), href: isForDoctorsPage ? "/for-doctors#doctors" : "/#doctors" },
     ],
     services: [
       { label: t("footer.forPatients"), href: "/", isRoute: true },
