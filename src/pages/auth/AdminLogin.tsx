@@ -39,7 +39,7 @@ const AdminLogin = () => {
     
     if (user && role === "admin") {
       navigate("/admin/dashboard", { replace: true });
-    } else if (user && role !== "admin") {
+    } else if (user && role !== null && role !== "admin") {
       // If not an admin, redirect to appropriate dashboard
       toast({
         variant: "destructive",
