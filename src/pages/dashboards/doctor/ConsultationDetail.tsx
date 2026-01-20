@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
 import { de, enUS } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,6 +32,7 @@ interface ConsultationPhoto {
 interface Consultation {
   id: string;
   patient_id: string;
+  doctor_id: string | null;
   status: string;
   concern_category: string | null;
   body_locations: string[] | null;
@@ -92,6 +94,7 @@ const onsetLabels: Record<string, { en: string; de: string }> = {
 
 const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: ConsultationDetailProps) => {
   const { i18n } = useTranslation();
+  const { user } = useAuth();
   const { toast } = useToast();
   const [response, setResponse] = useState(consultation.doctor_response || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -100,8 +103,11 @@ const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: Consulta
   const lang = i18n.language === "de" ? "de" : "en";
   const dateLocale = lang === "de" ? de : enUS;
 
+  // Check if this is an unclaimed consultation (for Group/Hybrid doctors)
+  const isUnclaimed = consultation.doctor_id === null;
+
   // Load photo URLs
-  useState(() => {
+  useEffect(() => {
     const loadPhotos = async () => {
       const urls: Record<string, string> = {};
       for (const photo of photos) {
@@ -115,7 +121,7 @@ const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: Consulta
       setPhotoUrls(urls);
     };
     loadPhotos();
-  });
+  }, [photos]);
 
   const handleSubmitResponse = async (newStatus: "in_review" | "completed") => {
     if (!response.trim() && newStatus === "completed") {
@@ -131,13 +137,21 @@ const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: Consulta
 
     setIsSubmitting(true);
     
+    // If unclaimed, claim the consultation by setting doctor_id
+    const updateData: Record<string, unknown> = {
+      status: newStatus,
+      doctor_response: response.trim() || null,
+      responded_at: newStatus === "completed" ? new Date().toISOString() : null,
+    };
+
+    // Claim the consultation if it's unclaimed
+    if (isUnclaimed && user) {
+      updateData.doctor_id = user.id;
+    }
+
     const { error } = await supabase
       .from("consultations")
-      .update({
-        status: newStatus,
-        doctor_response: response.trim() || null,
-        responded_at: newStatus === "completed" ? new Date().toISOString() : null,
-      })
+      .update(updateData)
       .eq("id", consultation.id);
 
     setIsSubmitting(false);
@@ -155,7 +169,9 @@ const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: Consulta
       title: lang === "de" ? "Erfolgreich" : "Success",
       description: newStatus === "completed"
         ? (lang === "de" ? "Antwort gesendet und Fall abgeschlossen." : "Response sent and case completed.")
-        : (lang === "de" ? "Entwurf gespeichert." : "Draft saved."),
+        : isUnclaimed 
+          ? (lang === "de" ? "Fall übernommen und Entwurf gespeichert." : "Case claimed and draft saved.")
+          : (lang === "de" ? "Entwurf gespeichert." : "Draft saved."),
     });
     
     onUpdate();
