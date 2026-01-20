@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Check, ArrowRight, Clock, Zap, Crown } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -119,9 +120,12 @@ const Pricing = () => {
             variant="hero"
             size="xl"
             className="shadow-soft group"
+            asChild
           >
-            {t("pricing.startTreatment", "Start Treatment")}
-            <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+            <Link to="/consultation">
+              {t("pricing.startTreatment", "Start Treatment")}
+              <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+            </Link>
           </Button>
         </div>
 

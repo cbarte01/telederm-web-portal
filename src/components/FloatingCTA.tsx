@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowUp } from "lucide-react";
 
@@ -29,8 +30,10 @@ const FloatingCTA = () => {
       </button>
 
       {/* Mobile CTA button */}
-      <Button variant="floating" size="lg" className="md:hidden">
-        {t("buttons.startNow")}
+      <Button variant="floating" size="lg" className="md:hidden" asChild>
+        <Link to="/consultation">
+          {t("buttons.startNow")}
+        </Link>
       </Button>
     </div>
   );

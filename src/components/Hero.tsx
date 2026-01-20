@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Clock, Shield, Smartphone, ArrowRight } from "lucide-react";
 import heroImage from "@/assets/hero-skin.jpg";
+
 const Hero = () => {
   const [scrollY, setScrollY] = useState(0);
   const {
@@ -59,9 +61,11 @@ const Hero = () => {
           <div className="flex flex-col sm:flex-row gap-4 mb-14 animate-fade-up" style={{
           animationDelay: "0.3s"
         }}>
-            <Button variant="hero" size="xl" className="group shadow-elevated">
-              {t("common:buttons.startConsultation")}
-              <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
+            <Button variant="hero" size="xl" className="group shadow-elevated" asChild>
+              <Link to="/consultation">
+                {t("common:buttons.startConsultation")}
+                <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
+              </Link>
             </Button>
           </div>
 
