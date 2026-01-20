@@ -1,14 +1,76 @@
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { User, LogOut, Calendar, FileText, MessageSquare } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { User, LogOut, Calendar, FileText, MessageSquare, Plus, Clock, CheckCircle, AlertCircle } from "lucide-react";
 import teledermLogo from "@/assets/logo/telederm-logo.png";
 
+interface Consultation {
+  id: string;
+  status: string;
+  concern_category: string | null;
+  created_at: string;
+  submitted_at: string | null;
+}
+
+const statusConfig: Record<string, { label: string; labelDe: string; icon: React.ElementType; variant: "default" | "secondary" | "destructive" | "outline" }> = {
+  draft: { label: "Draft", labelDe: "Entwurf", icon: FileText, variant: "outline" },
+  submitted: { label: "Submitted", labelDe: "Eingereicht", icon: Clock, variant: "secondary" },
+  in_review: { label: "In Review", labelDe: "In Prüfung", icon: AlertCircle, variant: "default" },
+  completed: { label: "Completed", labelDe: "Abgeschlossen", icon: CheckCircle, variant: "default" },
+  cancelled: { label: "Cancelled", labelDe: "Abgebrochen", icon: AlertCircle, variant: "destructive" },
+};
+
+const concernLabels: Record<string, { en: string; de: string }> = {
+  skin: { en: "Skin Conditions", de: "Hauterkrankungen" },
+  hair: { en: "Hair & Scalp", de: "Haare & Kopfhaut" },
+  nails: { en: "Nail Problems", de: "Nagelprobleme" },
+  infections: { en: "Infections", de: "Infektionen" },
+  allergies: { en: "Allergies & Reactions", de: "Allergien & Reaktionen" },
+  pigmentation: { en: "Pigmentation", de: "Pigmentierung" },
+};
+
 const PatientDashboard = () => {
-  const { t } = useTranslation("auth");
+  const { t, i18n } = useTranslation("auth");
   const { user, signOut } = useAuth();
+  const [consultations, setConsultations] = useState<Consultation[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const lang = i18n.language === "de" ? "de" : "en";
+
+  useEffect(() => {
+    const fetchConsultations = async () => {
+      if (!user) return;
+      
+      const { data, error } = await supabase
+        .from("consultations")
+        .select("id, status, concern_category, created_at, submitted_at")
+        .eq("patient_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (!error && data) {
+        setConsultations(data);
+      }
+      setIsLoading(false);
+    };
+
+    fetchConsultations();
+  }, [user]);
+
+  const activeConsultations = consultations.filter(c => c.status !== "completed" && c.status !== "cancelled");
+  const pastConsultations = consultations.filter(c => c.status === "completed" || c.status === "cancelled");
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString(lang === "de" ? "de-DE" : "en-US", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -36,62 +98,184 @@ const PatientDashboard = () => {
 
       {/* Main Content */}
       <main className="container py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground">
-            {t("dashboard.patient.welcome")}, {user?.user_metadata?.full_name || user?.email?.split("@")[0]}!
-          </h1>
-          <p className="text-muted-foreground mt-2">{t("dashboard.patient.subtitle")}</p>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">
+              {t("dashboard.patient.welcome")}, {user?.user_metadata?.full_name || user?.email?.split("@")[0]}!
+            </h1>
+            <p className="text-muted-foreground mt-2">{t("dashboard.patient.subtitle")}</p>
+          </div>
+          <Link to="/consultation">
+            <Button className="gap-2">
+              <Plus className="h-4 w-4" />
+              {lang === "de" ? "Neue Anfrage" : "New Consultation"}
+            </Button>
+          </Link>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {/* Upcoming Consultations */}
-          <Card className="shadow-card">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-primary" />
-                Upcoming Consultations
-              </CardTitle>
-              <CardDescription>Your scheduled appointments</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">
-                No upcoming consultations. Book a new consultation to get started.
-              </p>
-              <Button className="mt-4 w-full">Book Consultation</Button>
-            </CardContent>
-          </Card>
+        <div className="grid gap-6 lg:grid-cols-3">
+          {/* Active Consultations */}
+          <div className="lg:col-span-2 space-y-4">
+            <h2 className="text-xl font-semibold text-foreground">
+              {lang === "de" ? "Aktive Anfragen" : "Active Consultations"}
+            </h2>
+            
+            {isLoading ? (
+              <Card className="shadow-card">
+                <CardContent className="py-8">
+                  <div className="flex items-center justify-center">
+                    <div className="animate-pulse text-muted-foreground">Loading...</div>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : activeConsultations.length === 0 ? (
+              <Card className="shadow-card">
+                <CardContent className="py-12 text-center">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Calendar className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="font-semibold text-foreground mb-2">
+                    {lang === "de" ? "Keine aktiven Anfragen" : "No active consultations"}
+                  </h3>
+                  <p className="text-muted-foreground text-sm mb-4">
+                    {lang === "de" 
+                      ? "Starten Sie jetzt Ihre erste Anfrage und erhalten Sie innerhalb von 24 Stunden eine Diagnose."
+                      : "Start your first consultation and receive a diagnosis within 24 hours."}
+                  </p>
+                  <Link to="/consultation">
+                    <Button className="gap-2">
+                      <Plus className="h-4 w-4" />
+                      {lang === "de" ? "Anfrage starten" : "Start Consultation"}
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-3">
+                {activeConsultations.map((consultation) => {
+                  const config = statusConfig[consultation.status] || statusConfig.submitted;
+                  const StatusIcon = config.icon;
+                  
+                  return (
+                    <Card key={consultation.id} className="shadow-card hover:shadow-md transition-shadow">
+                      <CardContent className="py-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                              <StatusIcon className="h-6 w-6 text-primary" />
+                            </div>
+                            <div>
+                              <h3 className="font-semibold text-foreground">
+                                {consultation.concern_category 
+                                  ? concernLabels[consultation.concern_category]?.[lang] || consultation.concern_category
+                                  : (lang === "de" ? "Hautanfrage" : "Skin Consultation")}
+                              </h3>
+                              <p className="text-sm text-muted-foreground">
+                                {lang === "de" ? "Eingereicht am" : "Submitted"} {formatDate(consultation.submitted_at || consultation.created_at)}
+                              </p>
+                            </div>
+                          </div>
+                          <Badge variant={config.variant}>
+                            {lang === "de" ? config.labelDe : config.label}
+                          </Badge>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
 
-          {/* My Reports */}
-          <Card className="shadow-card">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5 text-primary" />
-                My Reports
-              </CardTitle>
-              <CardDescription>Your consultation history</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">
-                No reports yet. Your consultation reports will appear here.
-              </p>
-            </CardContent>
-          </Card>
+            {/* Past Consultations */}
+            {pastConsultations.length > 0 && (
+              <>
+                <h2 className="text-xl font-semibold text-foreground mt-8">
+                  {lang === "de" ? "Vergangene Anfragen" : "Past Consultations"}
+                </h2>
+                <div className="space-y-3">
+                  {pastConsultations.slice(0, 5).map((consultation) => {
+                    const config = statusConfig[consultation.status] || statusConfig.completed;
+                    
+                    return (
+                      <Card key={consultation.id} className="shadow-soft opacity-75">
+                        <CardContent className="py-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h3 className="font-medium text-foreground">
+                                {consultation.concern_category 
+                                  ? concernLabels[consultation.concern_category]?.[lang] || consultation.concern_category
+                                  : (lang === "de" ? "Hautanfrage" : "Skin Consultation")}
+                              </h3>
+                              <p className="text-sm text-muted-foreground">
+                                {formatDate(consultation.submitted_at || consultation.created_at)}
+                              </p>
+                            </div>
+                            <Badge variant="outline">
+                              {lang === "de" ? config.labelDe : config.label}
+                            </Badge>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+          </div>
 
-          {/* Messages */}
-          <Card className="shadow-card">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MessageSquare className="h-5 w-5 text-primary" />
-                Messages
-              </CardTitle>
-              <CardDescription>Communication with doctors</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">
-                No messages. Your conversations with doctors will appear here.
-              </p>
-            </CardContent>
-          </Card>
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Quick Stats */}
+            <Card className="shadow-card">
+              <CardHeader>
+                <CardTitle className="text-lg">
+                  {lang === "de" ? "Übersicht" : "Overview"}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground text-sm">
+                    {lang === "de" ? "Gesamt Anfragen" : "Total Consultations"}
+                  </span>
+                  <span className="font-semibold text-foreground">{consultations.length}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground text-sm">
+                    {lang === "de" ? "Aktiv" : "Active"}
+                  </span>
+                  <span className="font-semibold text-foreground">{activeConsultations.length}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground text-sm">
+                    {lang === "de" ? "Abgeschlossen" : "Completed"}
+                  </span>
+                  <span className="font-semibold text-foreground">
+                    {consultations.filter(c => c.status === "completed").length}
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Messages */}
+            <Card className="shadow-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <MessageSquare className="h-5 w-5 text-primary" />
+                  {lang === "de" ? "Nachrichten" : "Messages"}
+                </CardTitle>
+                <CardDescription>
+                  {lang === "de" ? "Kommunikation mit Ärzten" : "Communication with doctors"}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground text-sm">
+                  {lang === "de" 
+                    ? "Keine Nachrichten. Ihre Gespräche mit Ärzten werden hier angezeigt."
+                    : "No messages. Your conversations with doctors will appear here."}
+                </p>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </main>
     </div>

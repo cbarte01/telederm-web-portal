@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
@@ -24,9 +25,12 @@ const CTA = () => {
             variant="hero"
             size="xl"
             className="bg-card text-foreground hover:bg-card/90 shadow-elevated group font-semibold"
+            asChild
           >
-            {t("cta.button")}
-            <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+            <Link to="/consultation">
+              {t("cta.button")}
+              <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+            </Link>
           </Button>
         </div>
       </div>
