@@ -18,8 +18,15 @@ Deno.serve(async (req) => {
       { auth: { autoRefreshToken: false, persistSession: false } }
     )
 
-    const adminEmail = 'admin@telederm-health.at'
-    const adminPassword = 'PiaValentina2018!'
+    const adminEmail = Deno.env.get('ADMIN_EMAIL')
+    const adminPassword = Deno.env.get('ADMIN_PASSWORD')
+
+    if (!adminEmail || !adminPassword) {
+      return new Response(
+        JSON.stringify({ error: 'ADMIN_EMAIL and ADMIN_PASSWORD secrets must be configured' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
 
     // Check if admin already exists
     const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers()
