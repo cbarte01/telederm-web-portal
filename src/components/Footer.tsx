@@ -169,9 +169,17 @@ const Footer = () => {
           <p className="text-sm text-background/60">
             {t("footer.copyright", { year: currentYear })}
           </p>
-          <p className="text-xs text-background/40">
-            {t("footer.medicalDisclaimer")}
-          </p>
+          <div className="flex items-center gap-4">
+            <p className="text-xs text-background/40">
+              {t("footer.medicalDisclaimer")}
+            </p>
+            <Link 
+              to="/admin/login" 
+              className="text-[10px] text-background/20 hover:text-background/40 transition-colors"
+            >
+              ●
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
