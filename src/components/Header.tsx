@@ -103,15 +103,19 @@ const Header = () => {
         <div className="hidden md:flex items-center gap-4">
           <LanguageSwitcher variant={showTransparent ? 'transparent' : 'default'} />
           {isForDoctorsPage ? (
-            <Button variant="ghost" size="lg" className={`gap-2 ${showTransparent ? 'text-card hover:text-card hover:bg-card/10' : ''}`}>
-              <Stethoscope className="w-4 h-4" />
-              {t("buttons.doctorLogin")}
-            </Button>
+            <Link to="/auth/doctor">
+              <Button variant="ghost" size="lg" className={`gap-2 ${showTransparent ? 'text-card hover:text-card hover:bg-card/10' : ''}`}>
+                <Stethoscope className="w-4 h-4" />
+                {t("buttons.doctorLogin")}
+              </Button>
+            </Link>
           ) : (
-            <Button variant="ghost" size="lg" className={`gap-2 ${showTransparent ? 'text-card hover:text-card hover:bg-card/10' : ''}`}>
-              <LogIn className="w-4 h-4" />
-              {t("buttons.login")}
-            </Button>
+            <Link to="/auth">
+              <Button variant="ghost" size="lg" className={`gap-2 ${showTransparent ? 'text-card hover:text-card hover:bg-card/10' : ''}`}>
+                <LogIn className="w-4 h-4" />
+                {t("buttons.login")}
+              </Button>
+            </Link>
           )}
         </div>
 
@@ -157,15 +161,19 @@ const Header = () => {
               <LanguageSwitcher />
             </div>
             {isForDoctorsPage ? (
-              <Button variant="ghost" size="lg" className="mt-2 gap-2 justify-start">
-                <Stethoscope className="w-4 h-4" />
-                {t("buttons.doctorLogin")}
-              </Button>
+              <Link to="/auth/doctor" onClick={() => setIsMobileMenuOpen(false)}>
+                <Button variant="ghost" size="lg" className="mt-2 gap-2 justify-start w-full">
+                  <Stethoscope className="w-4 h-4" />
+                  {t("buttons.doctorLogin")}
+                </Button>
+              </Link>
             ) : (
-              <Button variant="ghost" size="lg" className="mt-2 gap-2 justify-start">
-                <LogIn className="w-4 h-4" />
-                {t("buttons.login")}
-              </Button>
+              <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>
+                <Button variant="ghost" size="lg" className="mt-2 gap-2 justify-start w-full">
+                  <LogIn className="w-4 h-4" />
+                  {t("buttons.login")}
+                </Button>
+              </Link>
             )}
           </nav>
         </div>
