@@ -14,6 +14,121 @@ export type Database = {
   }
   public: {
     Tables: {
+      consultation_photos: {
+        Row: {
+          consultation_id: string
+          created_at: string
+          id: string
+          photo_type: string
+          storage_path: string
+        }
+        Insert: {
+          consultation_id: string
+          created_at?: string
+          id?: string
+          photo_type: string
+          storage_path: string
+        }
+        Update: {
+          consultation_id?: string
+          created_at?: string
+          id?: string
+          photo_type?: string
+          storage_path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consultation_photos_consultation_id_fkey"
+            columns: ["consultation_id"]
+            isOneToOne: false
+            referencedRelation: "consultations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      consultations: {
+        Row: {
+          additional_notes: string | null
+          allergies_description: string | null
+          biological_sex: string | null
+          body_locations: string[] | null
+          change_description: string | null
+          concern_category: string | null
+          created_at: string
+          date_of_birth: string | null
+          has_allergies: boolean | null
+          has_changed: boolean | null
+          has_self_treated: boolean | null
+          id: string
+          medications_description: string | null
+          patient_id: string | null
+          self_treatment_description: string | null
+          status: Database["public"]["Enums"]["consultation_status"]
+          submitted_at: string | null
+          symptom_onset: string | null
+          symptom_severity: string | null
+          symptoms: Json | null
+          takes_medications: boolean | null
+          updated_at: string
+        }
+        Insert: {
+          additional_notes?: string | null
+          allergies_description?: string | null
+          biological_sex?: string | null
+          body_locations?: string[] | null
+          change_description?: string | null
+          concern_category?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          has_allergies?: boolean | null
+          has_changed?: boolean | null
+          has_self_treated?: boolean | null
+          id?: string
+          medications_description?: string | null
+          patient_id?: string | null
+          self_treatment_description?: string | null
+          status?: Database["public"]["Enums"]["consultation_status"]
+          submitted_at?: string | null
+          symptom_onset?: string | null
+          symptom_severity?: string | null
+          symptoms?: Json | null
+          takes_medications?: boolean | null
+          updated_at?: string
+        }
+        Update: {
+          additional_notes?: string | null
+          allergies_description?: string | null
+          biological_sex?: string | null
+          body_locations?: string[] | null
+          change_description?: string | null
+          concern_category?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          has_allergies?: boolean | null
+          has_changed?: boolean | null
+          has_self_treated?: boolean | null
+          id?: string
+          medications_description?: string | null
+          patient_id?: string | null
+          self_treatment_description?: string | null
+          status?: Database["public"]["Enums"]["consultation_status"]
+          submitted_at?: string | null
+          symptom_onset?: string | null
+          symptom_severity?: string | null
+          symptoms?: Json | null
+          takes_medications?: boolean | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consultations_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -77,6 +192,12 @@ export type Database = {
     }
     Enums: {
       app_role: "patient" | "doctor" | "admin"
+      consultation_status:
+        | "draft"
+        | "submitted"
+        | "in_review"
+        | "completed"
+        | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -205,6 +326,13 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["patient", "doctor", "admin"],
+      consultation_status: [
+        "draft",
+        "submitted",
+        "in_review",
+        "completed",
+        "cancelled",
+      ],
     },
   },
 } as const
