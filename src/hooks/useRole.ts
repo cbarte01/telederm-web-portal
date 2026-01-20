@@ -4,6 +4,13 @@ import { useAuth } from "@/contexts/AuthContext";
 
 export type AppRole = "patient" | "doctor" | "admin";
 
+// Role priority: higher number = higher priority
+const ROLE_PRIORITY: Record<AppRole, number> = {
+  admin: 3,
+  doctor: 2,
+  patient: 1,
+};
+
 interface UseRoleReturn {
   role: AppRole | null;
   isLoading: boolean;
@@ -24,17 +31,27 @@ export const useRole = (): UseRoleReturn => {
     }
 
     try {
+      // Fetch all roles for the user (handles multiple roles case)
       const { data, error } = await supabase
         .from("user_roles")
         .select("role")
-        .eq("user_id", user.id)
-        .maybeSingle();
+        .eq("user_id", user.id);
 
       if (error) {
         console.error("Error fetching role:", error);
         setRole(null);
+      } else if (data && data.length > 0) {
+        // Return highest priority role
+        const highestRole = data.reduce((highest, current) => {
+          const currentRole = current.role as AppRole;
+          const highestRoleValue = highest.role as AppRole;
+          return ROLE_PRIORITY[currentRole] > ROLE_PRIORITY[highestRoleValue]
+            ? current
+            : highest;
+        });
+        setRole(highestRole.role as AppRole);
       } else {
-        setRole(data?.role as AppRole | null);
+        setRole(null);
       }
     } catch (err) {
       console.error("Error fetching role:", err);
