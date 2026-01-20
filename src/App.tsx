@@ -22,6 +22,7 @@ import AdminLogin from "./pages/auth/AdminLogin";
 import PatientDashboard from "./pages/dashboards/PatientDashboard";
 import DoctorDashboard from "./pages/dashboards/DoctorDashboard";
 import AdminDashboard from "./pages/dashboards/AdminDashboard";
+import ConsultationFlow from "./pages/consultation/ConsultationFlow";
 
 // Profile page
 import Profile from "./pages/Profile";
@@ -43,6 +44,7 @@ const App = () => (
             <Route path="/conditions" element={<ConditionsLibrary />} />
             <Route path="/for-doctors" element={<ForDoctors />} />
             <Route path="/for-companies" element={<ForCompanies />} />
+            <Route path="/consultation" element={<ConsultationFlow />} />
             
             {/* Auth pages */}
             <Route path="/auth" element={<PatientAuth />} />

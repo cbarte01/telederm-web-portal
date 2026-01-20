@@ -1,0 +1,181 @@
+{
+  "flow": {
+    "progress": "Step {{current}} of {{total}}",
+    "back": "Back",
+    "next": "Continue",
+    "skip": "Skip"
+  },
+  "step1": {
+    "title": "How can we help you?",
+    "subtitle": "Select the category that best describes your concern",
+    "categories": {
+      "skin": {
+        "name": "Skin Conditions",
+        "description": "Rashes, acne, eczema, psoriasis"
+      },
+      "hair": {
+        "name": "Hair & Scalp",
+        "description": "Hair loss, dandruff, scalp issues"
+      },
+      "nails": {
+        "name": "Nail Problems",
+        "description": "Fungal infections, discoloration"
+      },
+      "infections": {
+        "name": "Infections",
+        "description": "Herpes, warts, bacterial infections"
+      },
+      "allergies": {
+        "name": "Allergies & Reactions",
+        "description": "Hives, contact dermatitis, allergic reactions"
+      },
+      "pigmentation": {
+        "name": "Pigmentation",
+        "description": "Moles, spots, skin discoloration"
+      }
+    }
+  },
+  "step2": {
+    "title": "Where is the problem located?",
+    "subtitle": "Tap on the affected area(s) on the body",
+    "frontView": "Front",
+    "backView": "Back",
+    "selectedAreas": "Selected areas",
+    "noSelection": "Please select at least one area"
+  },
+  "step3": {
+    "title": "Let's take some photos",
+    "subtitle": "Good photos help us diagnose your condition faster",
+    "tips": {
+      "title": "Tips for great photos",
+      "lighting": "Use good, natural lighting",
+      "distance": "Take one close-up and one from further away",
+      "focus": "Make sure the affected area is in focus",
+      "clean": "Clean the area if possible"
+    },
+    "ready": "I'm ready to take photos"
+  },
+  "step4": {
+    "title": "Upload your photos",
+    "subtitle": "Take or upload up to 3 photos of the affected area",
+    "photos": {
+      "closeup": {
+        "title": "Close-up",
+        "description": "Detailed view of the affected area"
+      },
+      "context": {
+        "title": "From further away",
+        "description": "Shows the location on your body"
+      },
+      "additional": {
+        "title": "Additional (optional)",
+        "description": "Any other helpful angle"
+      }
+    },
+    "upload": "Upload photo",
+    "takePhoto": "Take photo",
+    "replace": "Replace",
+    "remove": "Remove"
+  },
+  "step5": {
+    "title": "Tell us about the timeline",
+    "subtitle": "When did you first notice this problem?",
+    "onset": {
+      "today": "Today",
+      "thisWeek": "This week",
+      "thisMonth": "This month",
+      "longerAgo": "More than a month ago"
+    },
+    "changed": "Has it changed over time?",
+    "changedOptions": {
+      "yes": "Yes, it has changed",
+      "no": "No, it's the same"
+    },
+    "changeDescription": "Please describe how it has changed"
+  },
+  "step6": {
+    "title": "What symptoms do you have?",
+    "subtitle": "Select all that apply",
+    "symptoms": {
+      "itching": "Itching",
+      "pain": "Pain",
+      "burning": "Burning",
+      "swelling": "Swelling",
+      "oozing": "Oozing/Weeping",
+      "bleeding": "Bleeding",
+      "flaking": "Flaking/Scaling",
+      "none": "None of the above"
+    },
+    "severity": "How severe are your symptoms?",
+    "severityLevels": {
+      "mild": "Mild",
+      "moderate": "Moderate",
+      "severe": "Severe"
+    }
+  },
+  "step7": {
+    "title": "Medical history",
+    "subtitle": "This helps us provide better care",
+    "allergies": {
+      "question": "Do you have any allergies?",
+      "yes": "Yes",
+      "no": "No",
+      "placeholder": "Please list your allergies"
+    },
+    "medications": {
+      "question": "Are you currently taking any medications?",
+      "yes": "Yes",
+      "no": "No",
+      "placeholder": "Please list your medications"
+    },
+    "selfTreated": {
+      "question": "Have you already tried treating this yourself?",
+      "yes": "Yes",
+      "no": "No",
+      "placeholder": "What did you try?"
+    }
+  },
+  "step8": {
+    "title": "Personal details",
+    "subtitle": "These details are medically relevant",
+    "dateOfBirth": "Date of birth",
+    "biologicalSex": "Biological sex",
+    "sexOptions": {
+      "male": "Male",
+      "female": "Female",
+      "diverse": "Diverse"
+    },
+    "additionalNotes": "Any additional information?",
+    "notesPlaceholder": "Anything else you'd like us to know..."
+  },
+  "step9": {
+    "title": "Almost there!",
+    "subtitle": "Sign in or create an account to submit your consultation",
+    "loginTab": "Sign In",
+    "signupTab": "Create Account",
+    "existingAccount": "Already have an account?",
+    "newAccount": "New to Telederm?",
+    "summary": {
+      "title": "Your consultation summary",
+      "concern": "Concern",
+      "location": "Location",
+      "photos": "Photos uploaded"
+    },
+    "consent": "I agree to the terms of service and privacy policy, and consent to the processing of my health data for diagnosis purposes.",
+    "submit": "Submit Consultation"
+  },
+  "step10": {
+    "title": "Consultation submitted!",
+    "subtitle": "Thank you for trusting Telederm",
+    "responseTime": "Expected response time",
+    "responseValue": "Within 24 hours",
+    "nextSteps": {
+      "title": "What happens next?",
+      "step1": "Our dermatologists will review your case",
+      "step2": "You'll receive a notification when your diagnosis is ready",
+      "step3": "View your diagnosis and treatment plan in your dashboard"
+    },
+    "viewDashboard": "Go to Dashboard",
+    "submitAnother": "Submit another consultation"
+  }
+}
