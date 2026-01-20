@@ -116,7 +116,7 @@
         "On-site training"
       ]
     },
-    "cta": "Request Quote"
+    "cta": "Let's Talk"
   },
   "partners": {
     "title": "Trusted by Our Partners",
@@ -177,7 +177,7 @@
     }
   },
   "contact": {
-    "title": "Request a Quote",
+    "title": "Let's Talk",
     "description": "Find out how Telederm can improve skin health in your company. Our business consultants look forward to speaking with you.",
     "form": {
       "company": "Company",
@@ -198,13 +198,13 @@
       },
       "message": "Message (optional)",
       "messagePlaceholder": "Your specific requirements or questions",
-      "submit": "Request Quote",
+      "submit": "Schedule a Call",
       "sending": "Sending..."
     },
     "benefits": {
       "callback": "Callback within 24h",
       "demo": "Free demo",
-      "noObligation": "No-obligation quote"
+      "noObligation": "No-obligation call"
     },
     "success": {
       "title": "Thank you for your inquiry!",
