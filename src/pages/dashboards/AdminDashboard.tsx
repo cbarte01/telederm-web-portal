@@ -15,6 +15,22 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { 
   User, 
   LogOut, 
@@ -29,7 +45,11 @@ import {
   CheckCircle,
   AlertCircle,
   Calendar,
-  Activity
+  Activity,
+  MoreHorizontal,
+  Ban,
+  RefreshCw,
+  Trash2
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import teledermLogo from "@/assets/logo/telederm-logo.png";
@@ -47,6 +67,7 @@ interface Doctor {
   full_name: string | null;
   created_at: string;
   user_id: string;
+  is_active: boolean;
 }
 
 interface PlatformStats {
@@ -79,6 +100,12 @@ const AdminDashboard = () => {
   const [stats, setStats] = useState<PlatformStats | null>(null);
   const [recentConsultations, setRecentConsultations] = useState<RecentConsultation[]>([]);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
+  const [actionInProgress, setActionInProgress] = useState<string | null>(null);
+  const [confirmDialog, setConfirmDialog] = useState<{
+    open: boolean;
+    type: 'deactivate' | 'reactivate' | 'delete';
+    doctor: Doctor | null;
+  }>({ open: false, type: 'deactivate', doctor: null });
 
   const lang = i18n.language === "de" ? "de" : "en";
   const dateLocale = lang === "de" ? de : enUS;
@@ -200,7 +227,7 @@ const AdminDashboard = () => {
       const userIds = doctorRoles.map((r) => r.user_id);
       const { data: profiles, error: profilesError } = await supabase
         .from("profiles")
-        .select("id, full_name")
+        .select("id, full_name, is_active")
         .in("id", userIds);
 
       if (profilesError) throw profilesError;
@@ -212,6 +239,7 @@ const AdminDashboard = () => {
           user_id: role.user_id,
           full_name: profile?.full_name || "Unknown",
           created_at: role.created_at,
+          is_active: profile?.is_active ?? true,
         };
       });
 
@@ -221,6 +249,55 @@ const AdminDashboard = () => {
     } finally {
       setIsLoadingDoctors(false);
     }
+  };
+
+  const handleDoctorAction = async (action: 'deactivate' | 'reactivate' | 'delete', doctor: Doctor) => {
+    setActionInProgress(doctor.id);
+    setConfirmDialog({ open: false, type: action, doctor: null });
+    
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error("Not authenticated");
+      }
+
+      const { data: result, error } = await supabase.functions.invoke("manage-doctor-account", {
+        body: {
+          action,
+          doctor_id: doctor.id,
+        },
+      });
+
+      if (error) throw error;
+      if (result?.error) throw new Error(result.error);
+
+      const messageKey = action === 'deactivate' 
+        ? 'doctorDeactivated' 
+        : action === 'reactivate' 
+          ? 'doctorReactivated' 
+          : 'doctorDeleted';
+
+      toast({
+        title: t(`dashboard.admin.${messageKey}`),
+        description: doctor.full_name || '',
+      });
+
+      fetchDoctors();
+      fetchStats();
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Operation failed";
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: errorMessage,
+      });
+    } finally {
+      setActionInProgress(null);
+    }
+  };
+
+  const openConfirmDialog = (type: 'deactivate' | 'reactivate' | 'delete', doctor: Doctor) => {
+    setConfirmDialog({ open: true, type, doctor });
   };
 
   useEffect(() => {
@@ -598,22 +675,80 @@ const AdminDashboard = () => {
                       <TableHeader>
                         <TableRow>
                           <TableHead>{lang === "de" ? "Name" : "Name"}</TableHead>
+                          <TableHead>{t("dashboard.admin.doctorStatus")}</TableHead>
                           <TableHead>{lang === "de" ? "Erstellt" : "Created"}</TableHead>
+                          <TableHead className="text-right">{t("dashboard.admin.doctorActions")}</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {doctors.map((doctor) => (
-                          <TableRow key={doctor.id}>
+                          <TableRow key={doctor.id} className={!doctor.is_active ? "opacity-60" : ""}>
                             <TableCell className="font-medium">
                               <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                                  <User className="h-4 w-4 text-primary" />
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${doctor.is_active ? "bg-primary/10" : "bg-muted"}`}>
+                                  <User className={`h-4 w-4 ${doctor.is_active ? "text-primary" : "text-muted-foreground"}`} />
                                 </div>
                                 {doctor.full_name}
                               </div>
                             </TableCell>
                             <TableCell>
+                              {doctor.is_active ? (
+                                <Badge variant="outline" className="gap-1 text-green-600 border-green-600">
+                                  <CheckCircle className="h-3 w-3" />
+                                  {t("dashboard.admin.activeStatus")}
+                                </Badge>
+                              ) : (
+                                <Badge variant="secondary" className="gap-1">
+                                  <Ban className="h-3 w-3" />
+                                  {t("dashboard.admin.inactiveStatus")}
+                                </Badge>
+                              )}
+                            </TableCell>
+                            <TableCell>
                               {format(new Date(doctor.created_at), "PP", { locale: dateLocale })}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="icon" 
+                                    disabled={actionInProgress === doctor.id}
+                                  >
+                                    {actionInProgress === doctor.id ? (
+                                      <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                      <MoreHorizontal className="h-4 w-4" />
+                                    )}
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  {doctor.is_active ? (
+                                    <DropdownMenuItem 
+                                      onClick={() => openConfirmDialog('deactivate', doctor)}
+                                      className="gap-2"
+                                    >
+                                      <Ban className="h-4 w-4" />
+                                      {t("dashboard.admin.deactivateDoctor")}
+                                    </DropdownMenuItem>
+                                  ) : (
+                                    <DropdownMenuItem 
+                                      onClick={() => openConfirmDialog('reactivate', doctor)}
+                                      className="gap-2"
+                                    >
+                                      <RefreshCw className="h-4 w-4" />
+                                      {t("dashboard.admin.reactivateDoctor")}
+                                    </DropdownMenuItem>
+                                  )}
+                                  <DropdownMenuItem 
+                                    onClick={() => openConfirmDialog('delete', doctor)}
+                                    className="gap-2 text-destructive focus:text-destructive"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                    {t("dashboard.admin.deleteDoctor")}
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
                             </TableCell>
                           </TableRow>
                         ))}
@@ -623,6 +758,35 @@ const AdminDashboard = () => {
                 </CardContent>
               </Card>
             </div>
+
+            {/* Confirmation Dialog */}
+            <AlertDialog open={confirmDialog.open} onOpenChange={(open) => setConfirmDialog(prev => ({ ...prev, open }))}>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    {confirmDialog.type === 'deactivate' && (t("dashboard.admin.deactivateDoctor"))}
+                    {confirmDialog.type === 'reactivate' && (t("dashboard.admin.reactivateDoctor"))}
+                    {confirmDialog.type === 'delete' && (t("dashboard.admin.deleteDoctor"))}
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {confirmDialog.type === 'deactivate' && t("dashboard.admin.confirmDeactivate")}
+                    {confirmDialog.type === 'reactivate' && t("dashboard.admin.confirmReactivate")}
+                    {confirmDialog.type === 'delete' && t("dashboard.admin.confirmDelete")}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{lang === "de" ? "Abbrechen" : "Cancel"}</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => confirmDialog.doctor && handleDoctorAction(confirmDialog.type, confirmDialog.doctor)}
+                    className={confirmDialog.type === 'delete' ? "bg-destructive hover:bg-destructive/90" : ""}
+                  >
+                    {confirmDialog.type === 'deactivate' && t("dashboard.admin.deactivateDoctor")}
+                    {confirmDialog.type === 'reactivate' && t("dashboard.admin.reactivateDoctor")}
+                    {confirmDialog.type === 'delete' && t("dashboard.admin.deleteDoctor")}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </TabsContent>
         </Tabs>
       </main>
