@@ -116,7 +116,7 @@
         "Vor-Ort Schulungen"
       ]
     },
-    "cta": "Angebot anfordern"
+    "cta": "Lassen Sie uns sprechen"
   },
   "partners": {
     "title": "Unsere Partner vertrauen uns",
@@ -177,7 +177,7 @@
     }
   },
   "contact": {
-    "title": "Jetzt unverbindlich anfragen",
+    "title": "Lassen Sie uns sprechen",
     "description": "Erfahren Sie, wie Telederm die Hautgesundheit in Ihrem Unternehmen verbessern kann. Unsere Unternehmensberater freuen sich auf Ihr Gespräch.",
     "form": {
       "company": "Unternehmen",
@@ -198,13 +198,13 @@
       },
       "message": "Nachricht (optional)",
       "messagePlaceholder": "Ihre spezifischen Anforderungen oder Fragen",
-      "submit": "Angebot anfordern",
+      "submit": "Gespräch vereinbaren",
       "sending": "Wird gesendet..."
     },
     "benefits": {
       "callback": "Rückruf innerhalb von 24h",
       "demo": "Kostenlose Demo",
-      "noObligation": "Unverbindliches Angebot"
+      "noObligation": "Unverbindliches Gespräch"
     },
     "success": {
       "title": "Vielen Dank für Ihre Anfrage!",

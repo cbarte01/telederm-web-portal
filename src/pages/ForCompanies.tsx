@@ -18,12 +18,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -86,8 +80,6 @@ const ForCompanies = () => {
     { key: "t2" },
     { key: "t3" },
   ];
-
-  const faqItems = ["q1", "q2", "q3", "q4", "q5", "q6"];
 
   return (
     <div className="min-h-screen bg-background companies-theme">
@@ -301,131 +293,6 @@ const ForCompanies = () => {
         </div>
       </section>
 
-      {/* Packages Section */}
-      <section id="packages" className="py-20 md:py-28 bg-background">
-        <div className="container">
-          <ScrollReveal>
-            <div className="text-center mb-16">
-              <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
-                {t("packages.title")}
-              </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                {t("packages.description")}
-              </p>
-            </div>
-          </ScrollReveal>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {/* Starter Package */}
-            <ScrollReveal delay={0}>
-              <div className="relative bg-card rounded-2xl p-8 border border-border hover:border-primary/30 transition-all duration-300 h-full flex flex-col">
-                <div className="mb-6">
-                  <h3 className="text-2xl font-bold text-foreground mb-2">
-                    {t("packages.basic.name")}
-                  </h3>
-                  <p className="text-muted-foreground text-sm mb-4">
-                    {t("packages.basic.description")}
-                  </p>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-bold text-foreground">{t("packages.basic.price")}</span>
-                    <span className="text-muted-foreground">{t("packages.perEmployee")}</span>
-                  </div>
-                </div>
-                
-                <ul className="space-y-3 mb-8 flex-1">
-                  {(t("packages.basic.features", { returnObjects: true }) as string[]).map((feature, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                      <span className="text-foreground">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-                >
-                  {t("packages.cta")}
-                </Button>
-              </div>
-            </ScrollReveal>
-
-            {/* Professional Package - Featured */}
-            <ScrollReveal delay={100}>
-              <div className="relative bg-card rounded-2xl p-8 border-2 border-primary shadow-xl h-full flex flex-col">
-                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground">
-                  Beliebteste Wahl
-                </Badge>
-                
-                <div className="mb-6">
-                  <h3 className="text-2xl font-bold text-foreground mb-2">
-                    {t("packages.professional.name")}
-                  </h3>
-                  <p className="text-muted-foreground text-sm mb-4">
-                    {t("packages.professional.description")}
-                  </p>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-bold text-foreground">{t("packages.professional.price")}</span>
-                    <span className="text-muted-foreground">{t("packages.perEmployee")}</span>
-                  </div>
-                </div>
-                
-                <ul className="space-y-3 mb-8 flex-1">
-                  {(t("packages.professional.features", { returnObjects: true }) as string[]).map((feature, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                      <span className="text-foreground">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                
-                <Button 
-                  className="w-full"
-                  onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-                >
-                  {t("packages.cta")}
-                </Button>
-              </div>
-            </ScrollReveal>
-
-            {/* Enterprise Package */}
-            <ScrollReveal delay={200}>
-              <div className="relative bg-card rounded-2xl p-8 border border-border hover:border-primary/30 transition-all duration-300 h-full flex flex-col">
-                <div className="mb-6">
-                  <h3 className="text-2xl font-bold text-foreground mb-2">
-                    {t("packages.enterprise.name")}
-                  </h3>
-                  <p className="text-muted-foreground text-sm mb-4">
-                    {t("packages.enterprise.description")}
-                  </p>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-bold text-foreground">{t("packages.enterprise.price")}</span>
-                  </div>
-                </div>
-                
-                <ul className="space-y-3 mb-8 flex-1">
-                  {(t("packages.enterprise.features", { returnObjects: true }) as string[]).map((feature, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                      <span className="text-foreground">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-                >
-                  {t("packages.cta")}
-                </Button>
-              </div>
-            </ScrollReveal>
-          </div>
-        </div>
-      </section>
-
       {/* Testimonials Section */}
       <section className="py-20 md:py-28 bg-muted/30">
         <div className="container">
@@ -466,42 +333,6 @@ const ForCompanies = () => {
                 </div>
               </ScrollReveal>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section id="faq" className="py-20 md:py-28 bg-background">
-        <div className="container">
-          <ScrollReveal>
-            <div className="text-center mb-16">
-              <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
-                {t("faq.title")}
-              </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                {t("faq.description")}
-              </p>
-            </div>
-          </ScrollReveal>
-
-          <div className="max-w-3xl mx-auto">
-            <Accordion type="single" collapsible className="space-y-4">
-              {faqItems.map((item, index) => (
-                <ScrollReveal key={item} delay={index * 50}>
-                  <AccordionItem
-                    value={item}
-                    className="bg-card rounded-xl border border-border px-6 data-[state=open]:border-primary/30"
-                  >
-                    <AccordionTrigger className="text-left font-semibold text-foreground hover:no-underline py-5">
-                      {t(`faq.questions.${item}.question`)}
-                    </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground pb-5">
-                      {t(`faq.questions.${item}.answer`)}
-                    </AccordionContent>
-                  </AccordionItem>
-                </ScrollReveal>
-              ))}
-            </Accordion>
           </div>
         </div>
       </section>
