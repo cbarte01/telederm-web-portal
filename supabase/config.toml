@@ -1,1 +1,7 @@
 project_id = "vhkjwtwtroiqmdjlvwqd"
+
+[functions.create-doctor-account]
+verify_jwt = false
+
+[functions.seed-admin]
+verify_jwt = false
