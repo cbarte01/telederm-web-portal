@@ -41,6 +41,13 @@ Deno.serve(async (req) => {
         )
       }
 
+      // Remove any auto-assigned patient role first
+      await supabaseAdmin
+        .from('user_roles')
+        .delete()
+        .eq('user_id', existingAdmin.id)
+        .eq('role', 'patient')
+
       // Assign admin role to existing user
       const { error: roleError } = await supabaseAdmin
         .from('user_roles')
@@ -71,6 +78,13 @@ Deno.serve(async (req) => {
     if (profileError) {
       console.error('Profile creation error:', profileError)
     }
+
+    // Remove auto-assigned patient role (from trigger)
+    await supabaseAdmin
+      .from('user_roles')
+      .delete()
+      .eq('user_id', newUser.user.id)
+      .eq('role', 'patient')
 
     // Assign admin role
     const { error: roleError } = await supabaseAdmin
