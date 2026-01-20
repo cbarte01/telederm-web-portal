@@ -13,6 +13,7 @@ import ConsultationDetail from "./doctor/ConsultationDetail";
 interface Consultation {
   id: string;
   patient_id: string;
+  doctor_id: string | null;
   status: string;
   concern_category: string | null;
   body_locations: string[] | null;
@@ -61,6 +62,7 @@ const DoctorDashboard = () => {
       .select(`
         id,
         patient_id,
+        doctor_id,
         status,
         concern_category,
         body_locations,

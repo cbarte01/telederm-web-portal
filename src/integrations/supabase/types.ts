@@ -142,6 +142,9 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string
+          doctor_queue_type:
+            | Database["public"]["Enums"]["doctor_queue_type"]
+            | null
           full_name: string | null
           id: string
           is_active: boolean | null
@@ -151,6 +154,9 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           created_at?: string
+          doctor_queue_type?:
+            | Database["public"]["Enums"]["doctor_queue_type"]
+            | null
           full_name?: string | null
           id: string
           is_active?: boolean | null
@@ -160,6 +166,9 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           created_at?: string
+          doctor_queue_type?:
+            | Database["public"]["Enums"]["doctor_queue_type"]
+            | null
           full_name?: string | null
           id?: string
           is_active?: boolean | null
@@ -194,6 +203,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_doctor_queue_type: {
+        Args: { _user_id: string }
+        Returns: Database["public"]["Enums"]["doctor_queue_type"]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -210,6 +223,7 @@ export type Database = {
         | "in_review"
         | "completed"
         | "cancelled"
+      doctor_queue_type: "group" | "individual" | "hybrid"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -345,6 +359,7 @@ export const Constants = {
         "completed",
         "cancelled",
       ],
+      doctor_queue_type: ["group", "individual", "hybrid"],
     },
   },
 } as const

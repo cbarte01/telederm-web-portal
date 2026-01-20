@@ -68,6 +68,7 @@ interface Doctor {
   created_at: string;
   user_id: string;
   is_active: boolean;
+  doctor_queue_type: 'group' | 'individual' | 'hybrid' | null;
 }
 
 interface PlatformStats {
@@ -227,7 +228,7 @@ const AdminDashboard = () => {
       const userIds = doctorRoles.map((r) => r.user_id);
       const { data: profiles, error: profilesError } = await supabase
         .from("profiles")
-        .select("id, full_name, is_active")
+        .select("id, full_name, is_active, doctor_queue_type")
         .in("id", userIds);
 
       if (profilesError) throw profilesError;
@@ -240,6 +241,7 @@ const AdminDashboard = () => {
           full_name: profile?.full_name || "Unknown",
           created_at: role.created_at,
           is_active: profile?.is_active ?? true,
+          doctor_queue_type: (profile?.doctor_queue_type as 'group' | 'individual' | 'hybrid' | null) ?? 'group',
         };
       });
 
@@ -298,6 +300,44 @@ const AdminDashboard = () => {
 
   const openConfirmDialog = (type: 'deactivate' | 'reactivate' | 'delete', doctor: Doctor) => {
     setConfirmDialog({ open: true, type, doctor });
+  };
+
+  const handleUpdateQueueType = async (doctorId: string, queueType: 'group' | 'individual' | 'hybrid') => {
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ doctor_queue_type: queueType })
+        .eq("id", doctorId);
+
+      if (error) throw error;
+
+      toast({
+        title: t("dashboard.admin.queueTypeUpdated"),
+      });
+
+      fetchDoctors();
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to update queue type";
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: errorMessage,
+      });
+    }
+  };
+
+  const getQueueTypeBadge = (queueType: 'group' | 'individual' | 'hybrid' | null) => {
+    const type = queueType || 'group';
+    const colors = {
+      group: "bg-blue-100 text-blue-700 border-blue-200",
+      individual: "bg-purple-100 text-purple-700 border-purple-200",
+      hybrid: "bg-teal-100 text-teal-700 border-teal-200",
+    };
+    return (
+      <Badge variant="outline" className={`gap-1 ${colors[type]}`}>
+        {t(`dashboard.admin.queueType${type.charAt(0).toUpperCase() + type.slice(1)}`)}
+      </Badge>
+    );
   };
 
   useEffect(() => {
@@ -675,6 +715,7 @@ const AdminDashboard = () => {
                       <TableHeader>
                         <TableRow>
                           <TableHead>{lang === "de" ? "Name" : "Name"}</TableHead>
+                          <TableHead>{t("dashboard.admin.queueType")}</TableHead>
                           <TableHead>{t("dashboard.admin.doctorStatus")}</TableHead>
                           <TableHead>{lang === "de" ? "Erstellt" : "Created"}</TableHead>
                           <TableHead className="text-right">{t("dashboard.admin.doctorActions")}</TableHead>
@@ -692,17 +733,33 @@ const AdminDashboard = () => {
                               </div>
                             </TableCell>
                             <TableCell>
-                              {doctor.is_active ? (
-                                <Badge variant="outline" className="gap-1 text-green-600 border-green-600">
-                                  <CheckCircle className="h-3 w-3" />
-                                  {t("dashboard.admin.activeStatus")}
-                                </Badge>
-                              ) : (
-                                <Badge variant="secondary" className="gap-1">
-                                  <Ban className="h-3 w-3" />
-                                  {t("dashboard.admin.inactiveStatus")}
-                                </Badge>
-                              )}
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" size="sm" className="h-auto py-1 px-2">
+                                    {getQueueTypeBadge(doctor.doctor_queue_type)}
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="start">
+                                  <DropdownMenuItem onClick={() => handleUpdateQueueType(doctor.id, 'group')}>
+                                    <div>
+                                      <div className="font-medium">{t("dashboard.admin.queueTypeGroup")}</div>
+                                      <div className="text-xs text-muted-foreground">{t("dashboard.admin.queueTypeGroupDesc")}</div>
+                                    </div>
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => handleUpdateQueueType(doctor.id, 'individual')}>
+                                    <div>
+                                      <div className="font-medium">{t("dashboard.admin.queueTypeIndividual")}</div>
+                                      <div className="text-xs text-muted-foreground">{t("dashboard.admin.queueTypeIndividualDesc")}</div>
+                                    </div>
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => handleUpdateQueueType(doctor.id, 'hybrid')}>
+                                    <div>
+                                      <div className="font-medium">{t("dashboard.admin.queueTypeHybrid")}</div>
+                                      <div className="text-xs text-muted-foreground">{t("dashboard.admin.queueTypeHybridDesc")}</div>
+                                    </div>
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
                             </TableCell>
                             <TableCell>
                               {format(new Date(doctor.created_at), "PP", { locale: dateLocale })}

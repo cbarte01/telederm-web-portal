@@ -10,12 +10,15 @@ import {
   AlertCircle, 
   Calendar,
   ChevronRight,
-  Inbox
+  Inbox,
+  UserCheck,
+  Users
 } from "lucide-react";
 
 interface Consultation {
   id: string;
   patient_id: string;
+  doctor_id: string | null;
   status: string;
   concern_category: string | null;
   body_locations: string[] | null;
@@ -198,7 +201,19 @@ const ConsultationQueue = ({
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3">
+                    {/* Assignment status indicator */}
+                    {consultation.doctor_id === null ? (
+                      <Badge variant="outline" className="text-xs gap-1 text-blue-600 border-blue-600">
+                        <Users className="h-3 w-3" />
+                        {lang === "de" ? "Pool" : "Pool"}
+                      </Badge>
+                    ) : (
+                      <Badge variant="secondary" className="text-xs gap-1">
+                        <UserCheck className="h-3 w-3" />
+                        {lang === "de" ? "Ihr Fall" : "Your Case"}
+                      </Badge>
+                    )}
                     {activeTab === "pending" && (
                       <Badge variant="secondary" className="text-xs">
                         {getTimeSinceSubmission(consultation.submitted_at || consultation.created_at)}
