@@ -56,12 +56,15 @@ export type Database = {
           concern_category: string | null
           created_at: string
           date_of_birth: string | null
+          doctor_id: string | null
+          doctor_response: string | null
           has_allergies: boolean | null
           has_changed: boolean | null
           has_self_treated: boolean | null
           id: string
           medications_description: string | null
           patient_id: string | null
+          responded_at: string | null
           self_treatment_description: string | null
           status: Database["public"]["Enums"]["consultation_status"]
           submitted_at: string | null
@@ -80,12 +83,15 @@ export type Database = {
           concern_category?: string | null
           created_at?: string
           date_of_birth?: string | null
+          doctor_id?: string | null
+          doctor_response?: string | null
           has_allergies?: boolean | null
           has_changed?: boolean | null
           has_self_treated?: boolean | null
           id?: string
           medications_description?: string | null
           patient_id?: string | null
+          responded_at?: string | null
           self_treatment_description?: string | null
           status?: Database["public"]["Enums"]["consultation_status"]
           submitted_at?: string | null
@@ -104,12 +110,15 @@ export type Database = {
           concern_category?: string | null
           created_at?: string
           date_of_birth?: string | null
+          doctor_id?: string | null
+          doctor_response?: string | null
           has_allergies?: boolean | null
           has_changed?: boolean | null
           has_self_treated?: boolean | null
           id?: string
           medications_description?: string | null
           patient_id?: string | null
+          responded_at?: string | null
           self_treatment_description?: string | null
           status?: Database["public"]["Enums"]["consultation_status"]
           submitted_at?: string | null

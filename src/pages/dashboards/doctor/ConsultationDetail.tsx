@@ -1,0 +1,448 @@
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { format } from "date-fns";
+import { de, enUS } from "date-fns/locale";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { 
+  ArrowLeft, 
+  User, 
+  Calendar, 
+  MapPin, 
+  AlertCircle,
+  Pill,
+  FileText,
+  Clock,
+  Send,
+  Image as ImageIcon
+} from "lucide-react";
+
+interface ConsultationPhoto {
+  id: string;
+  photo_type: string;
+  storage_path: string;
+}
+
+interface Consultation {
+  id: string;
+  patient_id: string;
+  status: string;
+  concern_category: string | null;
+  body_locations: string[] | null;
+  symptoms: string[] | null;
+  symptom_severity: string | null;
+  symptom_onset: string | null;
+  has_changed: boolean | null;
+  change_description: string | null;
+  has_allergies: boolean | null;
+  allergies_description: string | null;
+  takes_medications: boolean | null;
+  medications_description: string | null;
+  has_self_treated: boolean | null;
+  self_treatment_description: string | null;
+  date_of_birth: string | null;
+  biological_sex: string | null;
+  additional_notes: string | null;
+  created_at: string;
+  submitted_at: string | null;
+  doctor_response: string | null;
+  responded_at: string | null;
+  profiles?: { full_name: string | null } | null;
+}
+
+interface ConsultationDetailProps {
+  consultation: Consultation;
+  photos: ConsultationPhoto[];
+  onBack: () => void;
+  onUpdate: () => void;
+}
+
+const concernLabels: Record<string, { en: string; de: string }> = {
+  skin: { en: "Skin Conditions", de: "Hauterkrankungen" },
+  hair: { en: "Hair & Scalp", de: "Haare & Kopfhaut" },
+  nails: { en: "Nail Problems", de: "Nagelprobleme" },
+  infections: { en: "Infections", de: "Infektionen" },
+  allergies: { en: "Allergies & Reactions", de: "Allergien & Reaktionen" },
+  pigmentation: { en: "Pigmentation", de: "Pigmentierung" },
+};
+
+const symptomLabels: Record<string, { en: string; de: string }> = {
+  itching: { en: "Itching", de: "Juckreiz" },
+  burning: { en: "Burning", de: "Brennen" },
+  pain: { en: "Pain", de: "Schmerzen" },
+  bleeding: { en: "Bleeding", de: "Blutung" },
+  discharge: { en: "Discharge", de: "Ausfluss" },
+  swelling: { en: "Swelling", de: "Schwellung" },
+  redness: { en: "Redness", de: "Rötung" },
+  scaling: { en: "Scaling", de: "Schuppung" },
+};
+
+const onsetLabels: Record<string, { en: string; de: string }> = {
+  "days": { en: "A few days ago", de: "Vor einigen Tagen" },
+  "weeks": { en: "1-4 weeks ago", de: "Vor 1-4 Wochen" },
+  "months": { en: "1-6 months ago", de: "Vor 1-6 Monaten" },
+  "over_6_months": { en: "Over 6 months ago", de: "Vor über 6 Monaten" },
+  "years": { en: "Years ago", de: "Vor Jahren" },
+};
+
+const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: ConsultationDetailProps) => {
+  const { i18n } = useTranslation();
+  const { toast } = useToast();
+  const [response, setResponse] = useState(consultation.doctor_response || "");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [photoUrls, setPhotoUrls] = useState<Record<string, string>>({});
+  
+  const lang = i18n.language === "de" ? "de" : "en";
+  const dateLocale = lang === "de" ? de : enUS;
+
+  // Load photo URLs
+  useState(() => {
+    const loadPhotos = async () => {
+      const urls: Record<string, string> = {};
+      for (const photo of photos) {
+        const { data } = await supabase.storage
+          .from("consultation-photos")
+          .createSignedUrl(photo.storage_path, 3600);
+        if (data?.signedUrl) {
+          urls[photo.id] = data.signedUrl;
+        }
+      }
+      setPhotoUrls(urls);
+    };
+    loadPhotos();
+  });
+
+  const handleSubmitResponse = async (newStatus: "in_review" | "completed") => {
+    if (!response.trim() && newStatus === "completed") {
+      toast({
+        title: lang === "de" ? "Fehler" : "Error",
+        description: lang === "de" 
+          ? "Bitte geben Sie eine Antwort ein, bevor Sie den Fall abschließen." 
+          : "Please enter a response before completing the case.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    
+    const { error } = await supabase
+      .from("consultations")
+      .update({
+        status: newStatus,
+        doctor_response: response.trim() || null,
+        responded_at: newStatus === "completed" ? new Date().toISOString() : null,
+      })
+      .eq("id", consultation.id);
+
+    setIsSubmitting(false);
+
+    if (error) {
+      toast({
+        title: lang === "de" ? "Fehler" : "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: lang === "de" ? "Erfolgreich" : "Success",
+      description: newStatus === "completed"
+        ? (lang === "de" ? "Antwort gesendet und Fall abgeschlossen." : "Response sent and case completed.")
+        : (lang === "de" ? "Entwurf gespeichert." : "Draft saved."),
+    });
+    
+    onUpdate();
+  };
+
+  const calculateAge = (dob: string) => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const patientName = consultation.profiles?.full_name || (lang === "de" ? "Unbekannt" : "Unknown");
+  const patientAge = consultation.date_of_birth ? calculateAge(consultation.date_of_birth) : null;
+  const patientSex = consultation.biological_sex === "male" 
+    ? (lang === "de" ? "Männlich" : "Male") 
+    : consultation.biological_sex === "female" 
+      ? (lang === "de" ? "Weiblich" : "Female")
+      : null;
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center gap-4">
+        <Button variant="ghost" size="sm" onClick={onBack} className="gap-2">
+          <ArrowLeft className="h-4 w-4" />
+          {lang === "de" ? "Zurück" : "Back"}
+        </Button>
+        <div className="flex-1">
+          <h2 className="text-2xl font-bold text-foreground">
+            {consultation.concern_category 
+              ? concernLabels[consultation.concern_category]?.[lang] || consultation.concern_category
+              : (lang === "de" ? "Dermatologische Anfrage" : "Dermatology Consultation")}
+          </h2>
+          <p className="text-muted-foreground text-sm">
+            {lang === "de" ? "Eingereicht am" : "Submitted"}{" "}
+            {format(new Date(consultation.submitted_at || consultation.created_at), "PPP", { locale: dateLocale })}
+          </p>
+        </div>
+        <Badge variant={consultation.status === "completed" ? "default" : "secondary"}>
+          {consultation.status === "submitted" && (lang === "de" ? "Neu" : "New")}
+          {consultation.status === "in_review" && (lang === "de" ? "In Bearbeitung" : "In Review")}
+          {consultation.status === "completed" && (lang === "de" ? "Abgeschlossen" : "Completed")}
+        </Badge>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* Left Column - Patient Info & Medical History */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Patient Overview */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <User className="h-5 w-5 text-primary" />
+                {lang === "de" ? "Patientenübersicht" : "Patient Overview"}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-4 sm:grid-cols-2">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <User className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">{lang === "de" ? "Name" : "Name"}</p>
+                  <p className="font-medium">{patientName}</p>
+                </div>
+              </div>
+              {patientAge && (
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Calendar className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">{lang === "de" ? "Alter" : "Age"}</p>
+                    <p className="font-medium">{patientAge} {lang === "de" ? "Jahre" : "years"}{patientSex && ` • ${patientSex}`}</p>
+                  </div>
+                </div>
+              )}
+              {consultation.body_locations && consultation.body_locations.length > 0 && (
+                <div className="flex items-center gap-3 sm:col-span-2">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <MapPin className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">{lang === "de" ? "Betroffene Bereiche" : "Affected Areas"}</p>
+                    <p className="font-medium">{consultation.body_locations.join(", ")}</p>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Symptoms */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <AlertCircle className="h-5 w-5 text-primary" />
+                {lang === "de" ? "Symptome & Verlauf" : "Symptoms & Timeline"}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {consultation.symptoms && (consultation.symptoms as string[]).length > 0 && (
+                <div>
+                  <p className="text-sm text-muted-foreground mb-2">{lang === "de" ? "Symptome" : "Symptoms"}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {(consultation.symptoms as string[]).map((symptom) => (
+                      <Badge key={symptom} variant="outline">
+                        {symptomLabels[symptom]?.[lang] || symptom}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {consultation.symptom_severity && (
+                <div>
+                  <p className="text-sm text-muted-foreground">{lang === "de" ? "Schweregrad" : "Severity"}</p>
+                  <p className="font-medium capitalize">{consultation.symptom_severity}</p>
+                </div>
+              )}
+              {consultation.symptom_onset && (
+                <div>
+                  <p className="text-sm text-muted-foreground">{lang === "de" ? "Beginn" : "Onset"}</p>
+                  <p className="font-medium">{onsetLabels[consultation.symptom_onset]?.[lang] || consultation.symptom_onset}</p>
+                </div>
+              )}
+              {consultation.has_changed && consultation.change_description && (
+                <div>
+                  <p className="text-sm text-muted-foreground">{lang === "de" ? "Veränderungen" : "Changes"}</p>
+                  <p className="font-medium">{consultation.change_description}</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Medical History */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Pill className="h-5 w-5 text-primary" />
+                {lang === "de" ? "Medizinische Vorgeschichte" : "Medical History"}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <p className="text-sm text-muted-foreground">{lang === "de" ? "Allergien" : "Allergies"}</p>
+                  <p className="font-medium">
+                    {consultation.has_allergies 
+                      ? consultation.allergies_description || (lang === "de" ? "Ja" : "Yes")
+                      : (lang === "de" ? "Keine bekannt" : "None known")}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">{lang === "de" ? "Medikamente" : "Medications"}</p>
+                  <p className="font-medium">
+                    {consultation.takes_medications 
+                      ? consultation.medications_description || (lang === "de" ? "Ja" : "Yes")
+                      : (lang === "de" ? "Keine" : "None")}
+                  </p>
+                </div>
+                {consultation.has_self_treated && (
+                  <div className="sm:col-span-2">
+                    <p className="text-sm text-muted-foreground">{lang === "de" ? "Selbstbehandlung" : "Self-Treatment"}</p>
+                    <p className="font-medium">{consultation.self_treatment_description || (lang === "de" ? "Ja" : "Yes")}</p>
+                  </div>
+                )}
+              </div>
+              {consultation.additional_notes && (
+                <div>
+                  <p className="text-sm text-muted-foreground">{lang === "de" ? "Zusätzliche Hinweise" : "Additional Notes"}</p>
+                  <p className="font-medium">{consultation.additional_notes}</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Photos */}
+          {photos.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <ImageIcon className="h-5 w-5 text-primary" />
+                  {lang === "de" ? "Fotos" : "Photos"} ({photos.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4 grid-cols-2 sm:grid-cols-3">
+                  {photos.map((photo) => (
+                    <div key={photo.id} className="relative aspect-square rounded-lg overflow-hidden bg-muted">
+                      {photoUrls[photo.id] ? (
+                        <img 
+                          src={photoUrls[photo.id]} 
+                          alt={photo.photo_type}
+                          className="w-full h-full object-cover cursor-pointer hover:opacity-90 transition-opacity"
+                          onClick={() => window.open(photoUrls[photo.id], "_blank")}
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Clock className="h-6 w-6 text-muted-foreground animate-pulse" />
+                        </div>
+                      )}
+                      <Badge 
+                        variant="secondary" 
+                        className="absolute bottom-2 left-2 text-xs"
+                      >
+                        {photo.photo_type === "close" ? (lang === "de" ? "Nahaufnahme" : "Close-up") :
+                         photo.photo_type === "overview" ? (lang === "de" ? "Übersicht" : "Overview") :
+                         photo.photo_type === "context" ? (lang === "de" ? "Kontext" : "Context") : photo.photo_type}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+
+        {/* Right Column - Response */}
+        <div className="space-y-6">
+          <Card className="sticky top-6">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <FileText className="h-5 w-5 text-primary" />
+                {lang === "de" ? "Ärztliche Stellungnahme" : "Doctor's Response"}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {consultation.status === "completed" ? (
+                <div className="space-y-4">
+                  <div className="p-4 bg-muted rounded-lg">
+                    <p className="whitespace-pre-wrap">{consultation.doctor_response}</p>
+                  </div>
+                  {consultation.responded_at && (
+                    <p className="text-sm text-muted-foreground">
+                      {lang === "de" ? "Beantwortet am" : "Responded"}{" "}
+                      {format(new Date(consultation.responded_at), "PPP", { locale: dateLocale })}
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="response">
+                      {lang === "de" ? "Ihre Diagnose & Empfehlung" : "Your Diagnosis & Recommendation"}
+                    </Label>
+                    <Textarea
+                      id="response"
+                      value={response}
+                      onChange={(e) => setResponse(e.target.value)}
+                      placeholder={lang === "de" 
+                        ? "Geben Sie Ihre professionelle Einschätzung ein..." 
+                        : "Enter your professional assessment..."}
+                      className="min-h-[200px] resize-none"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Button 
+                      onClick={() => handleSubmitResponse("completed")}
+                      disabled={isSubmitting || !response.trim()}
+                      className="w-full gap-2"
+                    >
+                      <Send className="h-4 w-4" />
+                      {isSubmitting 
+                        ? (lang === "de" ? "Wird gesendet..." : "Sending...")
+                        : (lang === "de" ? "Antwort senden & abschließen" : "Send Response & Complete")}
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      onClick={() => handleSubmitResponse("in_review")}
+                      disabled={isSubmitting}
+                      className="w-full"
+                    >
+                      {lang === "de" ? "Als Entwurf speichern" : "Save as Draft"}
+                    </Button>
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ConsultationDetail;
