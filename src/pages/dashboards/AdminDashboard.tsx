@@ -71,6 +71,15 @@ interface Doctor {
   doctor_queue_type: 'group' | 'individual' | 'hybrid' | null;
 }
 
+interface Patient {
+  id: string;
+  full_name: string | null;
+  created_at: string;
+  is_active: boolean;
+  closedCases: number;
+  ongoingCases: number;
+}
+
 interface PlatformStats {
   totalPatients: number;
   totalDoctors: number;
@@ -97,7 +106,9 @@ const AdminDashboard = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [patients, setPatients] = useState<Patient[]>([]);
   const [isLoadingDoctors, setIsLoadingDoctors] = useState(true);
+  const [isLoadingPatients, setIsLoadingPatients] = useState(true);
   const [stats, setStats] = useState<PlatformStats | null>(null);
   const [recentConsultations, setRecentConsultations] = useState<RecentConsultation[]>([]);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
@@ -105,8 +116,9 @@ const AdminDashboard = () => {
   const [confirmDialog, setConfirmDialog] = useState<{
     open: boolean;
     type: 'deactivate' | 'reactivate' | 'delete';
-    doctor: Doctor | null;
-  }>({ open: false, type: 'deactivate', doctor: null });
+    target: Doctor | Patient | null;
+    targetType: 'doctor' | 'patient';
+  }>({ open: false, type: 'deactivate', target: null, targetType: 'doctor' });
 
   const lang = i18n.language === "de" ? "de" : "en";
   const dateLocale = lang === "de" ? de : enUS;
@@ -249,13 +261,72 @@ const AdminDashboard = () => {
     } catch (err) {
       console.error("Error fetching doctors:", err);
     } finally {
-      setIsLoadingDoctors(false);
+    setIsLoadingDoctors(false);
+    }
+  };
+
+  const fetchPatients = async () => {
+    try {
+      const { data: patientRoles, error: rolesError } = await supabase
+        .from("user_roles")
+        .select("user_id, created_at")
+        .eq("role", "patient");
+
+      if (rolesError) throw rolesError;
+
+      if (!patientRoles || patientRoles.length === 0) {
+        setPatients([]);
+        setIsLoadingPatients(false);
+        return;
+      }
+
+      const userIds = patientRoles.map((r) => r.user_id);
+      
+      // Get profiles
+      const { data: profiles, error: profilesError } = await supabase
+        .from("profiles")
+        .select("id, full_name, is_active")
+        .in("id", userIds);
+
+      if (profilesError) throw profilesError;
+
+      // Get consultation counts per patient
+      const { data: consultations, error: consultError } = await supabase
+        .from("consultations")
+        .select("patient_id, status")
+        .in("patient_id", userIds)
+        .neq("status", "draft");
+
+      if (consultError) throw consultError;
+
+      // Build patient list with consultation counts
+      const patientsList = patientRoles.map((role) => {
+        const profile = profiles?.find((p) => p.id === role.user_id);
+        const patientConsultations = consultations?.filter(c => c.patient_id === role.user_id) || [];
+        const closedCases = patientConsultations.filter(c => c.status === "completed" || c.status === "cancelled").length;
+        const ongoingCases = patientConsultations.filter(c => c.status === "submitted" || c.status === "in_review").length;
+        
+        return {
+          id: role.user_id,
+          full_name: profile?.full_name || "Unknown",
+          created_at: role.created_at,
+          is_active: profile?.is_active ?? true,
+          closedCases,
+          ongoingCases,
+        };
+      });
+
+      setPatients(patientsList);
+    } catch (err) {
+      console.error("Error fetching patients:", err);
+    } finally {
+      setIsLoadingPatients(false);
     }
   };
 
   const handleDoctorAction = async (action: 'deactivate' | 'reactivate' | 'delete', doctor: Doctor) => {
     setActionInProgress(doctor.id);
-    setConfirmDialog({ open: false, type: action, doctor: null });
+    setConfirmDialog({ open: false, type: action, target: null, targetType: 'doctor' });
     
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -298,8 +369,53 @@ const AdminDashboard = () => {
     }
   };
 
-  const openConfirmDialog = (type: 'deactivate' | 'reactivate' | 'delete', doctor: Doctor) => {
-    setConfirmDialog({ open: true, type, doctor });
+  const handlePatientAction = async (action: 'deactivate' | 'reactivate' | 'delete', patient: Patient) => {
+    setActionInProgress(patient.id);
+    setConfirmDialog({ open: false, type: action, target: null, targetType: 'patient' });
+    
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error("Not authenticated");
+      }
+
+      const { data: result, error } = await supabase.functions.invoke("manage-patient-account", {
+        body: {
+          action,
+          patient_id: patient.id,
+        },
+      });
+
+      if (error) throw error;
+      if (result?.error) throw new Error(result.error);
+
+      const messageKey = action === 'deactivate' 
+        ? 'patientDeactivated' 
+        : action === 'reactivate' 
+          ? 'patientReactivated' 
+          : 'patientDeleted';
+
+      toast({
+        title: t(`dashboard.admin.${messageKey}`),
+        description: patient.full_name || '',
+      });
+
+      fetchPatients();
+      fetchStats();
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Operation failed";
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: errorMessage,
+      });
+    } finally {
+      setActionInProgress(null);
+    }
+  };
+
+  const openConfirmDialog = (type: 'deactivate' | 'reactivate' | 'delete', target: Doctor | Patient, targetType: 'doctor' | 'patient') => {
+    setConfirmDialog({ open: true, type, target, targetType });
   };
 
   const handleUpdateQueueType = async (doctorId: string, queueType: 'group' | 'individual' | 'hybrid') => {
@@ -342,6 +458,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     fetchDoctors();
+    fetchPatients();
     fetchStats();
   }, []);
 
@@ -552,6 +669,10 @@ const AdminDashboard = () => {
               <TrendingUp className="h-4 w-4" />
               {lang === "de" ? "Übersicht" : "Overview"}
             </TabsTrigger>
+            <TabsTrigger value="patients" className="gap-2">
+              <Users className="h-4 w-4" />
+              {lang === "de" ? "Patienten" : "Patients"}
+            </TabsTrigger>
             <TabsTrigger value="doctors" className="gap-2">
               <Stethoscope className="h-4 w-4" />
               {lang === "de" ? "Ärzte" : "Doctors"}
@@ -607,6 +728,133 @@ const AdminDashboard = () => {
                           </TableCell>
                           <TableCell>
                             {getStatusBadge(consultation.status)}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Patients Tab */}
+          <TabsContent value="patients" className="space-y-6">
+            <Card className="shadow-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-5 w-5 text-primary" />
+                  {t("dashboard.admin.patientsList")}
+                </CardTitle>
+                <CardDescription>
+                  {t("dashboard.admin.patientsSubtitle")}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {isLoadingPatients ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                  </div>
+                ) : patients.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground text-sm">
+                      {t("dashboard.admin.noPatients")}
+                    </p>
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>{lang === "de" ? "Name" : "Name"}</TableHead>
+                        <TableHead>{lang === "de" ? "Erstellt" : "Created"}</TableHead>
+                        <TableHead>{t("dashboard.admin.ongoingCases")}</TableHead>
+                        <TableHead>{t("dashboard.admin.closedCases")}</TableHead>
+                        <TableHead>{t("dashboard.admin.doctorStatus")}</TableHead>
+                        <TableHead className="text-right">{t("dashboard.admin.doctorActions")}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {patients.map((patient) => (
+                        <TableRow key={patient.id} className={!patient.is_active ? "opacity-60" : ""}>
+                          <TableCell className="font-medium">
+                            <div className="flex items-center gap-2">
+                              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${patient.is_active ? "bg-primary/10" : "bg-muted"}`}>
+                                <User className={`h-4 w-4 ${patient.is_active ? "text-primary" : "text-muted-foreground"}`} />
+                              </div>
+                              {patient.full_name}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            {format(new Date(patient.created_at), "PP", { locale: dateLocale })}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="secondary" className="gap-1">
+                              <Clock className="h-3 w-3" />
+                              {patient.ongoingCases}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline" className="gap-1 text-green-600 border-green-600">
+                              <CheckCircle className="h-3 w-3" />
+                              {patient.closedCases}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {patient.is_active ? (
+                              <Badge variant="outline" className="gap-1 text-green-600 border-green-600">
+                                <CheckCircle className="h-3 w-3" />
+                                {t("dashboard.admin.activeStatus")}
+                              </Badge>
+                            ) : (
+                              <Badge variant="outline" className="gap-1 text-muted-foreground">
+                                <Ban className="h-3 w-3" />
+                                {t("dashboard.admin.inactiveStatus")}
+                              </Badge>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button 
+                                  variant="ghost" 
+                                  size="icon" 
+                                  disabled={actionInProgress === patient.id}
+                                >
+                                  {actionInProgress === patient.id ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                  ) : (
+                                    <MoreHorizontal className="h-4 w-4" />
+                                  )}
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                {patient.is_active ? (
+                                  <DropdownMenuItem 
+                                    onClick={() => openConfirmDialog('deactivate', patient, 'patient')}
+                                    className="gap-2"
+                                  >
+                                    <Ban className="h-4 w-4" />
+                                    {t("dashboard.admin.deactivatePatient")}
+                                  </DropdownMenuItem>
+                                ) : (
+                                  <DropdownMenuItem 
+                                    onClick={() => openConfirmDialog('reactivate', patient, 'patient')}
+                                    className="gap-2"
+                                  >
+                                    <RefreshCw className="h-4 w-4" />
+                                    {t("dashboard.admin.reactivatePatient")}
+                                  </DropdownMenuItem>
+                                )}
+                                <DropdownMenuItem 
+                                  onClick={() => openConfirmDialog('delete', patient, 'patient')}
+                                  className="gap-2 text-destructive focus:text-destructive"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                  {t("dashboard.admin.deletePatient")}
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -782,7 +1030,7 @@ const AdminDashboard = () => {
                                 <DropdownMenuContent align="end">
                                   {doctor.is_active ? (
                                     <DropdownMenuItem 
-                                      onClick={() => openConfirmDialog('deactivate', doctor)}
+                                      onClick={() => openConfirmDialog('deactivate', doctor, 'doctor')}
                                       className="gap-2"
                                     >
                                       <Ban className="h-4 w-4" />
@@ -790,7 +1038,7 @@ const AdminDashboard = () => {
                                     </DropdownMenuItem>
                                   ) : (
                                     <DropdownMenuItem 
-                                      onClick={() => openConfirmDialog('reactivate', doctor)}
+                                      onClick={() => openConfirmDialog('reactivate', doctor, 'doctor')}
                                       className="gap-2"
                                     >
                                       <RefreshCw className="h-4 w-4" />
@@ -798,7 +1046,7 @@ const AdminDashboard = () => {
                                     </DropdownMenuItem>
                                   )}
                                   <DropdownMenuItem 
-                                    onClick={() => openConfirmDialog('delete', doctor)}
+                                    onClick={() => openConfirmDialog('delete', doctor, 'doctor')}
                                     className="gap-2 text-destructive focus:text-destructive"
                                   >
                                     <Trash2 className="h-4 w-4" />
@@ -821,25 +1069,63 @@ const AdminDashboard = () => {
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>
-                    {confirmDialog.type === 'deactivate' && (t("dashboard.admin.deactivateDoctor"))}
-                    {confirmDialog.type === 'reactivate' && (t("dashboard.admin.reactivateDoctor"))}
-                    {confirmDialog.type === 'delete' && (t("dashboard.admin.deleteDoctor"))}
+                    {confirmDialog.targetType === 'doctor' ? (
+                      <>
+                        {confirmDialog.type === 'deactivate' && (t("dashboard.admin.deactivateDoctor"))}
+                        {confirmDialog.type === 'reactivate' && (t("dashboard.admin.reactivateDoctor"))}
+                        {confirmDialog.type === 'delete' && (t("dashboard.admin.deleteDoctor"))}
+                      </>
+                    ) : (
+                      <>
+                        {confirmDialog.type === 'deactivate' && (t("dashboard.admin.deactivatePatient"))}
+                        {confirmDialog.type === 'reactivate' && (t("dashboard.admin.reactivatePatient"))}
+                        {confirmDialog.type === 'delete' && (t("dashboard.admin.deletePatient"))}
+                      </>
+                    )}
                   </AlertDialogTitle>
                   <AlertDialogDescription>
-                    {confirmDialog.type === 'deactivate' && t("dashboard.admin.confirmDeactivate")}
-                    {confirmDialog.type === 'reactivate' && t("dashboard.admin.confirmReactivate")}
-                    {confirmDialog.type === 'delete' && t("dashboard.admin.confirmDelete")}
+                    {confirmDialog.targetType === 'doctor' ? (
+                      <>
+                        {confirmDialog.type === 'deactivate' && t("dashboard.admin.confirmDeactivate")}
+                        {confirmDialog.type === 'reactivate' && t("dashboard.admin.confirmReactivate")}
+                        {confirmDialog.type === 'delete' && t("dashboard.admin.confirmDelete")}
+                      </>
+                    ) : (
+                      <>
+                        {confirmDialog.type === 'deactivate' && t("dashboard.admin.confirmDeactivatePatient")}
+                        {confirmDialog.type === 'reactivate' && t("dashboard.admin.confirmReactivatePatient")}
+                        {confirmDialog.type === 'delete' && t("dashboard.admin.confirmDeletePatient")}
+                      </>
+                    )}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>{lang === "de" ? "Abbrechen" : "Cancel"}</AlertDialogCancel>
                   <AlertDialogAction
-                    onClick={() => confirmDialog.doctor && handleDoctorAction(confirmDialog.type, confirmDialog.doctor)}
+                    onClick={() => {
+                      if (confirmDialog.target) {
+                        if (confirmDialog.targetType === 'doctor') {
+                          handleDoctorAction(confirmDialog.type, confirmDialog.target as Doctor);
+                        } else {
+                          handlePatientAction(confirmDialog.type, confirmDialog.target as Patient);
+                        }
+                      }
+                    }}
                     className={confirmDialog.type === 'delete' ? "bg-destructive hover:bg-destructive/90" : ""}
                   >
-                    {confirmDialog.type === 'deactivate' && t("dashboard.admin.deactivateDoctor")}
-                    {confirmDialog.type === 'reactivate' && t("dashboard.admin.reactivateDoctor")}
-                    {confirmDialog.type === 'delete' && t("dashboard.admin.deleteDoctor")}
+                    {confirmDialog.targetType === 'doctor' ? (
+                      <>
+                        {confirmDialog.type === 'deactivate' && t("dashboard.admin.deactivateDoctor")}
+                        {confirmDialog.type === 'reactivate' && t("dashboard.admin.reactivateDoctor")}
+                        {confirmDialog.type === 'delete' && t("dashboard.admin.deleteDoctor")}
+                      </>
+                    ) : (
+                      <>
+                        {confirmDialog.type === 'deactivate' && t("dashboard.admin.deactivatePatient")}
+                        {confirmDialog.type === 'reactivate' && t("dashboard.admin.reactivatePatient")}
+                        {confirmDialog.type === 'delete' && t("dashboard.admin.deletePatient")}
+                      </>
+                    )}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
