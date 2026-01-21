@@ -17,7 +17,7 @@ const SEX_OPTIONS: BiologicalSex[] = ["male", "female", "diverse"];
 const PersonalDetails = ({ draft, updateDraft, onNext }: PersonalDetailsProps) => {
   const { t } = useTranslation("consultation");
 
-  const canContinue = draft.dateOfBirth && draft.biologicalSex;
+  const canContinue = draft.fullName && draft.dateOfBirth && draft.biologicalSex;
 
   return (
     <div className="space-y-6">
@@ -28,6 +28,21 @@ const PersonalDetails = ({ draft, updateDraft, onNext }: PersonalDetailsProps) =
         <p className="text-muted-foreground">
           {t("step8.subtitle")}
         </p>
+      </div>
+
+      {/* Full Name */}
+      <div className="space-y-2">
+        <Label htmlFor="fullName" className="text-foreground">
+          {t("step8.fullName")}
+        </Label>
+        <Input
+          id="fullName"
+          type="text"
+          value={draft.fullName || ""}
+          onChange={(e) => updateDraft({ fullName: e.target.value })}
+          placeholder={t("step8.fullNamePlaceholder")}
+          className="w-full"
+        />
       </div>
 
       {/* Date of Birth */}
@@ -41,6 +56,21 @@ const PersonalDetails = ({ draft, updateDraft, onNext }: PersonalDetailsProps) =
           value={draft.dateOfBirth || ""}
           onChange={(e) => updateDraft({ dateOfBirth: e.target.value })}
           max={new Date().toISOString().split("T")[0]}
+          className="w-full"
+        />
+      </div>
+
+      {/* Social Security Number */}
+      <div className="space-y-2">
+        <Label htmlFor="socialSecurityNumber" className="text-foreground">
+          {t("step8.socialSecurityNumber")}
+        </Label>
+        <Input
+          id="socialSecurityNumber"
+          type="text"
+          value={draft.socialSecurityNumber || ""}
+          onChange={(e) => updateDraft({ socialSecurityNumber: e.target.value })}
+          placeholder={t("step8.socialSecurityPlaceholder")}
           className="w-full"
         />
       </div>

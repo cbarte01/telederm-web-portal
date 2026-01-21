@@ -138,7 +138,11 @@
   "step8": {
     "title": "Persönliche Angaben",
     "subtitle": "Diese Angaben sind medizinisch relevant",
+    "fullName": "Vollständiger Name",
+    "fullNamePlaceholder": "Vor- und Nachname",
     "dateOfBirth": "Geburtsdatum",
+    "socialSecurityNumber": "Sozialversicherungsnummer",
+    "socialSecurityPlaceholder": "z.B. 12 345678 A 123",
     "biologicalSex": "Biologisches Geschlecht",
     "sexOptions": {
       "male": "Männlich",
