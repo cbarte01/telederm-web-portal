@@ -38,9 +38,11 @@ const ConsultationFlow = () => {
   
   // Handle referral code from URL
   const urlReferralCode = searchParams.get("ref");
+  
+  // Always fetch the referral doctor if there's a URL param
+  // We need to check even if draft has a different code (to handle switching referrals)
   const { doctor: referralDoctor, isLoading: isLoadingReferral } = useReferralDoctor(
-    // Only fetch if we have a URL param and haven't already saved to draft
-    urlReferralCode && !draft.referralCode ? urlReferralCode : null
+    urlReferralCode
   );
   
   // Redirect admins away - they should not use the consultation flow at all
@@ -61,25 +63,33 @@ const ConsultationFlow = () => {
   }, [role, isLoadingRole, hasCheckedSession, signOut, navigate]);
   
   // Save referral info to draft when doctor is loaded
-  // Also reset to step 1 if this is a new referral link
+  // Also reset to step 1 if this is a new referral link or completed draft
   useEffect(() => {
-    if (referralDoctor && urlReferralCode) {
-      // Check if this is a different referral code than what's in draft, or if draft is at step 10
+    // If we have a URL referral code, check if we need to reset
+    if (urlReferralCode) {
       const isDifferentReferral = draft.referralCode !== urlReferralCode;
       const isCompletedDraft = draft.currentStep === 10;
       
       if (isDifferentReferral || isCompletedDraft) {
         // Start fresh with this referral
-        updateDraft({
-          ...INITIAL_DRAFT,
-          currentStep: 1,
-          referralCode: urlReferralCode,
-          referredDoctorId: referralDoctor.id,
-          referredDoctorName: referralDoctor.fullName,
-          referredPracticeName: referralDoctor.practiceName,
-          referredWelcomeMessage: referralDoctor.welcomeMessage,
-        });
-      } else if (!draft.referralCode) {
+        if (referralDoctor) {
+          updateDraft({
+            ...INITIAL_DRAFT,
+            currentStep: 1,
+            referralCode: urlReferralCode,
+            referredDoctorId: referralDoctor.id,
+            referredDoctorName: referralDoctor.fullName,
+            referredPracticeName: referralDoctor.practiceName,
+            referredWelcomeMessage: referralDoctor.welcomeMessage,
+          });
+        } else if (!isLoadingReferral) {
+          // Invalid referral code but still reset to step 1
+          updateDraft({
+            ...INITIAL_DRAFT,
+            currentStep: 1,
+          });
+        }
+      } else if (!draft.referralCode && referralDoctor) {
         // Same referral code, just add the referral info
         updateDraft({
           referralCode: urlReferralCode,
@@ -89,8 +99,14 @@ const ConsultationFlow = () => {
           referredWelcomeMessage: referralDoctor.welcomeMessage,
         });
       }
+    } else if (draft.currentStep === 10 && !urlReferralCode) {
+      // No referral code and at step 10 - reset to step 1
+      updateDraft({
+        ...INITIAL_DRAFT,
+        currentStep: 1,
+      });
     }
-  }, [referralDoctor, draft.referralCode, draft.currentStep, urlReferralCode, updateDraft]);
+  }, [referralDoctor, draft.referralCode, draft.currentStep, urlReferralCode, updateDraft, isLoadingReferral]);
 
   // Prevent accidental navigation away
   useEffect(() => {
