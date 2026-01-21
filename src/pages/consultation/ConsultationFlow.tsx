@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -29,7 +29,6 @@ const TOTAL_STEPS = 10;
 
 const ConsultationFlow = () => {
   const { t } = useTranslation("consultation");
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { draft, isLoaded, updateDraft, goToNextStep, goToPreviousStep, setStep } = useConsultationDraft();
   const { signOut } = useAuth();
@@ -48,22 +47,25 @@ const ConsultationFlow = () => {
   // Redirect admins away - they should not use the consultation flow at all
   // Sign out doctors to ensure clean patient experience
   useEffect(() => {
-    if (!isLoadingRole && !hasCheckedSession) {
-      if (role === 'admin') {
-        // Admins should not create consultations - redirect to their dashboard
-        navigate('/admin/dashboard', { replace: true });
-        return;
-      }
-      if (role === 'doctor') {
-        // Sign out doctors so they can proceed as patients if needed
-        signOut();
+    if (isLoadingRole || hasCheckedSession) return;
+
+    // If someone is logged in with an elevated role and opens the patient flow
+    // (e.g. via a referral link), force a clean patient session.
+    (async () => {
+      if (role === "admin" || role === "doctor") {
+        await signOut();
       }
       setHasCheckedSession(true);
-    }
-  }, [role, isLoadingRole, hasCheckedSession, signOut, navigate]);
+    })();
+  }, [role, isLoadingRole, hasCheckedSession, signOut]);
   
   // Track if we've already processed the referral to avoid infinite loops
   const [referralProcessed, setReferralProcessed] = useState(false);
+
+  // If the referral code in the URL changes, allow referral processing to run again.
+  useEffect(() => {
+    setReferralProcessed(false);
+  }, [urlReferralCode]);
   
   // Save referral info to draft when doctor is loaded
   // Also reset to step 1 if this is a new referral link or completed draft
