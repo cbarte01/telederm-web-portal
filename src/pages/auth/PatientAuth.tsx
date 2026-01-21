@@ -34,11 +34,14 @@ type SignupFormData = z.infer<typeof signupSchema>;
 
 const PatientAuth = () => {
   const { t } = useTranslation("auth");
-  const { user, signIn, signUp, isLoading: authLoading } = useAuth();
+  const { user, signIn, signUp, resetPasswordRequest, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState<"login" | "signup">("login");
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
+  const [forgotPasswordSent, setForgotPasswordSent] = useState(false);
 
   const loginForm = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -66,6 +69,29 @@ const PatientAuth = () => {
         variant: "destructive",
         title: t("errors.invalidCredentials"),
         description: error.message,
+      });
+    }
+  };
+
+  const onForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!forgotPasswordEmail.trim()) return;
+    
+    setIsSubmitting(true);
+    const { error } = await resetPasswordRequest(forgotPasswordEmail);
+    setIsSubmitting(false);
+
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      });
+    } else {
+      setForgotPasswordSent(true);
+      toast({
+        title: "Email sent",
+        description: "Check your inbox for the password reset link.",
       });
     }
   };
@@ -158,6 +184,84 @@ const PatientAuth = () => {
                       </FormItem>
                     )}
                   />
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => setShowForgotPassword(true)}
+                      className="text-sm text-primary hover:underline"
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
+                  <Button type="submit" className="w-full" disabled={isSubmitting}>
+                    {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    {t("login.submit")}
+                  </Button>
+                </form>
+              </Form>
+            </CardContent>
+          </TabsContent>
+
+          <TabsContent value="signup">
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl">{t("signup.title")}</CardTitle>
+              <CardDescription>{t("signup.subtitle")}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Form {...signupForm}>
+                <form onSubmit={signupForm.handleSubmit(onSignup)} className="space-y-4">
+                  <FormField
+                    control={signupForm.control}
+                    name="fullName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t("signup.fullName")}</FormLabel>
+                        <FormControl>
+                          <Input placeholder="John Doe" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={signupForm.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t("signup.email")}</FormLabel>
+                        <FormControl>
+                          <Input type="email" placeholder="you@example.com" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={signupForm.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t("signup.password")}</FormLabel>
+                        <FormControl>
+                          <Input type="password" placeholder="••••••••" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={signupForm.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t("signup.confirmPassword")}</FormLabel>
+                        <FormControl>
+                          <Input type="password" placeholder="••••••••" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <Button type="submit" className="w-full" disabled={isSubmitting}>
                     {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     {t("login.submit")}
@@ -237,6 +341,75 @@ const PatientAuth = () => {
           </TabsContent>
         </Tabs>
       </Card>
+
+      {/* Forgot Password Modal */}
+      {showForgotPassword && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <CardTitle>Reset Password</CardTitle>
+              <CardDescription>
+                {forgotPasswordSent 
+                  ? "Check your email for the reset link." 
+                  : "Enter your email and we'll send you a reset link."}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {forgotPasswordSent ? (
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    We've sent an email to <strong>{forgotPasswordEmail}</strong>. 
+                    Click the link in the email to reset your password.
+                  </p>
+                  <Button 
+                    className="w-full" 
+                    onClick={() => {
+                      setShowForgotPassword(false);
+                      setForgotPasswordSent(false);
+                      setForgotPasswordEmail("");
+                    }}
+                  >
+                    Back to Login
+                  </Button>
+                </div>
+              ) : (
+                <form onSubmit={onForgotPassword} className="space-y-4">
+                  <div className="space-y-2">
+                    <label htmlFor="forgot-email" className="text-sm font-medium">
+                      Email
+                    </label>
+                    <Input
+                      id="forgot-email"
+                      type="email"
+                      placeholder="you@example.com"
+                      value={forgotPasswordEmail}
+                      onChange={(e) => setForgotPasswordEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      className="flex-1"
+                      onClick={() => {
+                        setShowForgotPassword(false);
+                        setForgotPasswordEmail("");
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button type="submit" className="flex-1" disabled={isSubmitting}>
+                      {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      Send Reset Link
+                    </Button>
+                  </div>
+                </form>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* Doctor login link */}
       <p className="mt-6 text-sm text-muted-foreground">
