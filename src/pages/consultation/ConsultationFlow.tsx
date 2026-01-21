@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useConsultationDraft } from "@/hooks/useConsultationDraft";
 import { useReferralDoctor } from "@/hooks/useReferralDoctor";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRole } from "@/hooks/useRole";
 import { INITIAL_DRAFT } from "@/types/consultation";
 import ReferralBanner from "@/components/consultation/ReferralBanner";
 import teledermLogo from "@/assets/logo/telederm-logo.png";
@@ -30,6 +32,9 @@ const ConsultationFlow = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { draft, isLoaded, updateDraft, goToNextStep, goToPreviousStep, setStep } = useConsultationDraft();
+  const { signOut } = useAuth();
+  const { role, isLoading: isLoadingRole } = useRole();
+  const [hasCheckedSession, setHasCheckedSession] = useState(false);
   
   // Handle referral code from URL
   const urlReferralCode = searchParams.get("ref");
@@ -37,6 +42,17 @@ const ConsultationFlow = () => {
     // Only fetch if we have a URL param and haven't already saved to draft
     urlReferralCode && !draft.referralCode ? urlReferralCode : null
   );
+  
+  // Sign out non-patient users (admin/doctor) when accessing consultation flow
+  // This prevents admin sessions from carrying over to patient referral links
+  useEffect(() => {
+    if (!isLoadingRole && !hasCheckedSession) {
+      if (role === 'admin' || role === 'doctor') {
+        signOut();
+      }
+      setHasCheckedSession(true);
+    }
+  }, [role, isLoadingRole, hasCheckedSession, signOut]);
   
   // Save referral info to draft when doctor is loaded
   // Also reset to step 1 if this is a new referral link
@@ -83,7 +99,7 @@ const ConsultationFlow = () => {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [draft.currentStep]);
 
-  if (!isLoaded || isLoadingReferral) {
+  if (!isLoaded || isLoadingReferral || isLoadingRole || !hasCheckedSession) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="animate-pulse text-muted-foreground">Loading...</div>
