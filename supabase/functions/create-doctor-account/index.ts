@@ -5,6 +5,27 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Validation helpers
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function isValidEmail(email: unknown): email is string {
+  return typeof email === 'string' && 
+         email.length <= 254 && 
+         EMAIL_REGEX.test(email);
+}
+
+function isValidPassword(password: unknown): password is string {
+  return typeof password === 'string' && 
+         password.length >= 8 && 
+         password.length <= 128;
+}
+
+function isValidName(name: unknown): name is string {
+  return typeof name === 'string' && 
+         name.trim().length >= 1 && 
+         name.length <= 100;
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -57,8 +78,25 @@ Deno.serve(async (req) => {
     // Get request body
     const { email, password, fullName } = await req.json();
 
-    if (!email || !password || !fullName) {
-      return new Response(JSON.stringify({ error: "Missing required fields" }), {
+    // Validate email format
+    if (!isValidEmail(email)) {
+      return new Response(JSON.stringify({ error: "Invalid email format (max 254 characters)" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Validate password strength
+    if (!isValidPassword(password)) {
+      return new Response(JSON.stringify({ error: "Password must be between 8 and 128 characters" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Validate name length
+    if (!isValidName(fullName)) {
+      return new Response(JSON.stringify({ error: "Full name must be between 1 and 100 characters" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -69,7 +107,7 @@ Deno.serve(async (req) => {
       email,
       password,
       email_confirm: true,
-      user_metadata: { full_name: fullName },
+      user_metadata: { full_name: fullName.trim() },
     });
 
     if (createError) {
@@ -98,7 +136,7 @@ Deno.serve(async (req) => {
     // Update profile with full name
     await supabaseAdmin
       .from("profiles")
-      .update({ full_name: fullName })
+      .update({ full_name: fullName.trim() })
       .eq("id", newUser.user.id);
 
     return new Response(JSON.stringify({ success: true, userId: newUser.user.id }), {
