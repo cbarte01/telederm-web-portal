@@ -49,7 +49,10 @@ import {
   MoreHorizontal,
   Ban,
   RefreshCw,
-  Trash2
+  Trash2,
+  Link2,
+  Copy,
+  Check
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import teledermLogo from "@/assets/logo/telederm-logo.png";
@@ -69,6 +72,7 @@ interface Doctor {
   user_id: string;
   is_active: boolean;
   doctor_queue_type: 'group' | 'individual' | 'hybrid' | null;
+  referral_code: string | null;
 }
 
 interface Patient {
@@ -113,6 +117,7 @@ const AdminDashboard = () => {
   const [recentConsultations, setRecentConsultations] = useState<RecentConsultation[]>([]);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
   const [actionInProgress, setActionInProgress] = useState<string | null>(null);
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [confirmDialog, setConfirmDialog] = useState<{
     open: boolean;
     type: 'deactivate' | 'reactivate' | 'delete';
@@ -240,7 +245,7 @@ const AdminDashboard = () => {
       const userIds = doctorRoles.map((r) => r.user_id);
       const { data: profiles, error: profilesError } = await supabase
         .from("profiles")
-        .select("id, full_name, is_active, doctor_queue_type")
+        .select("id, full_name, is_active, doctor_queue_type, referral_code")
         .in("id", userIds);
 
       if (profilesError) throw profilesError;
@@ -254,6 +259,7 @@ const AdminDashboard = () => {
           created_at: role.created_at,
           is_active: profile?.is_active ?? true,
           doctor_queue_type: (profile?.doctor_queue_type as 'group' | 'individual' | 'hybrid' | null) ?? 'group',
+          referral_code: profile?.referral_code || null,
         };
       });
 
@@ -440,6 +446,61 @@ const AdminDashboard = () => {
         description: errorMessage,
       });
     }
+  };
+
+  // Generate a referral code based on doctor name
+  const generateReferralCode = (doctorName: string | null): string => {
+    const prefix = "DR";
+    const namePart = (doctorName || "DOC")
+      .toUpperCase()
+      .replace(/^DR\.?\s*/i, "")
+      .replace(/[^A-Z]/g, "")
+      .slice(0, 3)
+      .padEnd(3, "X");
+    const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
+    return `${prefix}${namePart}${randomPart}`;
+  };
+
+  const handleGenerateReferralCode = async (doctor: Doctor) => {
+    setActionInProgress(doctor.id);
+    try {
+      const newCode = generateReferralCode(doctor.full_name);
+      
+      const { error } = await supabase
+        .from("profiles")
+        .update({ referral_code: newCode })
+        .eq("id", doctor.id);
+
+      if (error) throw error;
+
+      toast({
+        title: lang === "de" ? "Empfehlungscode erstellt" : "Referral code created",
+        description: newCode,
+      });
+
+      fetchDoctors();
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to generate referral code";
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: errorMessage,
+      });
+    } finally {
+      setActionInProgress(null);
+    }
+  };
+
+  const handleCopyReferralLink = (code: string) => {
+    const baseUrl = window.location.origin;
+    const fullUrl = `${baseUrl}/consultation?ref=${code}`;
+    navigator.clipboard.writeText(fullUrl);
+    setCopiedCode(code);
+    toast({
+      title: lang === "de" ? "Link kopiert" : "Link copied",
+      description: fullUrl,
+    });
+    setTimeout(() => setCopiedCode(null), 2000);
   };
 
   const getQueueTypeBadge = (queueType: 'group' | 'individual' | 'hybrid' | null) => {
@@ -965,6 +1026,7 @@ const AdminDashboard = () => {
                           <TableHead>{lang === "de" ? "Name" : "Name"}</TableHead>
                           <TableHead>ID</TableHead>
                           <TableHead>{t("dashboard.admin.queueType")}</TableHead>
+                          <TableHead>{lang === "de" ? "Empfehlungslink" : "Referral Link"}</TableHead>
                           <TableHead>{t("dashboard.admin.doctorStatus")}</TableHead>
                           <TableHead>{lang === "de" ? "Erstellt" : "Created"}</TableHead>
                           <TableHead className="text-right">{t("dashboard.admin.doctorActions")}</TableHead>
@@ -1014,6 +1076,50 @@ const AdminDashboard = () => {
                                   </DropdownMenuItem>
                                 </DropdownMenuContent>
                               </DropdownMenu>
+                            </TableCell>
+                            <TableCell>
+                              {doctor.referral_code ? (
+                                <div className="flex items-center gap-2">
+                                  <code className="text-xs bg-muted px-2 py-1 rounded font-mono">
+                                    {doctor.referral_code}
+                                  </code>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-7 w-7"
+                                    onClick={() => handleCopyReferralLink(doctor.referral_code!)}
+                                    disabled={actionInProgress === doctor.id}
+                                  >
+                                    {copiedCode === doctor.referral_code ? (
+                                      <Check className="h-3.5 w-3.5 text-green-600" />
+                                    ) : (
+                                      <Copy className="h-3.5 w-3.5" />
+                                    )}
+                                  </Button>
+                                </div>
+                              ) : (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="gap-1.5 h-7 text-xs"
+                                  onClick={() => handleGenerateReferralCode(doctor)}
+                                  disabled={actionInProgress === doctor.id}
+                                >
+                                  {actionInProgress === doctor.id ? (
+                                    <Loader2 className="h-3 w-3 animate-spin" />
+                                  ) : (
+                                    <Link2 className="h-3 w-3" />
+                                  )}
+                                  {lang === "de" ? "Erstellen" : "Generate"}
+                                </Button>
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant={doctor.is_active ? "default" : "secondary"}>
+                                {doctor.is_active 
+                                  ? (lang === "de" ? "Aktiv" : "Active")
+                                  : (lang === "de" ? "Inaktiv" : "Inactive")}
+                              </Badge>
                             </TableCell>
                             <TableCell>
                               {format(new Date(doctor.created_at), "PP", { locale: dateLocale })}
