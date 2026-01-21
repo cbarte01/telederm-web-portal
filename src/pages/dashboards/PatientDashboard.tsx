@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { User, LogOut, Calendar, FileText, MessageSquare, Plus, Clock, CheckCircle, AlertCircle, ChevronRight } from "lucide-react";
+import { User, LogOut, Calendar, FileText, Plus, Clock, CheckCircle, AlertCircle, ChevronRight } from "lucide-react";
 import teledermLogo from "@/assets/logo/telederm-logo.png";
 import { ConsultationDetailDialog } from "@/components/patient/ConsultationDetailDialog";
 
@@ -278,25 +278,6 @@ const PatientDashboard = () => {
               </CardContent>
             </Card>
 
-            {/* Messages */}
-            <Card className="shadow-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <MessageSquare className="h-5 w-5 text-primary" />
-                  {lang === "de" ? "Nachrichten" : "Messages"}
-                </CardTitle>
-                <CardDescription>
-                  {lang === "de" ? "Kommunikation mit Ärzten" : "Communication with doctors"}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground text-sm">
-                  {lang === "de" 
-                    ? "Keine Nachrichten. Ihre Gespräche mit Ärzten werden hier angezeigt."
-                    : "No messages. Your conversations with doctors will appear here."}
-                </p>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </main>
