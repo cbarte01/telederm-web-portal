@@ -85,7 +85,9 @@ export interface ConsultationDraft {
   selfTreatmentDescription?: string;
   
   // Step 8 - Personal details
+  fullName?: string;
   dateOfBirth?: string;
+  socialSecurityNumber?: string;
   biologicalSex?: BiologicalSex;
   additionalNotes?: string;
   
