@@ -84,14 +84,14 @@ const PatientAuth = () => {
     if (error) {
       toast({
         variant: "destructive",
-        title: "Error",
+        title: t("errors.generic"),
         description: error.message,
       });
     } else {
       setForgotPasswordSent(true);
       toast({
-        title: "Email sent",
-        description: "Check your inbox for the password reset link.",
+        title: t("forgotPassword.emailSent"),
+        description: t("forgotPassword.checkInbox"),
       });
     }
   };
@@ -113,7 +113,7 @@ const PatientAuth = () => {
     } else {
       toast({
         title: t("signup.title"),
-        description: "Account created successfully!",
+        description: t("signup.success"),
       });
     }
   };
@@ -134,7 +134,7 @@ const PatientAuth = () => {
         className="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
-        <span className="text-sm font-medium">Back to home</span>
+        <span className="text-sm font-medium">{t("common.backToHome")}</span>
       </Link>
 
       {/* Logo */}
@@ -190,78 +190,9 @@ const PatientAuth = () => {
                       onClick={() => setShowForgotPassword(true)}
                       className="text-sm text-primary hover:underline"
                     >
-                      Forgot password?
+                      {t("login.forgotPassword")}
                     </button>
                   </div>
-                  <Button type="submit" className="w-full" disabled={isSubmitting}>
-                    {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    {t("login.submit")}
-                  </Button>
-                </form>
-              </Form>
-            </CardContent>
-          </TabsContent>
-
-          <TabsContent value="signup">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl">{t("signup.title")}</CardTitle>
-              <CardDescription>{t("signup.subtitle")}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Form {...signupForm}>
-                <form onSubmit={signupForm.handleSubmit(onSignup)} className="space-y-4">
-                  <FormField
-                    control={signupForm.control}
-                    name="fullName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t("signup.fullName")}</FormLabel>
-                        <FormControl>
-                          <Input placeholder="John Doe" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={signupForm.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t("signup.email")}</FormLabel>
-                        <FormControl>
-                          <Input type="email" placeholder="you@example.com" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={signupForm.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t("signup.password")}</FormLabel>
-                        <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={signupForm.control}
-                    name="confirmPassword"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t("signup.confirmPassword")}</FormLabel>
-                        <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                   <Button type="submit" className="w-full" disabled={isSubmitting}>
                     {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     {t("login.submit")}
@@ -347,19 +278,19 @@ const PatientAuth = () => {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
           <Card className="w-full max-w-md">
             <CardHeader>
-              <CardTitle>Reset Password</CardTitle>
+              <CardTitle>{t("forgotPassword.title")}</CardTitle>
               <CardDescription>
                 {forgotPasswordSent 
-                  ? "Check your email for the reset link." 
-                  : "Enter your email and we'll send you a reset link."}
+                  ? t("forgotPassword.checkInbox")
+                  : t("forgotPassword.description")}
               </CardDescription>
             </CardHeader>
             <CardContent>
               {forgotPasswordSent ? (
                 <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
-                    We've sent an email to <strong>{forgotPasswordEmail}</strong>. 
-                    Click the link in the email to reset your password.
+                    {t("forgotPassword.emailSentTo")} <strong>{forgotPasswordEmail}</strong>. 
+                    {" "}{t("forgotPassword.clickLinkInEmail")}
                   </p>
                   <Button 
                     className="w-full" 
@@ -369,14 +300,14 @@ const PatientAuth = () => {
                       setForgotPasswordEmail("");
                     }}
                   >
-                    Back to Login
+                    {t("forgotPassword.backToLogin")}
                   </Button>
                 </div>
               ) : (
                 <form onSubmit={onForgotPassword} className="space-y-4">
                   <div className="space-y-2">
                     <label htmlFor="forgot-email" className="text-sm font-medium">
-                      Email
+                      {t("forgotPassword.emailLabel")}
                     </label>
                     <Input
                       id="forgot-email"
@@ -397,11 +328,11 @@ const PatientAuth = () => {
                         setForgotPasswordEmail("");
                       }}
                     >
-                      Cancel
+                      {t("common.cancel")}
                     </Button>
                     <Button type="submit" className="flex-1" disabled={isSubmitting}>
                       {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                      Send Reset Link
+                      {t("forgotPassword.sendResetLink")}
                     </Button>
                   </div>
                 </form>
@@ -413,9 +344,9 @@ const PatientAuth = () => {
 
       {/* Doctor login link */}
       <p className="mt-6 text-sm text-muted-foreground">
-        Are you a doctor?{" "}
+        {t("common.areYouDoctor")}{" "}
         <Link to="/auth/doctor" className="text-primary hover:underline font-medium">
-          Doctor Login
+          {t("common.doctorLogin")}
         </Link>
       </p>
     </div>

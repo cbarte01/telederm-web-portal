@@ -48,14 +48,14 @@ const DoctorAuth = () => {
       // If a patient tries to login via doctor portal, redirect to patient dashboard
       toast({
         variant: "destructive",
-        title: "Access Denied",
-        description: "This portal is for doctors only.",
+        title: t("errors.accessDenied"),
+        description: t("errors.doctorsOnly"),
       });
       navigate("/patient/dashboard", { replace: true });
     } else if (user && role === "admin") {
       navigate("/admin/dashboard", { replace: true });
     }
-  }, [user, role, authLoading, roleLoading, navigate, toast]);
+  }, [user, role, authLoading, roleLoading, navigate, toast, t]);
 
   const onSubmit = async (data: LoginFormData) => {
     setIsSubmitting(true);
@@ -75,8 +75,8 @@ const DoctorAuth = () => {
     if (!resetEmail) {
       toast({
         variant: "destructive",
-        title: "Email required",
-        description: "Please enter your email address.",
+        title: t("errors.emailRequired"),
+        description: t("errors.enterEmail"),
       });
       return;
     }
@@ -88,13 +88,13 @@ const DoctorAuth = () => {
     if (error) {
       toast({
         variant: "destructive",
-        title: "Error",
+        title: t("errors.generic"),
         description: error.message,
       });
     } else {
       toast({
-        title: "Check your email",
-        description: "We've sent you a password reset link.",
+        title: t("forgotPassword.checkYourEmail"),
+        description: t("forgotPassword.sentResetLink"),
       });
       setShowForgotPassword(false);
       setResetEmail("");
@@ -117,7 +117,7 @@ const DoctorAuth = () => {
         className="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
-        <span className="text-sm font-medium">Back to home</span>
+        <span className="text-sm font-medium">{t("common.backToHome")}</span>
       </Link>
 
       {/* Logo */}
@@ -172,7 +172,7 @@ const DoctorAuth = () => {
                 onClick={() => setShowForgotPassword(true)}
                 className="text-sm text-primary hover:underline"
               >
-                Forgot password?
+                {t("login.forgotPassword")}
               </button>
             </form>
           </Form>
@@ -186,9 +186,9 @@ const DoctorAuth = () => {
 
       {/* Patient login link */}
       <p className="mt-6 text-sm text-muted-foreground">
-        Are you a patient?{" "}
+        {t("common.areYouPatient")}{" "}
         <Link to="/auth" className="text-primary hover:underline font-medium">
-          Patient Login
+          {t("common.patientLogin")}
         </Link>
       </p>
 
@@ -196,14 +196,14 @@ const DoctorAuth = () => {
       <Dialog open={showForgotPassword} onOpenChange={setShowForgotPassword}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Reset your password</DialogTitle>
+            <DialogTitle>{t("forgotPassword.dialogTitle")}</DialogTitle>
             <DialogDescription>
-              Enter your email address and we'll send you a link to reset your password.
+              {t("forgotPassword.dialogDescription")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 pt-4">
             <div className="space-y-2">
-              <Label htmlFor="reset-email">Email</Label>
+              <Label htmlFor="reset-email">{t("forgotPassword.emailLabel")}</Label>
               <Input
                 id="reset-email"
                 type="email"
@@ -218,7 +218,7 @@ const DoctorAuth = () => {
               disabled={isResetting}
             >
               {isResetting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Send reset link
+              {t("forgotPassword.sendResetLink")}
             </Button>
           </div>
         </DialogContent>

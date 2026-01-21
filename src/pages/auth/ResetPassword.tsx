@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -23,6 +24,7 @@ const resetSchema = z.object({
 type ResetFormData = z.infer<typeof resetSchema>;
 
 const ResetPassword = () => {
+  const { t } = useTranslation("auth");
   const { user, session, isLoading: authLoading, updatePassword } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -40,12 +42,12 @@ const ResetPassword = () => {
       // No session means they didn't arrive from email link
       toast({
         variant: "destructive",
-        title: "Invalid or expired link",
-        description: "Please request a new password reset link.",
+        title: t("resetPassword.invalidLink"),
+        description: t("resetPassword.requestNewLink"),
       });
       navigate("/auth", { replace: true });
     }
-  }, [session, authLoading, navigate, toast]);
+  }, [session, authLoading, navigate, toast, t]);
 
   const onSubmit = async (data: ResetFormData) => {
     setIsSubmitting(true);
@@ -55,14 +57,14 @@ const ResetPassword = () => {
     if (error) {
       toast({
         variant: "destructive",
-        title: "Error",
+        title: t("errors.generic"),
         description: error.message,
       });
     } else {
       setIsSuccess(true);
       toast({
-        title: "Password updated",
-        description: "Your password has been successfully changed.",
+        title: t("resetPassword.success"),
+        description: t("resetPassword.successMessage"),
       });
       // Redirect to dashboard after short delay
       setTimeout(() => {
@@ -87,7 +89,7 @@ const ResetPassword = () => {
         className="absolute top-6 left-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
-        <span className="text-sm font-medium">Back to home</span>
+        <span className="text-sm font-medium">{t("common.backToHome")}</span>
       </Link>
 
       {/* Logo */}
@@ -99,12 +101,12 @@ const ResetPassword = () => {
       <Card className="w-full max-w-md shadow-card">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">
-            {isSuccess ? "Password Updated!" : "Set New Password"}
+            {isSuccess ? t("resetPassword.successTitle") : t("resetPassword.title")}
           </CardTitle>
           <CardDescription>
             {isSuccess 
-              ? "You can now log in with your new password." 
-              : "Enter your new password below."}
+              ? t("resetPassword.successDescription")
+              : t("resetPassword.description")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -112,7 +114,7 @@ const ResetPassword = () => {
             <div className="flex flex-col items-center gap-4 py-4">
               <CheckCircle className="h-16 w-16 text-primary" />
               <p className="text-muted-foreground text-center">
-                Redirecting to your dashboard...
+                {t("resetPassword.redirecting")}
               </p>
             </div>
           ) : (
@@ -123,7 +125,7 @@ const ResetPassword = () => {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>New Password</FormLabel>
+                      <FormLabel>{t("resetPassword.newPassword")}</FormLabel>
                       <FormControl>
                         <Input type="password" placeholder="••••••••" {...field} />
                       </FormControl>
@@ -136,7 +138,7 @@ const ResetPassword = () => {
                   name="confirmPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Confirm New Password</FormLabel>
+                      <FormLabel>{t("resetPassword.confirmNewPassword")}</FormLabel>
                       <FormControl>
                         <Input type="password" placeholder="••••••••" {...field} />
                       </FormControl>
@@ -146,7 +148,7 @@ const ResetPassword = () => {
                 />
                 <Button type="submit" className="w-full" disabled={isSubmitting}>
                   {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Update Password
+                  {t("resetPassword.updateButton")}
                 </Button>
               </form>
             </Form>
