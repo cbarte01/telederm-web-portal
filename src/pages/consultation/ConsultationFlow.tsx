@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useConsultationDraft } from "@/hooks/useConsultationDraft";
 import { useReferralDoctor } from "@/hooks/useReferralDoctor";
+import { INITIAL_DRAFT } from "@/types/consultation";
 import ReferralBanner from "@/components/consultation/ReferralBanner";
 import teledermLogo from "@/assets/logo/telederm-logo.png";
 
@@ -38,17 +39,36 @@ const ConsultationFlow = () => {
   );
   
   // Save referral info to draft when doctor is loaded
+  // Also reset to step 1 if this is a new referral link
   useEffect(() => {
-    if (referralDoctor && !draft.referralCode && urlReferralCode) {
-      updateDraft({
-        referralCode: urlReferralCode,
-        referredDoctorId: referralDoctor.id,
-        referredDoctorName: referralDoctor.fullName,
-        referredPracticeName: referralDoctor.practiceName,
-        referredWelcomeMessage: referralDoctor.welcomeMessage,
-      });
+    if (referralDoctor && urlReferralCode) {
+      // Check if this is a different referral code than what's in draft, or if draft is at step 10
+      const isDifferentReferral = draft.referralCode !== urlReferralCode;
+      const isCompletedDraft = draft.currentStep === 10;
+      
+      if (isDifferentReferral || isCompletedDraft) {
+        // Start fresh with this referral
+        updateDraft({
+          ...INITIAL_DRAFT,
+          currentStep: 1,
+          referralCode: urlReferralCode,
+          referredDoctorId: referralDoctor.id,
+          referredDoctorName: referralDoctor.fullName,
+          referredPracticeName: referralDoctor.practiceName,
+          referredWelcomeMessage: referralDoctor.welcomeMessage,
+        });
+      } else if (!draft.referralCode) {
+        // Same referral code, just add the referral info
+        updateDraft({
+          referralCode: urlReferralCode,
+          referredDoctorId: referralDoctor.id,
+          referredDoctorName: referralDoctor.fullName,
+          referredPracticeName: referralDoctor.practiceName,
+          referredWelcomeMessage: referralDoctor.welcomeMessage,
+        });
+      }
     }
-  }, [referralDoctor, draft.referralCode, urlReferralCode, updateDraft]);
+  }, [referralDoctor, draft.referralCode, draft.currentStep, urlReferralCode, updateDraft]);
 
   // Prevent accidental navigation away
   useEffect(() => {
