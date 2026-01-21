@@ -17,6 +17,7 @@ interface ConsultationDetail {
   created_at: string;
   submitted_at: string | null;
   responded_at: string | null;
+  doctor_name: string | null;
 }
 
 interface ConsultationDetailDialogProps {
@@ -127,11 +128,18 @@ export const ConsultationDetailDialog = ({ consultation, open, onOpenChange }: C
               <p className="text-foreground whitespace-pre-wrap leading-relaxed">
                 {consultation.doctor_response}
               </p>
-              {consultation.responded_at && (
-                <p className="text-sm text-muted-foreground mt-3">
-                  {lang === "de" ? "Beantwortet am" : "Responded on"} {formatDate(consultation.responded_at)}
-                </p>
-              )}
+              <div className="mt-3 pt-3 border-t border-primary/10 flex flex-wrap gap-x-6 gap-y-1 text-sm text-muted-foreground">
+                {consultation.doctor_name && (
+                  <span>
+                    {lang === "de" ? "Arzt/Ärztin" : "Doctor"}: <span className="font-medium text-foreground">{consultation.doctor_name}</span>
+                  </span>
+                )}
+                {consultation.responded_at && (
+                  <span>
+                    {lang === "de" ? "Beantwortet am" : "Responded on"} {formatDate(consultation.responded_at)}
+                  </span>
+                )}
+              </div>
             </div>
           )}
 
