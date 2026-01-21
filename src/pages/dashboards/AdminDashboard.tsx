@@ -82,6 +82,7 @@ interface Patient {
   is_active: boolean;
   closedCases: number;
   ongoingCases: number;
+  oldestPendingDate: string | null;
 }
 
 interface PlatformStats {
@@ -299,7 +300,7 @@ const AdminDashboard = () => {
       // Get consultation counts per patient
       const { data: consultations, error: consultError } = await supabase
         .from("consultations")
-        .select("patient_id, status")
+        .select("patient_id, status, submitted_at")
         .in("patient_id", userIds)
         .neq("status", "draft");
 
@@ -312,6 +313,16 @@ const AdminDashboard = () => {
         const closedCases = patientConsultations.filter(c => c.status === "completed" || c.status === "cancelled").length;
         const ongoingCases = patientConsultations.filter(c => c.status === "submitted" || c.status === "in_review").length;
         
+        // Find oldest pending case (submitted or in_review)
+        const pendingCases = patientConsultations.filter(c => 
+          (c.status === "submitted" || c.status === "in_review") && c.submitted_at
+        );
+        const oldestPendingDate = pendingCases.length > 0
+          ? pendingCases.reduce((oldest, c) => 
+              !oldest || new Date(c.submitted_at!) < new Date(oldest) ? c.submitted_at! : oldest
+            , null as string | null)
+          : null;
+        
         return {
           id: role.user_id,
           full_name: profile?.full_name || "Unknown",
@@ -319,6 +330,7 @@ const AdminDashboard = () => {
           is_active: profile?.is_active ?? true,
           closedCases,
           ongoingCases,
+          oldestPendingDate,
         };
       });
 
@@ -724,12 +736,8 @@ const AdminDashboard = () => {
         </div>
 
         {/* Tabs Section */}
-        <Tabs defaultValue="overview" className="space-y-6">
+        <Tabs defaultValue="patients" className="space-y-6">
           <TabsList>
-            <TabsTrigger value="overview" className="gap-2">
-              <TrendingUp className="h-4 w-4" />
-              {lang === "de" ? "Übersicht" : "Overview"}
-            </TabsTrigger>
             <TabsTrigger value="patients" className="gap-2">
               <Users className="h-4 w-4" />
               {lang === "de" ? "Patienten" : "Patients"}
@@ -739,65 +747,6 @@ const AdminDashboard = () => {
               {lang === "de" ? "Ärzte" : "Doctors"}
             </TabsTrigger>
           </TabsList>
-
-          <TabsContent value="overview" className="space-y-6">
-            {/* Recent Consultations */}
-            <Card className="shadow-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Calendar className="h-5 w-5 text-primary" />
-                  {lang === "de" ? "Aktuelle Konsultationen" : "Recent Consultations"}
-                </CardTitle>
-                <CardDescription>
-                  {lang === "de" ? "Die letzten 10 eingereichten Anfragen" : "Last 10 submitted requests"}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {isLoadingStats ? (
-                  <div className="flex items-center justify-center py-8">
-                    <Loader2 className="h-6 w-6 animate-spin text-primary" />
-                  </div>
-                ) : recentConsultations.length === 0 ? (
-                  <p className="text-muted-foreground text-sm py-4 text-center">
-                    {lang === "de" ? "Noch keine Konsultationen." : "No consultations yet."}
-                  </p>
-                ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>{lang === "de" ? "Patient" : "Patient"}</TableHead>
-                        <TableHead>{lang === "de" ? "Kategorie" : "Category"}</TableHead>
-                        <TableHead>{lang === "de" ? "Datum" : "Date"}</TableHead>
-                        <TableHead>{lang === "de" ? "Status" : "Status"}</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {recentConsultations.map((consultation) => (
-                        <TableRow key={consultation.id}>
-                          <TableCell className="font-medium">
-                            {consultation.patient_name || (lang === "de" ? "Unbekannt" : "Unknown")}
-                          </TableCell>
-                          <TableCell>
-                            {consultation.concern_category 
-                              ? concernLabels[consultation.concern_category]?.[lang] || consultation.concern_category
-                              : "-"}
-                          </TableCell>
-                          <TableCell>
-                            {consultation.submitted_at 
-                              ? format(new Date(consultation.submitted_at), "PP", { locale: dateLocale })
-                              : "-"}
-                          </TableCell>
-                          <TableCell>
-                            {getStatusBadge(consultation.status)}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
 
           {/* Patients Tab */}
           <TabsContent value="patients" className="space-y-6">
@@ -831,6 +780,7 @@ const AdminDashboard = () => {
                         <TableHead>{lang === "de" ? "Erstellt" : "Created"}</TableHead>
                         <TableHead>{t("dashboard.admin.ongoingCases")}</TableHead>
                         <TableHead>{t("dashboard.admin.closedCases")}</TableHead>
+                        <TableHead>{lang === "de" ? "Ältester offener Fall" : "Oldest Pending"}</TableHead>
                         <TableHead>{t("dashboard.admin.doctorStatus")}</TableHead>
                         <TableHead className="text-right">{t("dashboard.admin.doctorActions")}</TableHead>
                       </TableRow>
@@ -860,6 +810,15 @@ const AdminDashboard = () => {
                               <CheckCircle className="h-3 w-3" />
                               {patient.closedCases}
                             </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {patient.oldestPendingDate ? (
+                              <span className="text-sm text-muted-foreground">
+                                {format(new Date(patient.oldestPendingDate), "PP", { locale: dateLocale })}
+                              </span>
+                            ) : (
+                              <span className="text-muted-foreground">-</span>
+                            )}
                           </TableCell>
                           <TableCell>
                             {patient.is_active ? (
