@@ -963,6 +963,7 @@ const AdminDashboard = () => {
                       <TableHeader>
                         <TableRow>
                           <TableHead>{lang === "de" ? "Name" : "Name"}</TableHead>
+                          <TableHead>ID</TableHead>
                           <TableHead>{t("dashboard.admin.queueType")}</TableHead>
                           <TableHead>{t("dashboard.admin.doctorStatus")}</TableHead>
                           <TableHead>{lang === "de" ? "Erstellt" : "Created"}</TableHead>
@@ -979,6 +980,11 @@ const AdminDashboard = () => {
                                 </div>
                                 {doctor.full_name}
                               </div>
+                            </TableCell>
+                            <TableCell>
+                              <code className="text-xs bg-muted px-2 py-1 rounded font-mono">
+                                {doctor.id.slice(0, 8)}...
+                              </code>
                             </TableCell>
                             <TableCell>
                               <DropdownMenu>
