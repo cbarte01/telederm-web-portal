@@ -43,16 +43,22 @@ const ConsultationFlow = () => {
     urlReferralCode && !draft.referralCode ? urlReferralCode : null
   );
   
-  // Sign out non-patient users (admin/doctor) when accessing consultation flow
-  // This prevents admin sessions from carrying over to patient referral links
+  // Redirect admins away - they should not use the consultation flow at all
+  // Sign out doctors to ensure clean patient experience
   useEffect(() => {
     if (!isLoadingRole && !hasCheckedSession) {
-      if (role === 'admin' || role === 'doctor') {
+      if (role === 'admin') {
+        // Admins should not create consultations - redirect to their dashboard
+        navigate('/admin/dashboard', { replace: true });
+        return;
+      }
+      if (role === 'doctor') {
+        // Sign out doctors so they can proceed as patients if needed
         signOut();
       }
       setHasCheckedSession(true);
     }
-  }, [role, isLoadingRole, hasCheckedSession, signOut]);
+  }, [role, isLoadingRole, hasCheckedSession, signOut, navigate]);
   
   // Save referral info to draft when doctor is loaded
   // Also reset to step 1 if this is a new referral link
