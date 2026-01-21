@@ -6,15 +6,22 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { User, LogOut, Calendar, FileText, MessageSquare, Plus, Clock, CheckCircle, AlertCircle } from "lucide-react";
+import { User, LogOut, Calendar, FileText, MessageSquare, Plus, Clock, CheckCircle, AlertCircle, ChevronRight } from "lucide-react";
 import teledermLogo from "@/assets/logo/telederm-logo.png";
+import { ConsultationDetailDialog } from "@/components/patient/ConsultationDetailDialog";
 
 interface Consultation {
   id: string;
   status: string;
   concern_category: string | null;
+  body_locations: string[] | null;
+  symptom_onset: string | null;
+  symptoms: string[] | null;
+  symptom_severity: string | null;
+  doctor_response: string | null;
   created_at: string;
   submitted_at: string | null;
+  responded_at: string | null;
 }
 
 const statusConfig: Record<string, { label: string; labelDe: string; icon: React.ElementType; variant: "default" | "secondary" | "destructive" | "outline" }> = {
@@ -41,18 +48,21 @@ const PatientDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const lang = i18n.language === "de" ? "de" : "en";
 
+  const [selectedConsultation, setSelectedConsultation] = useState<Consultation | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   useEffect(() => {
     const fetchConsultations = async () => {
       if (!user) return;
       
       const { data, error } = await supabase
         .from("consultations")
-        .select("id, status, concern_category, created_at, submitted_at")
+        .select("id, status, concern_category, body_locations, symptom_onset, symptoms, symptom_severity, doctor_response, created_at, submitted_at, responded_at")
         .eq("patient_id", user.id)
         .order("created_at", { ascending: false });
 
       if (!error && data) {
-        setConsultations(data);
+        setConsultations(data as Consultation[]);
       }
       setIsLoading(false);
     };
@@ -70,6 +80,11 @@ const PatientDashboard = () => {
       month: "short",
       year: "numeric",
     });
+  };
+
+  const handleConsultationClick = (consultation: Consultation) => {
+    setSelectedConsultation(consultation);
+    setDialogOpen(true);
   };
 
   return (
@@ -197,11 +212,15 @@ const PatientDashboard = () => {
                     const config = statusConfig[consultation.status] || statusConfig.completed;
                     
                     return (
-                      <Card key={consultation.id} className="shadow-soft opacity-75">
+                      <Card 
+                        key={consultation.id} 
+                        className="shadow-soft hover:shadow-md transition-all cursor-pointer group"
+                        onClick={() => handleConsultationClick(consultation)}
+                      >
                         <CardContent className="py-4">
                           <div className="flex items-center justify-between">
                             <div>
-                              <h3 className="font-medium text-foreground">
+                              <h3 className="font-medium text-foreground group-hover:text-primary transition-colors">
                                 {consultation.concern_category 
                                   ? concernLabels[consultation.concern_category]?.[lang] || consultation.concern_category
                                   : (lang === "de" ? "Hautanfrage" : "Skin Consultation")}
@@ -210,9 +229,12 @@ const PatientDashboard = () => {
                                 {formatDate(consultation.submitted_at || consultation.created_at)}
                               </p>
                             </div>
-                            <Badge variant="outline">
-                              {lang === "de" ? config.labelDe : config.label}
-                            </Badge>
+                            <div className="flex items-center gap-2">
+                              <Badge variant="outline">
+                                {lang === "de" ? config.labelDe : config.label}
+                              </Badge>
+                              <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                            </div>
                           </div>
                         </CardContent>
                       </Card>
@@ -278,6 +300,12 @@ const PatientDashboard = () => {
           </div>
         </div>
       </main>
+
+      <ConsultationDetailDialog 
+        consultation={selectedConsultation}
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+      />
     </div>
   );
 };
