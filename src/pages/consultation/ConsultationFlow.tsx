@@ -62,9 +62,15 @@ const ConsultationFlow = () => {
     }
   }, [role, isLoadingRole, hasCheckedSession, signOut, navigate]);
   
+  // Track if we've already processed the referral to avoid infinite loops
+  const [referralProcessed, setReferralProcessed] = useState(false);
+  
   // Save referral info to draft when doctor is loaded
   // Also reset to step 1 if this is a new referral link or completed draft
   useEffect(() => {
+    // Skip if still loading or already processed
+    if (isLoadingReferral || referralProcessed) return;
+    
     // If we have a URL referral code, check if we need to reset
     if (urlReferralCode) {
       const isDifferentReferral = draft.referralCode !== urlReferralCode;
@@ -82,15 +88,17 @@ const ConsultationFlow = () => {
             referredPracticeName: referralDoctor.practiceName,
             referredWelcomeMessage: referralDoctor.welcomeMessage,
           });
-        } else if (!isLoadingReferral) {
+          setReferralProcessed(true);
+        } else {
           // Invalid referral code but still reset to step 1
           updateDraft({
             ...INITIAL_DRAFT,
             currentStep: 1,
           });
+          setReferralProcessed(true);
         }
-      } else if (!draft.referralCode && referralDoctor) {
-        // Same referral code, just add the referral info
+      } else if (!draft.referredDoctorId && referralDoctor) {
+        // Same referral code but missing doctor info, add it
         updateDraft({
           referralCode: urlReferralCode,
           referredDoctorId: referralDoctor.id,
@@ -98,15 +106,22 @@ const ConsultationFlow = () => {
           referredPracticeName: referralDoctor.practiceName,
           referredWelcomeMessage: referralDoctor.welcomeMessage,
         });
+        setReferralProcessed(true);
+      } else {
+        // Referral already matches, mark as processed
+        setReferralProcessed(true);
       }
-    } else if (draft.currentStep === 10 && !urlReferralCode) {
+    } else if (draft.currentStep === 10) {
       // No referral code and at step 10 - reset to step 1
       updateDraft({
         ...INITIAL_DRAFT,
         currentStep: 1,
       });
+      setReferralProcessed(true);
+    } else {
+      setReferralProcessed(true);
     }
-  }, [referralDoctor, draft.referralCode, draft.currentStep, urlReferralCode, updateDraft, isLoadingReferral]);
+  }, [referralDoctor, draft.referralCode, draft.referredDoctorId, draft.currentStep, urlReferralCode, updateDraft, isLoadingReferral, referralProcessed]);
 
   // Prevent accidental navigation away
   useEffect(() => {
