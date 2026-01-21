@@ -120,12 +120,12 @@ const BodyLocationPicker = ({ draft, updateDraft, onNext }: BodyLocationPickerPr
 
       {/* Body Diagram with Image */}
       <div className="flex justify-center">
-        <div className="relative w-full max-w-[300px] bg-background dark:bg-muted/30 rounded-xl overflow-hidden border border-border">
+        <div className="relative w-full max-w-[300px]">
           {/* Body Image */}
           <img
             src={currentImage}
             alt={view === "front" ? "Front body view" : "Back body view"}
-            className="w-full h-auto select-none pointer-events-none mix-blend-lighten"
+            className="w-full h-auto select-none pointer-events-none rounded-lg"
             draggable={false}
           />
           
