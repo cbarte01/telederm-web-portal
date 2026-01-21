@@ -11,6 +11,13 @@ interface BodyLocationPickerProps {
   onNext: () => void;
 }
 
+// Simplified body regions that group related areas
+type BodyRegion = {
+  id: BodyArea;
+  label: string;
+  areas?: BodyArea[]; // For grouped selections
+};
+
 const BodyLocationPicker = ({ draft, updateDraft, onNext }: BodyLocationPickerProps) => {
   const { t, i18n } = useTranslation("consultation");
   const [view, setView] = useState<"front" | "back">("front");
@@ -32,56 +39,219 @@ const BodyLocationPicker = ({ draft, updateDraft, onNext }: BodyLocationPickerPr
     }
   };
 
-  // SVG body parts for front and back view
-  const frontAreas: { id: BodyArea; cx: number; cy: number }[] = [
-    { id: "head", cx: 100, cy: 30 },
-    { id: "face", cx: 100, cy: 50 },
-    { id: "neck", cx: 100, cy: 75 },
-    { id: "left_shoulder", cx: 65, cy: 95 },
-    { id: "right_shoulder", cx: 135, cy: 95 },
-    { id: "chest", cx: 100, cy: 115 },
-    { id: "left_upper_arm", cx: 50, cy: 120 },
-    { id: "right_upper_arm", cx: 150, cy: 120 },
-    { id: "abdomen", cx: 100, cy: 155 },
-    { id: "left_forearm", cx: 40, cy: 165 },
-    { id: "right_forearm", cx: 160, cy: 165 },
-    { id: "left_hand", cx: 30, cy: 210 },
-    { id: "right_hand", cx: 170, cy: 210 },
-    { id: "groin", cx: 100, cy: 195 },
-    { id: "left_thigh", cx: 80, cy: 240 },
-    { id: "right_thigh", cx: 120, cy: 240 },
-    { id: "left_knee", cx: 80, cy: 290 },
-    { id: "right_knee", cx: 120, cy: 290 },
-    { id: "left_lower_leg", cx: 80, cy: 340 },
-    { id: "right_lower_leg", cx: 120, cy: 340 },
-    { id: "left_foot", cx: 80, cy: 385 },
-    { id: "right_foot", cx: 120, cy: 385 },
+  // Simplified front view regions with better positioned hotspots
+  const frontRegions: { id: BodyArea; path: string; labelPos: { x: number; y: number } }[] = [
+    { 
+      id: "head", 
+      path: "M100,5 C130,5 145,25 145,50 C145,75 130,90 100,90 C70,90 55,75 55,50 C55,25 70,5 100,5",
+      labelPos: { x: 100, y: 50 }
+    },
+    { 
+      id: "neck", 
+      path: "M85,90 L115,90 L115,110 L85,110 Z",
+      labelPos: { x: 100, y: 100 }
+    },
+    { 
+      id: "left_shoulder", 
+      path: "M55,110 L85,110 L85,130 L45,130 L45,115 Z",
+      labelPos: { x: 65, y: 120 }
+    },
+    { 
+      id: "right_shoulder", 
+      path: "M115,110 L145,110 L155,115 L155,130 L115,130 Z",
+      labelPos: { x: 135, y: 120 }
+    },
+    { 
+      id: "chest", 
+      path: "M70,130 L130,130 L130,175 L70,175 Z",
+      labelPos: { x: 100, y: 152 }
+    },
+    { 
+      id: "abdomen", 
+      path: "M70,175 L130,175 L125,220 L75,220 Z",
+      labelPos: { x: 100, y: 197 }
+    },
+    { 
+      id: "left_upper_arm", 
+      path: "M25,130 L45,130 L45,185 L25,185 Z",
+      labelPos: { x: 35, y: 157 }
+    },
+    { 
+      id: "right_upper_arm", 
+      path: "M155,130 L175,130 L175,185 L155,185 Z",
+      labelPos: { x: 165, y: 157 }
+    },
+    { 
+      id: "left_forearm", 
+      path: "M20,185 L45,185 L45,245 L15,245 Z",
+      labelPos: { x: 30, y: 215 }
+    },
+    { 
+      id: "right_forearm", 
+      path: "M155,185 L180,185 L185,245 L155,245 Z",
+      labelPos: { x: 170, y: 215 }
+    },
+    { 
+      id: "left_hand", 
+      path: "M10,245 L45,245 L45,280 L5,280 Z",
+      labelPos: { x: 25, y: 262 }
+    },
+    { 
+      id: "right_hand", 
+      path: "M155,245 L190,245 L195,280 L155,280 Z",
+      labelPos: { x: 175, y: 262 }
+    },
+    { 
+      id: "groin", 
+      path: "M75,220 L125,220 L120,250 L80,250 Z",
+      labelPos: { x: 100, y: 235 }
+    },
+    { 
+      id: "left_thigh", 
+      path: "M65,250 L95,250 L90,330 L60,330 Z",
+      labelPos: { x: 77, y: 290 }
+    },
+    { 
+      id: "right_thigh", 
+      path: "M105,250 L135,250 L140,330 L110,330 Z",
+      labelPos: { x: 122, y: 290 }
+    },
+    { 
+      id: "left_knee", 
+      path: "M60,330 L90,330 L90,365 L60,365 Z",
+      labelPos: { x: 75, y: 347 }
+    },
+    { 
+      id: "right_knee", 
+      path: "M110,330 L140,330 L140,365 L110,365 Z",
+      labelPos: { x: 125, y: 347 }
+    },
+    { 
+      id: "left_lower_leg", 
+      path: "M58,365 L90,365 L88,435 L62,435 Z",
+      labelPos: { x: 74, y: 400 }
+    },
+    { 
+      id: "right_lower_leg", 
+      path: "M110,365 L142,365 L138,435 L112,435 Z",
+      labelPos: { x: 126, y: 400 }
+    },
+    { 
+      id: "left_foot", 
+      path: "M55,435 L90,435 L90,460 L50,460 Z",
+      labelPos: { x: 70, y: 447 }
+    },
+    { 
+      id: "right_foot", 
+      path: "M110,435 L145,435 L150,460 L110,460 Z",
+      labelPos: { x: 130, y: 447 }
+    },
   ];
 
-  const backAreas: { id: BodyArea; cx: number; cy: number }[] = [
-    { id: "head", cx: 100, cy: 30 },
-    { id: "neck", cx: 100, cy: 75 },
-    { id: "left_shoulder", cx: 65, cy: 95 },
-    { id: "right_shoulder", cx: 135, cy: 95 },
-    { id: "upper_back", cx: 100, cy: 125 },
-    { id: "left_upper_arm", cx: 50, cy: 120 },
-    { id: "right_upper_arm", cx: 150, cy: 120 },
-    { id: "lower_back", cx: 100, cy: 165 },
-    { id: "left_forearm", cx: 40, cy: 165 },
-    { id: "right_forearm", cx: 160, cy: 165 },
-    { id: "left_hand", cx: 30, cy: 210 },
-    { id: "right_hand", cx: 170, cy: 210 },
-    { id: "left_thigh", cx: 80, cy: 240 },
-    { id: "right_thigh", cx: 120, cy: 240 },
-    { id: "left_knee", cx: 80, cy: 290 },
-    { id: "right_knee", cx: 120, cy: 290 },
-    { id: "left_lower_leg", cx: 80, cy: 340 },
-    { id: "right_lower_leg", cx: 120, cy: 340 },
-    { id: "left_foot", cx: 80, cy: 385 },
-    { id: "right_foot", cx: 120, cy: 385 },
+  const backRegions: { id: BodyArea; path: string; labelPos: { x: number; y: number } }[] = [
+    { 
+      id: "head", 
+      path: "M100,5 C130,5 145,25 145,50 C145,75 130,90 100,90 C70,90 55,75 55,50 C55,25 70,5 100,5",
+      labelPos: { x: 100, y: 50 }
+    },
+    { 
+      id: "neck", 
+      path: "M85,90 L115,90 L115,110 L85,110 Z",
+      labelPos: { x: 100, y: 100 }
+    },
+    { 
+      id: "left_shoulder", 
+      path: "M55,110 L85,110 L85,130 L45,130 L45,115 Z",
+      labelPos: { x: 65, y: 120 }
+    },
+    { 
+      id: "right_shoulder", 
+      path: "M115,110 L145,110 L155,115 L155,130 L115,130 Z",
+      labelPos: { x: 135, y: 120 }
+    },
+    { 
+      id: "upper_back", 
+      path: "M70,130 L130,130 L130,175 L70,175 Z",
+      labelPos: { x: 100, y: 152 }
+    },
+    { 
+      id: "lower_back", 
+      path: "M70,175 L130,175 L125,220 L75,220 Z",
+      labelPos: { x: 100, y: 197 }
+    },
+    { 
+      id: "left_upper_arm", 
+      path: "M25,130 L45,130 L45,185 L25,185 Z",
+      labelPos: { x: 35, y: 157 }
+    },
+    { 
+      id: "right_upper_arm", 
+      path: "M155,130 L175,130 L175,185 L155,185 Z",
+      labelPos: { x: 165, y: 157 }
+    },
+    { 
+      id: "left_forearm", 
+      path: "M20,185 L45,185 L45,245 L15,245 Z",
+      labelPos: { x: 30, y: 215 }
+    },
+    { 
+      id: "right_forearm", 
+      path: "M155,185 L180,185 L185,245 L155,245 Z",
+      labelPos: { x: 170, y: 215 }
+    },
+    { 
+      id: "left_hand", 
+      path: "M10,245 L45,245 L45,280 L5,280 Z",
+      labelPos: { x: 25, y: 262 }
+    },
+    { 
+      id: "right_hand", 
+      path: "M155,245 L190,245 L195,280 L155,280 Z",
+      labelPos: { x: 175, y: 262 }
+    },
+    { 
+      id: "left_thigh", 
+      path: "M65,220 L95,220 L90,330 L60,330 Z",
+      labelPos: { x: 77, y: 275 }
+    },
+    { 
+      id: "right_thigh", 
+      path: "M105,220 L135,220 L140,330 L110,330 Z",
+      labelPos: { x: 122, y: 275 }
+    },
+    { 
+      id: "left_knee", 
+      path: "M60,330 L90,330 L90,365 L60,365 Z",
+      labelPos: { x: 75, y: 347 }
+    },
+    { 
+      id: "right_knee", 
+      path: "M110,330 L140,330 L140,365 L110,365 Z",
+      labelPos: { x: 125, y: 347 }
+    },
+    { 
+      id: "left_lower_leg", 
+      path: "M58,365 L90,365 L88,435 L62,435 Z",
+      labelPos: { x: 74, y: 400 }
+    },
+    { 
+      id: "right_lower_leg", 
+      path: "M110,365 L142,365 L138,435 L112,435 Z",
+      labelPos: { x: 126, y: 400 }
+    },
+    { 
+      id: "left_foot", 
+      path: "M55,435 L90,435 L90,460 L50,460 Z",
+      labelPos: { x: 70, y: 447 }
+    },
+    { 
+      id: "right_foot", 
+      path: "M110,435 L145,435 L150,460 L110,460 Z",
+      labelPos: { x: 130, y: 447 }
+    },
   ];
 
-  const currentAreas = view === "front" ? frontAreas : backAreas;
+  const currentRegions = view === "front" ? frontRegions : backRegions;
 
   return (
     <div className="space-y-6">
@@ -115,42 +285,40 @@ const BodyLocationPicker = ({ draft, updateDraft, onNext }: BodyLocationPickerPr
       {/* Body Diagram */}
       <div className="flex justify-center">
         <svg
-          viewBox="0 0 200 410"
-          className="w-full max-w-[250px] h-auto"
+          viewBox="0 0 200 470"
+          className="w-full max-w-[280px] h-auto"
         >
-          {/* Body outline */}
-          <ellipse cx="100" cy="35" rx="25" ry="30" fill="hsl(var(--muted))" stroke="hsl(var(--border))" strokeWidth="1" />
-          <rect x="85" y="60" width="30" height="20" rx="5" fill="hsl(var(--muted))" stroke="hsl(var(--border))" strokeWidth="1" />
-          <ellipse cx="100" cy="130" rx="40" ry="55" fill="hsl(var(--muted))" stroke="hsl(var(--border))" strokeWidth="1" />
-          {/* Arms */}
-          <rect x="40" y="95" width="20" height="50" rx="8" fill="hsl(var(--muted))" stroke="hsl(var(--border))" strokeWidth="1" />
-          <rect x="140" y="95" width="20" height="50" rx="8" fill="hsl(var(--muted))" stroke="hsl(var(--border))" strokeWidth="1" />
-          <rect x="32" y="140" width="18" height="55" rx="6" fill="hsl(var(--muted))" stroke="hsl(var(--border))" strokeWidth="1" />
-          <rect x="150" y="140" width="18" height="55" rx="6" fill="hsl(var(--muted))" stroke="hsl(var(--border))" strokeWidth="1" />
-          <ellipse cx="35" cy="210" rx="10" ry="15" fill="hsl(var(--muted))" stroke="hsl(var(--border))" strokeWidth="1" />
-          <ellipse cx="165" cy="210" rx="10" ry="15" fill="hsl(var(--muted))" stroke="hsl(var(--border))" strokeWidth="1" />
-          {/* Legs */}
-          <rect x="65" y="180" width="30" height="80" rx="10" fill="hsl(var(--muted))" stroke="hsl(var(--border))" strokeWidth="1" />
-          <rect x="105" y="180" width="30" height="80" rx="10" fill="hsl(var(--muted))" stroke="hsl(var(--border))" strokeWidth="1" />
-          <rect x="67" y="255" width="26" height="25" rx="8" fill="hsl(var(--muted))" stroke="hsl(var(--border))" strokeWidth="1" />
-          <rect x="107" y="255" width="26" height="25" rx="8" fill="hsl(var(--muted))" stroke="hsl(var(--border))" strokeWidth="1" />
-          <rect x="65" y="275" width="30" height="80" rx="10" fill="hsl(var(--muted))" stroke="hsl(var(--border))" strokeWidth="1" />
-          <rect x="105" y="275" width="30" height="80" rx="10" fill="hsl(var(--muted))" stroke="hsl(var(--border))" strokeWidth="1" />
-          <ellipse cx="80" cy="385" rx="18" ry="10" fill="hsl(var(--muted))" stroke="hsl(var(--border))" strokeWidth="1" />
-          <ellipse cx="120" cy="385" rx="18" ry="10" fill="hsl(var(--muted))" stroke="hsl(var(--border))" strokeWidth="1" />
+          {/* Clean body silhouette */}
+          <defs>
+            <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="hsl(var(--muted))" />
+              <stop offset="100%" stopColor="hsl(var(--muted) / 0.8)" />
+            </linearGradient>
+          </defs>
+          
+          {/* Body silhouette path */}
+          <path
+            d="M100,5 C130,5 145,25 145,50 C145,75 130,95 115,95 L115,110 
+               C140,110 155,115 155,130 L175,130 L180,185 L185,245 L190,280 L155,280 L155,245 L155,185 L155,130 
+               L130,130 L130,220 L140,330 L142,365 L145,435 L150,460 L110,460 L112,435 L110,365 L110,330 L105,250 
+               L100,220 L95,250 L90,330 L90,365 L88,435 L90,460 L50,460 L55,435 L58,365 L60,330 L65,220 L70,130 
+               L45,130 L45,185 L45,245 L45,280 L10,280 L15,245 L20,185 L25,130 L45,130 
+               C45,115 60,110 85,110 L85,95 C70,95 55,75 55,50 C55,25 70,5 100,5 Z"
+            fill="url(#bodyGradient)"
+            stroke="hsl(var(--border))"
+            strokeWidth="1.5"
+          />
 
-          {/* Clickable areas */}
-          {currentAreas.map(({ id, cx, cy }) => (
-            <circle
+          {/* Clickable region paths */}
+          {currentRegions.map(({ id, path }) => (
+            <path
               key={id}
-              cx={cx}
-              cy={cy}
-              r="15"
+              d={path}
               className={cn(
                 "cursor-pointer transition-all duration-200",
                 isSelected(id)
-                  ? "fill-primary stroke-primary-foreground"
-                  : "fill-transparent stroke-primary/50 hover:fill-primary/20"
+                  ? "fill-primary/80 stroke-primary"
+                  : "fill-transparent stroke-transparent hover:fill-primary/20 hover:stroke-primary/50"
               )}
               strokeWidth="2"
               onClick={() => toggleArea(id)}
