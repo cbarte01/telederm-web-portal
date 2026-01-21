@@ -40,11 +40,9 @@ import {
   Users, 
   Stethoscope,
   FileText,
-  TrendingUp,
   Clock,
   CheckCircle,
   AlertCircle,
-  Calendar,
   Activity,
   MoreHorizontal,
   Ban,
@@ -52,7 +50,10 @@ import {
   Trash2,
   Link2,
   Copy,
-  Check
+  Check,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import teledermLogo from "@/assets/logo/telederm-logo.png";
@@ -119,6 +120,8 @@ const AdminDashboard = () => {
   const [isLoadingStats, setIsLoadingStats] = useState(true);
   const [actionInProgress, setActionInProgress] = useState<string | null>(null);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [patientSortField, setPatientSortField] = useState<'name' | 'ongoing' | 'pending'>('name');
+  const [patientSortDir, setPatientSortDir] = useState<'asc' | 'desc'>('asc');
   const [confirmDialog, setConfirmDialog] = useState<{
     open: boolean;
     type: 'deactivate' | 'reactivate' | 'delete';
@@ -128,6 +131,62 @@ const AdminDashboard = () => {
 
   const lang = i18n.language === "de" ? "de" : "en";
   const dateLocale = lang === "de" ? de : enUS;
+
+  // Format duration from a date to now (e.g., "3d 5h" or "2h")
+  const formatPendingDuration = (dateString: string): string => {
+    const now = new Date();
+    const date = new Date(dateString);
+    const diffMs = now.getTime() - date.getTime();
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const days = Math.floor(diffHours / 24);
+    const hours = diffHours % 24;
+    
+    if (days > 0) {
+      return hours > 0 ? `${days}d ${hours}h` : `${days}d`;
+    }
+    return `${hours}h`;
+  };
+
+  // Get pending duration in hours for sorting
+  const getPendingHours = (dateString: string | null): number => {
+    if (!dateString) return -1; // No pending case = sort last
+    const now = new Date();
+    const date = new Date(dateString);
+    return Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+  };
+
+  // Sort patients based on current sort field and direction
+  const sortedPatients = [...patients].sort((a, b) => {
+    let comparison = 0;
+    switch (patientSortField) {
+      case 'name':
+        comparison = (a.full_name || '').localeCompare(b.full_name || '');
+        break;
+      case 'ongoing':
+        comparison = a.ongoingCases - b.ongoingCases;
+        break;
+      case 'pending':
+        comparison = getPendingHours(b.oldestPendingDate) - getPendingHours(a.oldestPendingDate);
+        break;
+    }
+    return patientSortDir === 'asc' ? comparison : -comparison;
+  });
+
+  const handlePatientSort = (field: 'name' | 'ongoing' | 'pending') => {
+    if (patientSortField === field) {
+      setPatientSortDir(prev => prev === 'asc' ? 'desc' : 'asc');
+    } else {
+      setPatientSortField(field);
+      setPatientSortDir('asc');
+    }
+  };
+
+  const getSortIcon = (field: 'name' | 'ongoing' | 'pending') => {
+    if (patientSortField !== field) return <ArrowUpDown className="h-3 w-3 ml-1" />;
+    return patientSortDir === 'asc' 
+      ? <ArrowUp className="h-3 w-3 ml-1" /> 
+      : <ArrowDown className="h-3 w-3 ml-1" />;
+  };
 
   const form = useForm<CreateDoctorFormData>({
     resolver: zodResolver(createDoctorSchema),
@@ -776,17 +835,47 @@ const AdminDashboard = () => {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>{lang === "de" ? "Name" : "Name"}</TableHead>
+                        <TableHead>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-auto p-0 font-medium hover:bg-transparent"
+                            onClick={() => handlePatientSort('name')}
+                          >
+                            {lang === "de" ? "Name" : "Name"}
+                            {getSortIcon('name')}
+                          </Button>
+                        </TableHead>
                         <TableHead>{lang === "de" ? "Erstellt" : "Created"}</TableHead>
-                        <TableHead>{t("dashboard.admin.ongoingCases")}</TableHead>
+                        <TableHead>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-auto p-0 font-medium hover:bg-transparent"
+                            onClick={() => handlePatientSort('ongoing')}
+                          >
+                            {t("dashboard.admin.ongoingCases")}
+                            {getSortIcon('ongoing')}
+                          </Button>
+                        </TableHead>
                         <TableHead>{t("dashboard.admin.closedCases")}</TableHead>
-                        <TableHead>{lang === "de" ? "Ältester offener Fall" : "Oldest Pending"}</TableHead>
+                        <TableHead>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-auto p-0 font-medium hover:bg-transparent"
+                            onClick={() => handlePatientSort('pending')}
+                          >
+                            {lang === "de" ? "Wartezeit" : "Wait Time"}
+                            {getSortIcon('pending')}
+                          </Button>
+                        </TableHead>
                         <TableHead>{t("dashboard.admin.doctorStatus")}</TableHead>
                         <TableHead className="text-right">{t("dashboard.admin.doctorActions")}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {patients.map((patient) => (
+                      {sortedPatients.map((patient) => (
                         <TableRow key={patient.id} className={!patient.is_active ? "opacity-60" : ""}>
                           <TableCell className="font-medium">
                             <div className="flex items-center gap-2">
@@ -813,9 +902,10 @@ const AdminDashboard = () => {
                           </TableCell>
                           <TableCell>
                             {patient.oldestPendingDate ? (
-                              <span className="text-sm text-muted-foreground">
-                                {format(new Date(patient.oldestPendingDate), "PP", { locale: dateLocale })}
-                              </span>
+                              <Badge variant="secondary" className="gap-1">
+                                <Clock className="h-3 w-3" />
+                                {formatPendingDuration(patient.oldestPendingDate)}
+                              </Badge>
                             ) : (
                               <span className="text-muted-foreground">-</span>
                             )}
