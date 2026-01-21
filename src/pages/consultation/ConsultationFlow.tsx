@@ -113,14 +113,8 @@ const ConsultationFlow = () => {
         // Referral already matches, mark as processed
         setReferralProcessed(true);
       }
-    } else if (draft.currentStep === 10) {
-      // No referral code and at step 10 - reset to step 1
-      updateDraft({
-        ...INITIAL_DRAFT,
-        currentStep: 1,
-      });
-      setReferralProcessed(true);
     } else {
+      // No referral code - just mark as processed
       setReferralProcessed(true);
     }
   }, [referralDoctor, draft.referralCode, draft.referredDoctorId, draft.currentStep, urlReferralCode, updateDraft, isLoadingReferral, referralProcessed]);
