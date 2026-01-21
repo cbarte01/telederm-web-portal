@@ -1,11 +1,13 @@
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useConsultationDraft } from "@/hooks/useConsultationDraft";
+import { useReferralDoctor } from "@/hooks/useReferralDoctor";
+import ReferralBanner from "@/components/consultation/ReferralBanner";
 import teledermLogo from "@/assets/logo/telederm-logo.png";
 
 // Step components
@@ -25,7 +27,28 @@ const TOTAL_STEPS = 10;
 const ConsultationFlow = () => {
   const { t } = useTranslation("consultation");
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { draft, isLoaded, updateDraft, goToNextStep, goToPreviousStep, setStep } = useConsultationDraft();
+  
+  // Handle referral code from URL
+  const urlReferralCode = searchParams.get("ref");
+  const { doctor: referralDoctor, isLoading: isLoadingReferral } = useReferralDoctor(
+    // Only fetch if we have a URL param and haven't already saved to draft
+    urlReferralCode && !draft.referralCode ? urlReferralCode : null
+  );
+  
+  // Save referral info to draft when doctor is loaded
+  useEffect(() => {
+    if (referralDoctor && !draft.referralCode && urlReferralCode) {
+      updateDraft({
+        referralCode: urlReferralCode,
+        referredDoctorId: referralDoctor.id,
+        referredDoctorName: referralDoctor.fullName,
+        referredPracticeName: referralDoctor.practiceName,
+        referredWelcomeMessage: referralDoctor.welcomeMessage,
+      });
+    }
+  }, [referralDoctor, draft.referralCode, urlReferralCode, updateDraft]);
 
   // Prevent accidental navigation away
   useEffect(() => {
@@ -40,7 +63,7 @@ const ConsultationFlow = () => {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [draft.currentStep]);
 
-  if (!isLoaded) {
+  if (!isLoaded || isLoadingReferral) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="animate-pulse text-muted-foreground">Loading...</div>
@@ -116,18 +139,28 @@ const ConsultationFlow = () => {
 
       {/* Main Content */}
       <main className="flex-1 container px-4 py-6 md:py-10">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={draft.currentStep}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.2 }}
-            className="max-w-2xl mx-auto"
-          >
-            {renderStep()}
-          </motion.div>
-        </AnimatePresence>
+        <div className="max-w-2xl mx-auto">
+          {/* Referral Banner */}
+          {draft.referredDoctorName && draft.currentStep < 10 && (
+            <ReferralBanner
+              doctorName={draft.referredDoctorName}
+              practiceName={draft.referredPracticeName}
+              welcomeMessage={draft.currentStep === 1 ? draft.referredWelcomeMessage : undefined}
+            />
+          )}
+          
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={draft.currentStep}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.2 }}
+            >
+              {renderStep()}
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </main>
     </div>
   );
