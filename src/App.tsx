@@ -16,6 +16,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 // Auth pages
 import PatientAuth from "./pages/auth/PatientAuth";
 import DoctorAuth from "./pages/auth/DoctorAuth";
+import ResetPassword from "./pages/auth/ResetPassword";
 import AdminLogin from "./pages/auth/AdminLogin";
 
 // Dashboard pages
@@ -49,6 +50,7 @@ const App = () => (
             {/* Auth pages */}
             <Route path="/auth" element={<PatientAuth />} />
             <Route path="/auth/doctor" element={<DoctorAuth />} />
+            <Route path="/auth/reset-password" element={<ResetPassword />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             
             {/* Protected dashboards */}
