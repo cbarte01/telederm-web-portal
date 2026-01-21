@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, Check, AlertCircle } from "lucide-react";
+import { Loader2, Check, AlertCircle, User, MapPin, Camera, Clock, Activity, Stethoscope, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -14,7 +14,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { ConsultationDraft, BODY_AREA_LABELS } from "@/types/consultation";
+import { ConsultationDraft, BODY_AREA_LABELS, BiologicalSex } from "@/types/consultation";
 
 interface AccountPaymentProps {
   draft: ConsultationDraft;
@@ -172,6 +172,66 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
     pigmentation: { en: "Pigmentation", de: "Pigmentierung" },
   };
 
+  const onsetLabels: Record<string, { en: string; de: string }> = {
+    today: { en: "Today", de: "Heute" },
+    thisWeek: { en: "This week", de: "Diese Woche" },
+    thisMonth: { en: "This month", de: "Diesen Monat" },
+    longerAgo: { en: "More than a month ago", de: "Vor mehr als einem Monat" },
+  };
+
+  const severityLabels: Record<string, { en: string; de: string }> = {
+    mild: { en: "Mild", de: "Leicht" },
+    moderate: { en: "Moderate", de: "Mittel" },
+    severe: { en: "Severe", de: "Stark" },
+  };
+
+  const sexLabels: Record<BiologicalSex, { en: string; de: string }> = {
+    male: { en: "Male", de: "Männlich" },
+    female: { en: "Female", de: "Weiblich" },
+    diverse: { en: "Diverse", de: "Divers" },
+  };
+
+  const symptomLabels: Record<string, { en: string; de: string }> = {
+    itching: { en: "Itching", de: "Juckreiz" },
+    pain: { en: "Pain", de: "Schmerzen" },
+    burning: { en: "Burning", de: "Brennen" },
+    swelling: { en: "Swelling", de: "Schwellung" },
+    oozing: { en: "Oozing", de: "Nässen" },
+    bleeding: { en: "Bleeding", de: "Blutung" },
+    flaking: { en: "Flaking", de: "Schuppung" },
+    none: { en: "None", de: "Keines" },
+  };
+
+  const getSelectedSymptoms = () => {
+    if (!draft.symptoms || draft.symptoms.length === 0) return null;
+    return draft.symptoms
+      .filter(s => s !== "none")
+      .map(s => symptomLabels[s]?.[lang] || s)
+      .join(", ");
+  };
+
+  const SummarySection = ({ icon: Icon, title, children }: { icon: React.ElementType; title: string; children: React.ReactNode }) => (
+    <div className="space-y-2">
+      <div className="flex items-center gap-2 text-foreground font-medium">
+        <Icon className="w-4 h-4 text-primary" />
+        <span>{title}</span>
+      </div>
+      <div className="pl-6 text-sm text-muted-foreground space-y-1">
+        {children}
+      </div>
+    </div>
+  );
+
+  const SummaryRow = ({ label, value }: { label: string; value?: string | null }) => {
+    if (!value) return null;
+    return (
+      <div className="flex justify-between gap-4">
+        <span>{label}:</span>
+        <span className="font-medium text-foreground text-right">{value}</span>
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-6">
       <div className="text-center space-y-2">
@@ -183,27 +243,106 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
         </p>
       </div>
 
-      {/* Consultation Summary */}
-      <div className="p-4 rounded-xl border border-border bg-card space-y-3">
-        <h3 className="font-semibold text-foreground">{t("step9.summary.title")}</h3>
-        <div className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">{t("step9.summary.concern")}</span>
-            <span className="font-medium text-foreground">
-              {draft.concernCategory && categoryLabels[draft.concernCategory]?.[lang]}
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">{t("step9.summary.location")}</span>
-            <span className="font-medium text-foreground">
-              {draft.bodyLocations.map(l => BODY_AREA_LABELS[l]?.[lang]).join(", ")}
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">{t("step9.summary.photos")}</span>
-            <span className="font-medium text-foreground">{draft.photos.length}</span>
-          </div>
-        </div>
+      {/* Detailed Consultation Summary */}
+      <div className="p-4 rounded-xl border border-border bg-card space-y-5">
+        <h3 className="font-semibold text-foreground text-lg border-b border-border pb-2">
+          {t("step9.summary.title")}
+        </h3>
+        
+        {/* Personal Details */}
+        <SummarySection icon={User} title={lang === "de" ? "Persönliche Angaben" : "Personal Details"}>
+          <SummaryRow label={lang === "de" ? "Name" : "Name"} value={draft.fullName} />
+          <SummaryRow label={lang === "de" ? "Geburtsdatum" : "Date of birth"} value={draft.dateOfBirth} />
+          <SummaryRow label={lang === "de" ? "SVNr" : "SSN"} value={draft.socialSecurityNumber} />
+          <SummaryRow 
+            label={lang === "de" ? "Geschlecht" : "Sex"} 
+            value={draft.biologicalSex ? sexLabels[draft.biologicalSex]?.[lang] : undefined} 
+          />
+        </SummarySection>
+
+        {/* Concern & Location */}
+        <SummarySection icon={MapPin} title={lang === "de" ? "Anliegen & Betroffene Stellen" : "Concern & Affected Areas"}>
+          <SummaryRow 
+            label={lang === "de" ? "Kategorie" : "Category"} 
+            value={draft.concernCategory ? categoryLabels[draft.concernCategory]?.[lang] : undefined} 
+          />
+          <SummaryRow 
+            label={lang === "de" ? "Körperstellen" : "Body areas"} 
+            value={draft.bodyLocations.length > 0 ? draft.bodyLocations.map(l => BODY_AREA_LABELS[l]?.[lang]).join(", ") : undefined} 
+          />
+        </SummarySection>
+
+        {/* Photos */}
+        <SummarySection icon={Camera} title={lang === "de" ? "Hochgeladene Fotos" : "Uploaded Photos"}>
+          <p>{draft.photos.length} {lang === "de" ? "Foto(s) hochgeladen" : "photo(s) uploaded"}</p>
+          {draft.photos.length > 0 && (
+            <div className="flex gap-2 mt-2">
+              {draft.photos.map((photo, idx) => (
+                photo.preview && (
+                  <img 
+                    key={idx} 
+                    src={photo.preview} 
+                    alt={`Photo ${idx + 1}`} 
+                    className="w-12 h-12 object-cover rounded-md border border-border"
+                  />
+                )
+              ))}
+            </div>
+          )}
+        </SummarySection>
+
+        {/* Timeline */}
+        <SummarySection icon={Clock} title={lang === "de" ? "Zeitverlauf" : "Timeline"}>
+          <SummaryRow 
+            label={lang === "de" ? "Beginn" : "Onset"} 
+            value={draft.symptomOnset ? onsetLabels[draft.symptomOnset]?.[lang] : undefined} 
+          />
+          <SummaryRow 
+            label={lang === "de" ? "Verändert" : "Changed"} 
+            value={draft.hasChanged !== undefined ? (draft.hasChanged ? (lang === "de" ? "Ja" : "Yes") : (lang === "de" ? "Nein" : "No")) : undefined} 
+          />
+          {draft.hasChanged && draft.changeDescription && (
+            <div className="mt-1">
+              <span className="text-xs">{lang === "de" ? "Beschreibung der Veränderung" : "Change description"}:</span>
+              <p className="font-medium text-foreground mt-0.5 text-xs italic">"{draft.changeDescription}"</p>
+            </div>
+          )}
+        </SummarySection>
+
+        {/* Symptoms */}
+        <SummarySection icon={Activity} title={lang === "de" ? "Symptome" : "Symptoms"}>
+          <SummaryRow 
+            label={lang === "de" ? "Symptome" : "Symptoms"} 
+            value={getSelectedSymptoms() || (lang === "de" ? "Keine angegeben" : "None specified")} 
+          />
+          <SummaryRow 
+            label={lang === "de" ? "Schweregrad" : "Severity"} 
+            value={draft.symptomSeverity ? severityLabels[draft.symptomSeverity]?.[lang] : undefined} 
+          />
+        </SummarySection>
+
+        {/* Medical History */}
+        <SummarySection icon={Stethoscope} title={lang === "de" ? "Krankengeschichte" : "Medical History"}>
+          <SummaryRow 
+            label={lang === "de" ? "Allergien" : "Allergies"} 
+            value={draft.hasAllergies !== undefined ? (draft.hasAllergies ? (draft.allergiesDescription || (lang === "de" ? "Ja" : "Yes")) : (lang === "de" ? "Keine" : "None")) : undefined} 
+          />
+          <SummaryRow 
+            label={lang === "de" ? "Medikamente" : "Medications"} 
+            value={draft.takesMedications !== undefined ? (draft.takesMedications ? (draft.medicationsDescription || (lang === "de" ? "Ja" : "Yes")) : (lang === "de" ? "Keine" : "None")) : undefined} 
+          />
+          <SummaryRow 
+            label={lang === "de" ? "Selbstbehandlung" : "Self-treated"} 
+            value={draft.hasSelfTreated !== undefined ? (draft.hasSelfTreated ? (draft.selfTreatmentDescription || (lang === "de" ? "Ja" : "Yes")) : (lang === "de" ? "Nein" : "No")) : undefined} 
+          />
+        </SummarySection>
+
+        {/* Additional Notes */}
+        {draft.additionalNotes && (
+          <SummarySection icon={FileText} title={lang === "de" ? "Zusätzliche Anmerkungen" : "Additional Notes"}>
+            <p className="italic">"{draft.additionalNotes}"</p>
+          </SummarySection>
+        )}
       </div>
 
       {/* Auth / Submit */}
