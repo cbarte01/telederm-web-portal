@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -44,12 +45,28 @@ const concernLabels: Record<string, { en: string; de: string }> = {
 const PatientDashboard = () => {
   const { t, i18n } = useTranslation("auth");
   const { user, signOut } = useAuth();
+  const location = useLocation();
+  const { toast } = useToast();
   const [consultations, setConsultations] = useState<Consultation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const lang = i18n.language === "de" ? "de" : "en";
 
   const [selectedConsultation, setSelectedConsultation] = useState<Consultation | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  // Show success toast if redirected after submission
+  useEffect(() => {
+    if (location.state?.consultationSubmitted) {
+      toast({
+        title: lang === "de" ? "Antrag eingereicht!" : "Consultation Submitted!",
+        description: lang === "de" 
+          ? "Ihr Antrag wurde erfolgreich übermittelt. Sie erhalten eine Antwort innerhalb von 24 Stunden."
+          : "Your consultation has been successfully submitted. You'll receive a response within 24 hours.",
+      });
+      // Clear the state so toast doesn't show again on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state, lang, toast]);
 
   useEffect(() => {
     const fetchConsultations = async () => {

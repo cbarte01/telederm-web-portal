@@ -149,9 +149,12 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
         }
       }
 
-      // Clear draft and go to confirmation
+      // Clear draft and navigate to patient dashboard with success state
       localStorage.removeItem("telederm_consultation_draft");
-      onNext();
+      navigate("/patient/dashboard", { 
+        replace: true, 
+        state: { consultationSubmitted: true } 
+      });
       
     } catch (error) {
       console.error("Consultation submission error:", error);
