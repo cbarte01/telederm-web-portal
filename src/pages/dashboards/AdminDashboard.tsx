@@ -122,6 +122,8 @@ const AdminDashboard = () => {
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [patientSortField, setPatientSortField] = useState<'name' | 'ongoing' | 'pending'>('name');
   const [patientSortDir, setPatientSortDir] = useState<'asc' | 'desc'>('asc');
+  const [doctorSortField, setDoctorSortField] = useState<'name' | 'queue' | 'status' | 'created'>('name');
+  const [doctorSortDir, setDoctorSortDir] = useState<'asc' | 'desc'>('asc');
   const [confirmDialog, setConfirmDialog] = useState<{
     open: boolean;
     type: 'deactivate' | 'reactivate' | 'delete';
@@ -181,9 +183,45 @@ const AdminDashboard = () => {
     }
   };
 
-  const getSortIcon = (field: 'name' | 'ongoing' | 'pending') => {
+  const getPatientSortIcon = (field: 'name' | 'ongoing' | 'pending') => {
     if (patientSortField !== field) return <ArrowUpDown className="h-3 w-3 ml-1" />;
     return patientSortDir === 'asc' 
+      ? <ArrowUp className="h-3 w-3 ml-1" /> 
+      : <ArrowDown className="h-3 w-3 ml-1" />;
+  };
+
+  // Sort doctors based on current sort field and direction
+  const sortedDoctors = [...doctors].sort((a, b) => {
+    let comparison = 0;
+    switch (doctorSortField) {
+      case 'name':
+        comparison = (a.full_name || '').localeCompare(b.full_name || '');
+        break;
+      case 'queue':
+        comparison = (a.doctor_queue_type || 'group').localeCompare(b.doctor_queue_type || 'group');
+        break;
+      case 'status':
+        comparison = (a.is_active === b.is_active) ? 0 : (a.is_active ? -1 : 1);
+        break;
+      case 'created':
+        comparison = new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        break;
+    }
+    return doctorSortDir === 'asc' ? comparison : -comparison;
+  });
+
+  const handleDoctorSort = (field: 'name' | 'queue' | 'status' | 'created') => {
+    if (doctorSortField === field) {
+      setDoctorSortDir(prev => prev === 'asc' ? 'desc' : 'asc');
+    } else {
+      setDoctorSortField(field);
+      setDoctorSortDir('asc');
+    }
+  };
+
+  const getDoctorSortIcon = (field: 'name' | 'queue' | 'status' | 'created') => {
+    if (doctorSortField !== field) return <ArrowUpDown className="h-3 w-3 ml-1" />;
+    return doctorSortDir === 'asc' 
       ? <ArrowUp className="h-3 w-3 ml-1" /> 
       : <ArrowDown className="h-3 w-3 ml-1" />;
   };
@@ -843,7 +881,7 @@ const AdminDashboard = () => {
                             onClick={() => handlePatientSort('name')}
                           >
                             {lang === "de" ? "Name" : "Name"}
-                            {getSortIcon('name')}
+                            {getPatientSortIcon('name')}
                           </Button>
                         </TableHead>
                         <TableHead>{lang === "de" ? "Erstellt" : "Created"}</TableHead>
@@ -855,7 +893,7 @@ const AdminDashboard = () => {
                             onClick={() => handlePatientSort('ongoing')}
                           >
                             {t("dashboard.admin.ongoingCases")}
-                            {getSortIcon('ongoing')}
+                            {getPatientSortIcon('ongoing')}
                           </Button>
                         </TableHead>
                         <TableHead>{t("dashboard.admin.closedCases")}</TableHead>
@@ -867,7 +905,7 @@ const AdminDashboard = () => {
                             onClick={() => handlePatientSort('pending')}
                           >
                             {lang === "de" ? "Wartezeit" : "Wait Time"}
-                            {getSortIcon('pending')}
+                            {getPatientSortIcon('pending')}
                           </Button>
                         </TableHead>
                         <TableHead>{t("dashboard.admin.doctorStatus")}</TableHead>
@@ -1070,19 +1108,59 @@ const AdminDashboard = () => {
                     </div>
                   ) : (
                     <Table>
-                      <TableHeader>
+                    <TableHeader>
                         <TableRow>
-                          <TableHead>{lang === "de" ? "Name" : "Name"}</TableHead>
+                          <TableHead>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="h-auto p-0 font-medium hover:bg-transparent"
+                              onClick={() => handleDoctorSort('name')}
+                            >
+                              {lang === "de" ? "Name" : "Name"}
+                              {getDoctorSortIcon('name')}
+                            </Button>
+                          </TableHead>
                           <TableHead>ID</TableHead>
-                          <TableHead>{t("dashboard.admin.queueType")}</TableHead>
+                          <TableHead>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="h-auto p-0 font-medium hover:bg-transparent"
+                              onClick={() => handleDoctorSort('queue')}
+                            >
+                              {t("dashboard.admin.queueType")}
+                              {getDoctorSortIcon('queue')}
+                            </Button>
+                          </TableHead>
                           <TableHead>{lang === "de" ? "Empfehlungslink" : "Referral Link"}</TableHead>
-                          <TableHead>{t("dashboard.admin.doctorStatus")}</TableHead>
-                          <TableHead>{lang === "de" ? "Erstellt" : "Created"}</TableHead>
+                          <TableHead>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="h-auto p-0 font-medium hover:bg-transparent"
+                              onClick={() => handleDoctorSort('status')}
+                            >
+                              {t("dashboard.admin.doctorStatus")}
+                              {getDoctorSortIcon('status')}
+                            </Button>
+                          </TableHead>
+                          <TableHead>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="h-auto p-0 font-medium hover:bg-transparent"
+                              onClick={() => handleDoctorSort('created')}
+                            >
+                              {lang === "de" ? "Erstellt" : "Created"}
+                              {getDoctorSortIcon('created')}
+                            </Button>
+                          </TableHead>
                           <TableHead className="text-right">{t("dashboard.admin.doctorActions")}</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {doctors.map((doctor) => (
+                        {sortedDoctors.map((doctor) => (
                           <TableRow key={doctor.id} className={!doctor.is_active ? "opacity-60" : ""}>
                             <TableCell className="font-medium">
                               <div className="flex items-center gap-2">
