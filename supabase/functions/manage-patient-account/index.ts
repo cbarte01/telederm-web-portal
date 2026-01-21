@@ -5,6 +5,18 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Validation helpers
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const ALLOWED_ACTIONS = ['deactivate', 'reactivate', 'delete'] as const;
+
+function isValidUUID(id: unknown): id is string {
+  return typeof id === 'string' && UUID_REGEX.test(id);
+}
+
+function isValidAction(action: unknown): action is typeof ALLOWED_ACTIONS[number] {
+  return typeof action === 'string' && ALLOWED_ACTIONS.includes(action as typeof ALLOWED_ACTIONS[number]);
+}
+
 Deno.serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
@@ -67,9 +79,18 @@ Deno.serve(async (req) => {
     // Parse request body
     const { action, patient_id } = await req.json();
 
-    if (!action || !patient_id) {
+    // Validate action is one of the allowed values
+    if (!isValidAction(action)) {
       return new Response(
-        JSON.stringify({ error: "Missing required fields: action, patient_id" }),
+        JSON.stringify({ error: "Invalid action. Use: deactivate, reactivate, or delete" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Validate patient_id is a valid UUID
+    if (!isValidUUID(patient_id)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid patient_id format" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -154,12 +175,6 @@ Deno.serve(async (req) => {
           { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
-
-      default:
-        return new Response(
-          JSON.stringify({ error: "Invalid action. Use: deactivate, reactivate, delete" }),
-          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
     }
   } catch (error: unknown) {
     console.error("Error in manage-patient-account:", error);
