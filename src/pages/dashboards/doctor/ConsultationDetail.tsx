@@ -144,8 +144,8 @@ const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: Consulta
       responded_at: newStatus === "completed" ? new Date().toISOString() : null,
     };
 
-    // Claim the consultation if it's unclaimed
-    if (isUnclaimed && user) {
+    // Always claim the consultation if doctor_id is not set (ensures accountability)
+    if (!consultation.doctor_id && user) {
       updateData.doctor_id = user.id;
     }
 
