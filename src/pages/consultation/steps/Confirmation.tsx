@@ -1,10 +1,13 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { CheckCircle, Clock, Bell, FileText } from "lucide-react";
+import { CheckCircle, Clock, Bell, FileText, UserCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useConsultationDraft } from "@/hooks/useConsultationDraft";
 
 const Confirmation = () => {
-  const { t } = useTranslation("consultation");
+  const { t, i18n } = useTranslation("consultation");
+  const { draft } = useConsultationDraft();
+  const lang = i18n.language === "de" ? "de" : "en";
 
   const nextSteps = [
     { icon: FileText, key: "step1" },
@@ -27,9 +30,24 @@ const Confirmation = () => {
           {t("step10.title")}
         </h1>
         <p className="text-muted-foreground">
-          {t("step10.subtitle")}
+          {draft.referredDoctorName 
+            ? (lang === "de" 
+                ? `Ihre Anfrage wurde an ${draft.referredDoctorName} übermittelt.`
+                : `Your request has been submitted to ${draft.referredDoctorName}.`)
+            : t("step10.subtitle")
+          }
         </p>
       </div>
+
+      {/* Doctor assignment info */}
+      {draft.referredDoctorName && (
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary text-secondary-foreground">
+          <UserCheck className="w-5 h-5" />
+          <span className="font-medium">
+            {lang === "de" ? "Zugewiesen an" : "Assigned to"}: {draft.referredDoctorName}
+          </span>
+        </div>
+      )}
 
       {/* Response time */}
       <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary">

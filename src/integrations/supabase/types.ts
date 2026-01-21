@@ -149,7 +149,10 @@ export type Database = {
           id: string
           is_active: boolean | null
           phone: string | null
+          practice_name: string | null
+          referral_code: string | null
           updated_at: string
+          welcome_message: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -161,7 +164,10 @@ export type Database = {
           id: string
           is_active?: boolean | null
           phone?: string | null
+          practice_name?: string | null
+          referral_code?: string | null
           updated_at?: string
+          welcome_message?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -173,7 +179,10 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           phone?: string | null
+          practice_name?: string | null
+          referral_code?: string | null
           updated_at?: string
+          welcome_message?: string | null
         }
         Relationships: []
       }

@@ -92,7 +92,7 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
       if (profileError) throw profileError;
       if (!profile) throw new Error("Profile not found");
 
-      // Create consultation
+      // Create consultation - pre-assign doctor if from referral
       const { data: consultation, error: consultationError } = await supabase
         .from("consultations")
         .insert({
@@ -115,6 +115,8 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
           biological_sex: draft.biologicalSex,
           additional_notes: draft.additionalNotes,
           submitted_at: new Date().toISOString(),
+          // B2B2C: Pre-assign doctor from referral link
+          doctor_id: draft.referredDoctorId || null,
         })
         .select()
         .single();
@@ -341,6 +343,22 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
         {draft.additionalNotes && (
           <SummarySection icon={FileText} title={lang === "de" ? "Zusätzliche Anmerkungen" : "Additional Notes"}>
             <p className="italic">"{draft.additionalNotes}"</p>
+          </SummarySection>
+        )}
+
+        {/* Assigned Doctor (from referral) */}
+        {draft.referredDoctorName && (
+          <SummarySection icon={User} title={lang === "de" ? "Zugewiesener Arzt" : "Assigned Doctor"}>
+            <SummaryRow 
+              label={lang === "de" ? "Arzt" : "Doctor"} 
+              value={draft.referredDoctorName} 
+            />
+            {draft.referredPracticeName && (
+              <SummaryRow 
+                label={lang === "de" ? "Praxis" : "Practice"} 
+                value={draft.referredPracticeName} 
+              />
+            )}
           </SummarySection>
         )}
       </div>

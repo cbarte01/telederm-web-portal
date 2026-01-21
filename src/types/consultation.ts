@@ -94,6 +94,13 @@ export interface ConsultationDraft {
   // Meta
   currentStep: number;
   lastUpdated: string;
+  
+  // Referral (B2B2C)
+  referralCode?: string;
+  referredDoctorId?: string;
+  referredDoctorName?: string;
+  referredPracticeName?: string;
+  referredWelcomeMessage?: string;
 }
 
 export const INITIAL_DRAFT: ConsultationDraft = {
