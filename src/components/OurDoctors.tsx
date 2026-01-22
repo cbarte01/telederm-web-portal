@@ -120,11 +120,11 @@ const OurDoctors = () => {
               {doctors.map((doctor, index) => (
                 <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
                   <div className="bg-secondary/30 rounded-2xl overflow-hidden h-full shadow-soft hover:shadow-card transition-all duration-300">
-                    <div className="aspect-[4/3] overflow-hidden">
+                    <div className="aspect-square overflow-hidden bg-secondary/50 flex items-center justify-center">
                       <img
                         src={doctor.image}
                         alt={t(`doctors.doctors.${doctor.key}.name`)}
-                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                        className="w-full h-full object-contain hover:scale-105 transition-transform duration-500"
                       />
                     </div>
                     <div className="p-7">
