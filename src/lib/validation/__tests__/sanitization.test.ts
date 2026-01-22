@@ -174,13 +174,28 @@ describe("Sanitization Utilities", () => {
       expect(sanitizeField("fullName", undefined)).toBe(undefined);
     });
 
-    it("should filter arrays", () => {
+    it("should filter string arrays", () => {
       const result = sanitizeField("bodyLocations", [
         "face",
         "neck",
         "x".repeat(200),
       ]);
       expect(result).toEqual(["face", "neck"]); // Long string filtered out
+    });
+
+    it("should preserve photo objects in arrays", () => {
+      const photos = [
+        { type: "closeup", preview: "data:image/jpeg;base64,..." },
+        { type: "context", preview: "data:image/png;base64,..." },
+      ];
+      const result = sanitizeField("photos", photos);
+      expect(result).toEqual(photos);
+    });
+
+    it("should filter out null values from arrays", () => {
+      const mixed = ["face", null, { type: "closeup" }, undefined, "neck"];
+      const result = sanitizeField("bodyLocations", mixed);
+      expect(result).toEqual(["face", { type: "closeup" }, "neck"]);
     });
 
     it("should pass through booleans", () => {
