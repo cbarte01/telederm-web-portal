@@ -9,6 +9,15 @@ import {
 import { MapPin, Languages } from "lucide-react";
 import drNarroBartenstein from "@/assets/doctors/dr-narro-bartenstein.jpg";
 import drAmbrosRudolph from "@/assets/doctors/dr-ambros-rudolph.jpg";
+import drArzberger from "@/assets/doctors/dr-arzberger.jpg";
+import drBerger from "@/assets/doctors/dr-berger.jpg";
+import drFruehauf from "@/assets/doctors/dr-fruehauf.jpg";
+import drKilbertus from "@/assets/doctors/dr-kilbertus.png";
+import drKraus from "@/assets/doctors/dr-kraus.jpg";
+import drLeinweber from "@/assets/doctors/dr-leinweber.jpg";
+import drMayr from "@/assets/doctors/dr-mayr.jpg";
+import drMesseritschFanta from "@/assets/doctors/dr-messeritsch-fanta.jpg";
+import profHofmannWellenhof from "@/assets/doctors/prof-hofmann-wellenhof.jpg";
 
 const OurDoctors = () => {
   const { t, i18n } = useTranslation("home");
@@ -16,43 +25,67 @@ const OurDoctors = () => {
 
   const doctors = [
     {
-      key: "d1",
-      languages: isEnglish ? ["German", "English"] : ["Deutsch", "Englisch"],
-      image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop&crop=face",
-      website: "https://www.charite.de",
-    },
-    {
-      key: "d2",
-      languages: isEnglish ? ["German", "English", "French"] : ["Deutsch", "Englisch", "Französisch"],
-      image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop&crop=face",
-      website: "https://www.lmu-klinikum.de",
-    },
-    {
-      key: "d3",
-      languages: isEnglish ? ["German", "English"] : ["Deutsch", "Englisch"],
-      image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=400&fit=crop&crop=face",
-      website: "https://www.klinikum.uni-heidelberg.de",
-    },
-    {
-      key: "d4",
+      key: "arzberger",
       languages: isEnglish ? ["German"] : ["Deutsch"],
-      image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=400&fit=crop&crop=face",
-      website: "https://www.uniklinik-freiburg.de",
+      image: drArzberger,
+      website: "https://hautaerztin-arzberger.at",
     },
     {
-      key: "d5",
-      languages: isEnglish ? ["German", "English", "Spanish"] : ["Deutsch", "Englisch", "Spanisch"],
-      image: "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=400&h=400&fit=crop&crop=face",
-      website: "https://www.uk-koeln.de",
+      key: "berger",
+      languages: isEnglish ? ["German"] : ["Deutsch"],
+      image: drBerger,
+      website: "https://www.hautarzt-stadlpaura.at",
     },
     {
-      key: "d6",
+      key: "fruehauf",
+      languages: isEnglish ? ["German"] : ["Deutsch"],
+      image: drFruehauf,
+      website: "https://jf-hautarztpraxis.at",
+    },
+    {
+      key: "kilbertus",
+      languages: isEnglish ? ["German"] : ["Deutsch"],
+      image: drKilbertus,
+      website: "https://dermatologie-kilbertus.at",
+    },
+    {
+      key: "kraus",
+      languages: isEnglish ? ["German"] : ["Deutsch"],
+      image: drKraus,
+      website: "https://hautarzt-kraus.at",
+    },
+    {
+      key: "leinweber",
+      languages: isEnglish ? ["German"] : ["Deutsch"],
+      image: drLeinweber,
+      website: "https://dr-leinweber.at",
+    },
+    {
+      key: "mayr",
+      languages: isEnglish ? ["German"] : ["Deutsch"],
+      image: drMayr,
+      website: "https://hautaerztin-mayr.at",
+    },
+    {
+      key: "messeritschfanta",
+      languages: isEnglish ? ["German"] : ["Deutsch"],
+      image: drMesseritschFanta,
+      website: "https://hautarztmoedling.at",
+    },
+    {
+      key: "hofmannwellenhof",
+      languages: isEnglish ? ["German"] : ["Deutsch"],
+      image: profHofmannWellenhof,
+      website: "https://online.medunigraz.at/mug_online/visitenkarte.show_vcard?pPersonenId=EF7DA1776081BDDB&pPersonenGruppe=3",
+    },
+    {
+      key: "narrobartenstein",
       languages: isEnglish ? ["German", "English"] : ["Deutsch", "Englisch"],
       image: drNarroBartenstein,
       website: "https://dr-narro-bartenstein.com/",
     },
     {
-      key: "d7",
+      key: "ambrosrudolph",
       languages: isEnglish ? ["German", "English"] : ["Deutsch", "Englisch"],
       image: drAmbrosRudolph,
       website: "https://ambros-rudolph.at/",

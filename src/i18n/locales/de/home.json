@@ -293,37 +293,57 @@
     "description": "Alle unsere Ärzte sind approbierte Fachärzte für Dermatologie mit langjähriger Erfahrung in der Behandlung von Hauterkrankungen",
     "swipeHint": "← Wischen um mehr zu sehen →",
     "doctors": {
-      "d1": {
-        "name": "Dr. med. Julia Schneider",
+      "arzberger": {
+        "name": "Dr. Edith Arzberger",
         "title": "Fachärztin für Dermatologie",
-        "location": "Berlin, Friedrichstraße 42"
+        "location": "Liezen, Hauptplatz 1"
       },
-      "d2": {
-        "name": "Dr. med. Markus Weber",
+      "berger": {
+        "name": "Dr. Horst Berger",
         "title": "Facharzt für Dermatologie",
-        "location": "München, Maximilianstraße 15"
+        "location": "Wels, Maximilian-Pagl-Straße 12"
       },
-      "d3": {
-        "name": "Dr. med. Sarah Hoffmann",
+      "fruehauf": {
+        "name": "Doz. Dr. Julia Frühauf",
         "title": "Fachärztin für Dermatologie",
-        "location": "Heidelberg, Hauptstraße 78"
+        "location": "Baden, Hauptstraße 98"
       },
-      "d4": {
-        "name": "Dr. med. Thomas Müller",
+      "kilbertus": {
+        "name": "Dr. Alex Kilbertus",
         "title": "Facharzt für Dermatologie",
-        "location": "Freiburg, Kaiserstraße 23"
+        "location": "Wels, Dr.-Koss-Straße 1"
       },
-      "d5": {
-        "name": "Dr. med. Anna Fischer",
+      "kraus": {
+        "name": "Dr. Lukas Kraus",
+        "title": "Facharzt für Dermatologie",
+        "location": "Dornbirn, Schulgasse 36"
+      },
+      "leinweber": {
+        "name": "Dr. Bernd Leinweber",
+        "title": "Facharzt für Dermatologie",
+        "location": "Graz, Beethovenstraße 5"
+      },
+      "mayr": {
+        "name": "Dr. Sylvia Mayr",
         "title": "Fachärztin für Dermatologie",
-        "location": "Köln, Schildergasse 56"
+        "location": "Wörgl, Bahnhofstraße 25"
       },
-      "d6": {
+      "messeritschfanta": {
+        "name": "Dr. Christine Messeritsch-Fanta",
+        "title": "Fachärztin für Dermatologie",
+        "location": "Mödling, Hauptstraße 36, Ebene 4"
+      },
+      "hofmannwellenhof": {
+        "name": "AO Univ. Prof. Dr. Rainer Hofmann-Wellenhof",
+        "title": "Facharzt für Dermatologie",
+        "location": "Graz"
+      },
+      "narrobartenstein": {
         "name": "Dr. Eva Narro-Bartenstein",
         "title": "Fachärztin für Dermatologie",
         "location": "Graz, Conrad-von-Hötzendorf-Straße 22"
       },
-      "d7": {
+      "ambrosrudolph": {
         "name": "Doz. Dr. Christina Ambros-Rudolph",
         "title": "Fachärztin für Dermatologie",
         "location": "Graz, Gleisdorfer Gasse 15"

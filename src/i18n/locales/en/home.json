@@ -293,37 +293,57 @@
     "description": "All our doctors are licensed dermatology specialists with years of experience in treating skin conditions",
     "swipeHint": "← Swipe to see more →",
     "doctors": {
-      "d1": {
-        "name": "Dr. Julia Schneider",
+      "arzberger": {
+        "name": "Dr. Edith Arzberger",
         "title": "Dermatology Specialist",
-        "location": "Berlin, Friedrichstraße 42"
+        "location": "Liezen, Hauptplatz 1"
       },
-      "d2": {
-        "name": "Dr. Markus Weber",
+      "berger": {
+        "name": "Dr. Horst Berger",
         "title": "Dermatology Specialist",
-        "location": "Munich, Maximilianstraße 15"
+        "location": "Wels, Maximilian-Pagl-Straße 12"
       },
-      "d3": {
-        "name": "Dr. Sarah Hoffmann",
+      "fruehauf": {
+        "name": "Doz. Dr. Julia Frühauf",
         "title": "Dermatology Specialist",
-        "location": "Heidelberg, Hauptstraße 78"
+        "location": "Baden, Hauptstraße 98"
       },
-      "d4": {
-        "name": "Dr. Thomas Müller",
+      "kilbertus": {
+        "name": "Dr. Alex Kilbertus",
         "title": "Dermatology Specialist",
-        "location": "Freiburg, Kaiserstraße 23"
+        "location": "Wels, Dr.-Koss-Straße 1"
       },
-      "d5": {
-        "name": "Dr. Anna Fischer",
+      "kraus": {
+        "name": "Dr. Lukas Kraus",
         "title": "Dermatology Specialist",
-        "location": "Cologne, Schildergasse 56"
+        "location": "Dornbirn, Schulgasse 36"
       },
-      "d6": {
+      "leinweber": {
+        "name": "Dr. Bernd Leinweber",
+        "title": "Dermatology Specialist",
+        "location": "Graz, Beethovenstraße 5"
+      },
+      "mayr": {
+        "name": "Dr. Sylvia Mayr",
+        "title": "Dermatology Specialist",
+        "location": "Wörgl, Bahnhofstraße 25"
+      },
+      "messeritschfanta": {
+        "name": "Dr. Christine Messeritsch-Fanta",
+        "title": "Dermatology Specialist",
+        "location": "Mödling, Hauptstraße 36, Ebene 4"
+      },
+      "hofmannwellenhof": {
+        "name": "AO Univ. Prof. Dr. Rainer Hofmann-Wellenhof",
+        "title": "Dermatology Specialist",
+        "location": "Graz"
+      },
+      "narrobartenstein": {
         "name": "Dr. Eva Narro-Bartenstein",
         "title": "Dermatology Specialist",
         "location": "Graz, Conrad-von-Hötzendorf-Straße 22"
       },
-      "d7": {
+      "ambrosrudolph": {
         "name": "Doz. Dr. Christina Ambros-Rudolph",
         "title": "Dermatology Specialist",
         "location": "Graz, Gleisdorfer Gasse 15"
