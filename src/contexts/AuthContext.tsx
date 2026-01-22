@@ -117,6 +117,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signOut = async () => {
+    // Clear any sensitive session data before signing out
+    try {
+      sessionStorage.removeItem("telederm_consultation_draft");
+    } catch {
+      // Ignore storage errors
+    }
     await supabase.auth.signOut();
   };
 
