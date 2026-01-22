@@ -11,6 +11,34 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders })
   }
 
+  // Only allow POST
+  if (req.method !== 'POST') {
+    return new Response(
+      JSON.stringify({ error: 'Method Not Allowed' }),
+      { status: 405, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    )
+  }
+
+  // Require a dedicated secret to prevent public invocation.
+  // Caller must send: x-seed-admin-secret: <SEED_ADMIN_SECRET>
+  const expectedSecret = Deno.env.get('SEED_ADMIN_SECRET')
+  const providedSecret = req.headers.get('x-seed-admin-secret')
+
+  if (!expectedSecret) {
+    console.error('SEED_ADMIN_SECRET is not configured')
+    return new Response(
+      JSON.stringify({ error: 'Server misconfigured' }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    )
+  }
+
+  if (!providedSecret || providedSecret !== expectedSecret) {
+    return new Response(
+      JSON.stringify({ error: 'Unauthorized' }),
+      { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    )
+  }
+
   try {
     const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
