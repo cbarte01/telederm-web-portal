@@ -30,6 +30,7 @@ const Footer = () => {
     support: [
       { label: t("nav.faq"), href: getContextHref("faq") },
       { label: t("footer.contact"), href: getContextHref("contact") },
+      { label: t("nav.skinBlog"), href: "/skin-blog", isRoute: true },
     ],
     legal: [
       { label: t("footer.privacyPolicy"), href: "#" },
@@ -122,12 +123,21 @@ const Footer = () => {
             <ul className="space-y-3">
               {links.support.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-sm hover:text-background transition-colors"
-                  >
-                    {link.label}
-                  </a>
+                  {'isRoute' in link && link.isRoute ? (
+                    <Link
+                      to={link.href}
+                      className="text-sm hover:text-background transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a
+                      href={link.href}
+                      className="text-sm hover:text-background transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
