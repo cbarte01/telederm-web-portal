@@ -144,21 +144,30 @@ export type Database = {
           created_at: string
           display_name: string | null
           doctor_id: string
+          practice_name: string | null
+          referral_code: string | null
           updated_at: string
+          welcome_message: string | null
         }
         Insert: {
           avatar_url?: string | null
           created_at?: string
           display_name?: string | null
           doctor_id: string
+          practice_name?: string | null
+          referral_code?: string | null
           updated_at?: string
+          welcome_message?: string | null
         }
         Update: {
           avatar_url?: string | null
           created_at?: string
           display_name?: string | null
           doctor_id?: string
+          practice_name?: string | null
+          referral_code?: string | null
           updated_at?: string
+          welcome_message?: string | null
         }
         Relationships: []
       }

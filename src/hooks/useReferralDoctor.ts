@@ -20,13 +20,16 @@ export const useReferralDoctor = (referralCode: string | null) => {
         return;
       }
 
+      // Avoid tight coupling to generated DB types for newly-added columns/tables.
+      const db = supabase as any;
+
       setIsLoading(true);
       setError(null);
 
       try {
-        const { data, error: fetchError } = await supabase
-          .from("profiles")
-          .select("id, full_name, practice_name, welcome_message")
+        const { data, error: fetchError } = await db
+          .from("doctor_public_profiles")
+          .select("doctor_id, display_name, practice_name, welcome_message")
           .eq("referral_code", referralCode)
           .maybeSingle();
 
@@ -34,8 +37,8 @@ export const useReferralDoctor = (referralCode: string | null) => {
 
         if (data) {
           setDoctor({
-            id: data.id,
-            fullName: data.full_name || "Doctor",
+            id: data.doctor_id,
+            fullName: data.display_name || "Doctor",
             practiceName: data.practice_name || undefined,
             welcomeMessage: data.welcome_message || undefined,
           });

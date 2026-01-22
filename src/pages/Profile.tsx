@@ -136,6 +136,9 @@ const Profile = () => {
     
     setIsSubmittingDoctor(true);
     try {
+      // Avoid tight coupling to generated DB types for newly-added columns.
+      const db = supabase as any;
+
       const { error } = await supabase
         .from("profiles")
         .update({
@@ -156,6 +159,23 @@ const Profile = () => {
         }
         throw error;
       }
+
+      // Keep public referral/branding fields in sync (safe subset used for referral lookups)
+      const fullName = form.getValues("fullName") || user.user_metadata?.full_name || "Doctor";
+      const { error: publicError } = await db
+        .from("doctor_public_profiles")
+        .upsert(
+          {
+            doctor_id: user.id,
+            display_name: fullName,
+            referral_code: data.referralCode || null,
+            practice_name: data.practiceName || null,
+            welcome_message: data.welcomeMessage || null,
+          },
+          { onConflict: "doctor_id" }
+        );
+
+      if (publicError) throw publicError;
 
       toast({
         title: lang === "de" ? "Empfehlungscode gespeichert" : "Referral settings saved",
