@@ -317,6 +317,16 @@
         "name": "Dr. Anna Fischer",
         "title": "Dermatology Specialist",
         "location": "Cologne, Schildergasse 56"
+      },
+      "d6": {
+        "name": "Dr. Eva Narro-Bartenstein",
+        "title": "Dermatology Specialist",
+        "location": "Graz, Conrad-von-Hötzendorf-Straße 22"
+      },
+      "d7": {
+        "name": "Doz. Dr. Christina Ambros-Rudolph",
+        "title": "Dermatology Specialist",
+        "location": "Graz, Gleisdorfer Gasse 15"
       }
     }
   },

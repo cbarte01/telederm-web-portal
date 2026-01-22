@@ -7,6 +7,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { MapPin, Languages } from "lucide-react";
+import drNarroBartenstein from "@/assets/doctors/dr-narro-bartenstein.jpg";
+import drAmbrosRudolph from "@/assets/doctors/dr-ambros-rudolph.jpg";
 
 const OurDoctors = () => {
   const { t, i18n } = useTranslation("home");
@@ -42,6 +44,18 @@ const OurDoctors = () => {
       languages: isEnglish ? ["German", "English", "Spanish"] : ["Deutsch", "Englisch", "Spanisch"],
       image: "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=400&h=400&fit=crop&crop=face",
       website: "https://www.uk-koeln.de",
+    },
+    {
+      key: "d6",
+      languages: isEnglish ? ["German", "English"] : ["Deutsch", "Englisch"],
+      image: drNarroBartenstein,
+      website: "https://dr-narro-bartenstein.com/",
+    },
+    {
+      key: "d7",
+      languages: isEnglish ? ["German", "English"] : ["Deutsch", "Englisch"],
+      image: drAmbrosRudolph,
+      website: "https://ambros-rudolph.at/",
     },
   ];
 

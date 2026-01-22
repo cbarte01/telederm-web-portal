@@ -317,6 +317,16 @@
         "name": "Dr. med. Anna Fischer",
         "title": "Fachärztin für Dermatologie",
         "location": "Köln, Schildergasse 56"
+      },
+      "d6": {
+        "name": "Dr. Eva Narro-Bartenstein",
+        "title": "Fachärztin für Dermatologie",
+        "location": "Graz, Conrad-von-Hötzendorf-Straße 22"
+      },
+      "d7": {
+        "name": "Doz. Dr. Christina Ambros-Rudolph",
+        "title": "Fachärztin für Dermatologie",
+        "location": "Graz, Gleisdorfer Gasse 15"
       }
     }
   },
