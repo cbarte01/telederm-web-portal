@@ -27,12 +27,10 @@ const Header = () => {
     { href: "/#how-it-works", label: t("nav.howItWorks") },
     { href: "/#conditions", label: t("nav.treatments") },
     { href: "/#doctors", label: t("nav.doctorTeam") },
-    { href: "/#faq", label: t("nav.faq") },
+    { href: "/#reviews", label: t("nav.patientReferences") },
   ];
 
-  const homePageLinks = [
-    { href: "/skin-blog", label: t("nav.skinBlog") },
-  ];
+  const homePageLinks: { href: string; label: string }[] = [];
 
   // Navigation links for the for-doctors page
   const doctorsNavLinks = [
