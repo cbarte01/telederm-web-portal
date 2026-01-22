@@ -150,8 +150,8 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
       }
 
       // Clear draft and navigate to patient dashboard with success state
-      localStorage.removeItem("telederm_consultation_draft");
-      navigate("/patient/dashboard", { 
+      sessionStorage.removeItem("telederm_consultation_draft");
+      navigate("/patient/dashboard", {
         replace: true, 
         state: { consultationSubmitted: true } 
       });
