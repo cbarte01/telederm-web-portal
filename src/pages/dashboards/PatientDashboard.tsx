@@ -23,7 +23,9 @@ interface Consultation {
   created_at: string;
   submitted_at: string | null;
   responded_at: string | null;
+  doctor_id: string | null;
   doctor_name: string | null;
+  doctor_avatar_url: string | null;
 }
 
 const statusConfig: Record<string, { label: string; labelDe: string; icon: React.ElementType; variant: "default" | "secondary" | "destructive" | "outline" }> = {
@@ -85,23 +87,26 @@ const PatientDashboard = () => {
 
       if (!error && data) {
         // Fetch doctor names for consultations that have a doctor_id
-        const doctorIds = [...new Set(data.filter(c => c.doctor_id).map(c => c.doctor_id))];
+        const doctorIds = [...new Set(data.filter((c) => c.doctor_id).map((c) => c.doctor_id))];
         
-        let doctorMap: Record<string, string> = {};
+        let doctorMap: Record<string, { full_name: string | null; avatar_url: string | null }> = {};
         if (doctorIds.length > 0) {
           const { data: doctors } = await supabase
             .from("profiles")
-            .select("id, full_name")
+            .select("id, full_name, avatar_url")
             .in("id", doctorIds);
           
           if (doctors) {
-            doctorMap = Object.fromEntries(doctors.map(d => [d.id, d.full_name || ""]));
+            doctorMap = Object.fromEntries(
+              doctors.map((d) => [d.id, { full_name: d.full_name, avatar_url: d.avatar_url }])
+            );
           }
         }
         
         const consultationsWithDoctors = data.map(c => ({
           ...c,
-          doctor_name: c.doctor_id ? (doctorMap[c.doctor_id] || null) : null,
+          doctor_name: c.doctor_id ? (doctorMap[c.doctor_id]?.full_name || null) : null,
+          doctor_avatar_url: c.doctor_id ? (doctorMap[c.doctor_id]?.avatar_url || null) : null,
         }));
         
         setConsultations(consultationsWithDoctors as Consultation[]);

@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CheckCircle, AlertCircle, Calendar, MapPin, FileText } from "lucide-react";
 import { BODY_AREA_LABELS, type BodyArea } from "@/types/consultation";
 
@@ -18,6 +19,7 @@ interface ConsultationDetail {
   submitted_at: string | null;
   responded_at: string | null;
   doctor_name: string | null;
+  doctor_avatar_url?: string | null;
 }
 
 interface ConsultationDetailDialogProps {
@@ -101,6 +103,14 @@ export const ConsultationDetailDialog = ({ consultation, open, onOpenChange }: C
       .join(", ");
   };
 
+  const getInitials = (name: string) => {
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 0) return "";
+    const first = parts[0]?.[0] ?? "";
+    const last = parts.length > 1 ? parts[parts.length - 1]?.[0] ?? "" : "";
+    return `${first}${last}`.toUpperCase();
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
@@ -130,8 +140,20 @@ export const ConsultationDetailDialog = ({ consultation, open, onOpenChange }: C
               </p>
               <div className="mt-3 pt-3 border-t border-primary/10 flex flex-wrap gap-x-6 gap-y-1 text-sm text-muted-foreground">
                 {consultation.doctor_name && (
-                  <span>
-                    {lang === "de" ? "Arzt/Ärztin" : "Doctor"}: <span className="font-medium text-foreground">{consultation.doctor_name}</span>
+                  <span className="inline-flex items-center gap-2">
+                    <span>{lang === "de" ? "Arzt/Ärztin" : "Doctor"}:</span>
+                    <span className="inline-flex items-center gap-2">
+                      <Avatar className="h-7 w-7">
+                        <AvatarImage
+                          src={consultation.doctor_avatar_url || undefined}
+                          alt={consultation.doctor_name}
+                        />
+                        <AvatarFallback className="text-xs">
+                          {getInitials(consultation.doctor_name)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="font-medium text-foreground">{consultation.doctor_name}</span>
+                    </span>
                   </span>
                 )}
                 {consultation.responded_at && (
