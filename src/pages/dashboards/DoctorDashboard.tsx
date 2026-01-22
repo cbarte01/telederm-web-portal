@@ -9,6 +9,7 @@ import { User, LogOut, Clock, CheckCircle, AlertCircle, TrendingUp } from "lucid
 import teledermLogo from "@/assets/logo/telederm-logo.png";
 import ConsultationQueue from "./doctor/ConsultationQueue";
 import ConsultationDetail from "./doctor/ConsultationDetail";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 interface Consultation {
   id: string;
@@ -148,6 +149,7 @@ const DoctorDashboard = () => {
             <span className="font-serif font-bold text-xl text-foreground">telederm</span>
           </Link>
           <div className="flex items-center gap-4">
+            <LanguageSwitcher />
             <Link to="/profile">
               <Button variant="ghost" size="sm" className="gap-2">
                 <User className="h-4 w-4" />

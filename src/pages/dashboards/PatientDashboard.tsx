@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, LogOut, Calendar, FileText, Plus, Clock, CheckCircle, AlertCircle, ChevronRight } from "lucide-react";
 import teledermLogo from "@/assets/logo/telederm-logo.png";
 import { ConsultationDetailDialog } from "@/components/patient/ConsultationDetailDialog";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 interface Consultation {
   id: string;
@@ -150,6 +151,7 @@ const PatientDashboard = () => {
             <span className="font-serif font-bold text-xl text-foreground">telederm</span>
           </Link>
           <div className="flex items-center gap-4">
+            <LanguageSwitcher />
             <Link to="/profile">
               <Button variant="ghost" size="sm" className="gap-2">
                 <User className="h-4 w-4" />
