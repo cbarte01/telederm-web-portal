@@ -38,9 +38,29 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const TAB_SESSION_MARKER_KEY = "telederm_tab_session_marker";
 
   useEffect(() => {
-    // Set up auth state listener FIRST
+    // Track whether initial session check is complete to avoid race conditions
+    let initialCheckComplete = false;
+    let shouldSignOut = false;
+
+    // Check for tab marker FIRST, before any auth events
+    const hasTabMarker = (() => {
+      try {
+        return sessionStorage.getItem(TAB_SESSION_MARKER_KEY) === "1";
+      } catch {
+        return false;
+      }
+    })();
+
+    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        // If we haven't completed initial check and there's no marker, 
+        // this is a restored session that should be invalidated
+        if (!initialCheckComplete && session && !hasTabMarker) {
+          shouldSignOut = true;
+          return; // Don't update state yet, let getSession handle it
+        }
+
         // Maintain per-tab marker
         if (event === "SIGNED_OUT") {
           try {
@@ -50,7 +70,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           }
         }
 
-        if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED" || event === "USER_UPDATED") {
+        // Only set marker for explicit sign-in actions, not restored sessions
+        if (event === "SIGNED_IN" && initialCheckComplete) {
+          try {
+            sessionStorage.setItem(TAB_SESSION_MARKER_KEY, "1");
+          } catch {
+            // ignore
+          }
+        }
+
+        if (event === "TOKEN_REFRESHED" || event === "USER_UPDATED") {
           try {
             sessionStorage.setItem(TAB_SESSION_MARKER_KEY, "1");
           } catch {
@@ -64,15 +93,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
     );
 
-    // THEN check for existing session
+    // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      const hasTabMarker = (() => {
-        try {
-          return sessionStorage.getItem(TAB_SESSION_MARKER_KEY) === "1";
-        } catch {
-          return false;
-        }
-      })();
+      initialCheckComplete = true;
 
       // If the browser restored a persisted session (localStorage) but this is a fresh tab, sign out.
       if (session && !hasTabMarker) {
@@ -82,6 +105,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           setIsLoading(false);
         });
         return;
+      }
+
+      // If we have a valid session with marker, ensure marker is set
+      if (session && hasTabMarker) {
+        try {
+          sessionStorage.setItem(TAB_SESSION_MARKER_KEY, "1");
+        } catch {
+          // ignore
+        }
       }
 
       setSession(session);
