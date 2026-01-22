@@ -11,6 +11,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useRole } from "@/hooks/useRole";
 import { INITIAL_DRAFT } from "@/types/consultation";
 import ReferralBanner from "@/components/consultation/ReferralBanner";
+import SharedComputerWarning from "@/components/consultation/SharedComputerWarning";
 import teledermLogo from "@/assets/logo/telederm-logo.png";
 
 // Step components
@@ -209,6 +210,11 @@ const ConsultationFlow = () => {
       {/* Main Content */}
       <main className="flex-1 container px-4 py-6 md:py-10">
         <div className="max-w-2xl mx-auto">
+          {/* Shared Computer Warning - show on first step */}
+          {draft.currentStep === 1 && (
+            <SharedComputerWarning />
+          )}
+          
           {/* Referral Banner */}
           {draft.referredDoctorName && draft.currentStep < 10 && (
             <ReferralBanner
