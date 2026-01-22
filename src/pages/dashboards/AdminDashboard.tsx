@@ -574,6 +574,9 @@ const AdminDashboard = () => {
     setActionInProgress(doctor.id);
     try {
       const newCode = generateReferralCode(doctor.full_name);
+
+      // Avoid tight coupling to generated DB types for newly-added columns.
+      const db = supabase as any;
       
       const { error } = await supabase
         .from("profiles")
@@ -581,6 +584,20 @@ const AdminDashboard = () => {
         .eq("id", doctor.id);
 
       if (error) throw error;
+
+      // Keep public referral/branding fields in sync (safe subset used for referral lookups)
+      const { error: publicError } = await db
+        .from("doctor_public_profiles")
+        .upsert(
+          {
+            doctor_id: doctor.id,
+            display_name: doctor.full_name || "Doctor",
+            referral_code: newCode,
+          },
+          { onConflict: "doctor_id" }
+        );
+
+      if (publicError) throw publicError;
 
       toast({
         title: lang === "de" ? "Empfehlungscode erstellt" : "Referral code created",
