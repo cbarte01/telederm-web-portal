@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useAuth } from "@/contexts/AuthContext";
+import { useRole } from "@/hooks/useRole";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -35,6 +36,7 @@ type SignupFormData = z.infer<typeof signupSchema>;
 const PatientAuth = () => {
   const { t } = useTranslation("auth");
   const { user, signIn, signUp, resetPasswordRequest, isLoading: authLoading } = useAuth();
+  const { role, isLoading: roleLoading } = useRole();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -53,11 +55,21 @@ const PatientAuth = () => {
     defaultValues: { fullName: "", email: "", password: "", confirmPassword: "" },
   });
 
+  // Redirect authenticated users based on their actual role
   useEffect(() => {
-    if (user && !authLoading) {
+    if (authLoading || roleLoading) return;
+    if (!user) return;
+
+    // Redirect based on actual role to prevent cross-role access
+    if (role === "admin") {
+      navigate("/admin/dashboard", { replace: true });
+    } else if (role === "doctor") {
+      navigate("/doctor/dashboard", { replace: true });
+    } else {
+      // Patient or no role yet - go to patient dashboard
       navigate("/patient/dashboard", { replace: true });
     }
-  }, [user, authLoading, navigate]);
+  }, [user, role, authLoading, roleLoading, navigate]);
 
   const onLogin = async (data: LoginFormData) => {
     setIsSubmitting(true);
@@ -118,7 +130,8 @@ const PatientAuth = () => {
     }
   };
 
-  if (authLoading) {
+  // Show loading while checking auth state and role
+  if (authLoading || (user && roleLoading)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
