@@ -32,10 +32,32 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // We want "logout on tab close" behavior.
+  // supabase-js persists sessions in localStorage by default; sessionStorage is cleared when a tab closes.
+  // We use a per-tab marker: if a session is restored but the marker is missing, we sign out.
+  const TAB_SESSION_MARKER_KEY = "telederm_tab_session_marker";
+
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        // Maintain per-tab marker
+        if (event === "SIGNED_OUT") {
+          try {
+            sessionStorage.removeItem(TAB_SESSION_MARKER_KEY);
+          } catch {
+            // ignore
+          }
+        }
+
+        if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED" || event === "USER_UPDATED") {
+          try {
+            sessionStorage.setItem(TAB_SESSION_MARKER_KEY, "1");
+          } catch {
+            // ignore
+          }
+        }
+
         setSession(session);
         setUser(session?.user ?? null);
         setIsLoading(false);
@@ -44,6 +66,24 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      const hasTabMarker = (() => {
+        try {
+          return sessionStorage.getItem(TAB_SESSION_MARKER_KEY) === "1";
+        } catch {
+          return false;
+        }
+      })();
+
+      // If the browser restored a persisted session (localStorage) but this is a fresh tab, sign out.
+      if (session && !hasTabMarker) {
+        supabase.auth.signOut().finally(() => {
+          setSession(null);
+          setUser(null);
+          setIsLoading(false);
+        });
+        return;
+      }
+
       setSession(session);
       setUser(session?.user ?? null);
       setIsLoading(false);
