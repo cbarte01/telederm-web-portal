@@ -6,7 +6,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Award, GraduationCap, Languages } from "lucide-react";
+import { MapPin, Languages } from "lucide-react";
 
 const OurDoctors = () => {
   const { t, i18n } = useTranslation("home");
@@ -15,41 +15,31 @@ const OurDoctors = () => {
   const doctors = [
     {
       key: "d1",
-      experience: 12,
       languages: isEnglish ? ["German", "English"] : ["Deutsch", "Englisch"],
-      education: "Charité Berlin",
       image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop&crop=face",
       website: "https://www.charite.de",
     },
     {
       key: "d2",
-      experience: 15,
       languages: isEnglish ? ["German", "English", "French"] : ["Deutsch", "Englisch", "Französisch"],
-      education: "LMU München",
       image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop&crop=face",
       website: "https://www.lmu-klinikum.de",
     },
     {
       key: "d3",
-      experience: 10,
       languages: isEnglish ? ["German", "English"] : ["Deutsch", "Englisch"],
-      education: "Universität Heidelberg",
       image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=400&fit=crop&crop=face",
       website: "https://www.klinikum.uni-heidelberg.de",
     },
     {
       key: "d4",
-      experience: 18,
       languages: isEnglish ? ["German"] : ["Deutsch"],
-      education: "Universität Freiburg",
       image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=400&fit=crop&crop=face",
       website: "https://www.uniklinik-freiburg.de",
     },
     {
       key: "d5",
-      experience: 8,
       languages: isEnglish ? ["German", "English", "Spanish"] : ["Deutsch", "Englisch", "Spanisch"],
-      education: "Universität Köln",
       image: "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=400&h=400&fit=crop&crop=face",
       website: "https://www.uk-koeln.de",
     },
@@ -101,21 +91,14 @@ const OurDoctors = () => {
                           {t(`doctors.doctors.${doctor.key}.name`)}
                         </a>
                       </h3>
-                      <p className="text-primary font-medium text-sm mb-3">
+                      <p className="text-primary font-medium text-sm mb-4">
                         {t(`doctors.doctors.${doctor.key}.title`)}
-                      </p>
-                      <p className="text-muted-foreground text-sm mb-4">
-                        {t(`doctors.doctors.${doctor.key}.specialty`)}
                       </p>
                       
                       <div className="space-y-2 text-sm">
                         <div className="flex items-center gap-2 text-muted-foreground">
-                          <Award className="w-4 h-4 text-primary" />
-                          <span>{doctor.experience} {t("doctors.experience")}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <GraduationCap className="w-4 h-4 text-primary" />
-                          <span>{doctor.education}</span>
+                          <MapPin className="w-4 h-4 text-primary" />
+                          <span>{t(`doctors.doctors.${doctor.key}.location`)}</span>
                         </div>
                         <div className="flex items-center gap-2 text-muted-foreground">
                           <Languages className="w-4 h-4 text-primary" />

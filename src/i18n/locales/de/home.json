@@ -292,32 +292,31 @@
     "title": "Erfahrene Dermatologen für Ihre Haut",
     "description": "Alle unsere Ärzte sind approbierte Fachärzte für Dermatologie mit langjähriger Erfahrung in der Behandlung von Hauterkrankungen",
     "swipeHint": "← Wischen um mehr zu sehen →",
-    "experience": "Jahre Erfahrung",
     "doctors": {
       "d1": {
         "name": "Dr. med. Julia Schneider",
         "title": "Fachärztin für Dermatologie",
-        "specialty": "Allgemeine Dermatologie, Allergologie"
+        "location": "Berlin, Friedrichstraße 42"
       },
       "d2": {
         "name": "Dr. med. Markus Weber",
         "title": "Facharzt für Dermatologie",
-        "specialty": "Akne, Psoriasis, Neurodermitis"
+        "location": "München, Maximilianstraße 15"
       },
       "d3": {
         "name": "Dr. med. Sarah Hoffmann",
         "title": "Fachärztin für Dermatologie",
-        "specialty": "Hautkrebs-Vorsorge, Muttermale"
+        "location": "Heidelberg, Hauptstraße 78"
       },
       "d4": {
         "name": "Dr. med. Thomas Müller",
         "title": "Facharzt für Dermatologie",
-        "specialty": "Ekzeme, Pilzinfektionen"
+        "location": "Freiburg, Kaiserstraße 23"
       },
       "d5": {
         "name": "Dr. med. Anna Fischer",
         "title": "Fachärztin für Dermatologie",
-        "specialty": "Kinder-Dermatologie, Allergien"
+        "location": "Köln, Schildergasse 56"
       }
     }
   },
