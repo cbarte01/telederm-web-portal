@@ -139,11 +139,19 @@ export function sanitizeField(
     }
   }
 
-  // Handle arrays (e.g., bodyLocations, symptoms)
+  // Handle arrays (e.g., bodyLocations, symptoms, photos)
   if (Array.isArray(value)) {
-    return value.filter(
-      (item) => typeof item === "string" && item.length <= 100
-    );
+    return value.filter((item) => {
+      // Allow string items (bodyLocations, symptoms)
+      if (typeof item === "string") {
+        return item.length <= 100;
+      }
+      // Allow objects (photos array contains photo objects)
+      if (typeof item === "object" && item !== null) {
+        return true;
+      }
+      return false;
+    });
   }
 
   // Handle booleans
