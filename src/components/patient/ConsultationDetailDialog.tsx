@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CheckCircle, AlertCircle, Calendar, MapPin, FileText } from "lucide-react";
+import { CheckCircle, AlertCircle, Calendar, MapPin, FileText, User } from "lucide-react";
 import { BODY_AREA_LABELS, type BodyArea } from "@/types/consultation";
 
 interface ConsultationDetail {
@@ -103,14 +103,6 @@ export const ConsultationDetailDialog = ({ consultation, open, onOpenChange }: C
       .join(", ");
   };
 
-  const getInitials = (name: string) => {
-    const parts = name.trim().split(/\s+/).filter(Boolean);
-    if (parts.length === 0) return "";
-    const first = parts[0]?.[0] ?? "";
-    const last = parts.length > 1 ? parts[parts.length - 1]?.[0] ?? "" : "";
-    return `${first}${last}`.toUpperCase();
-  };
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
@@ -148,8 +140,8 @@ export const ConsultationDetailDialog = ({ consultation, open, onOpenChange }: C
                           src={consultation.doctor_avatar_url || undefined}
                           alt={consultation.doctor_name}
                         />
-                        <AvatarFallback className="text-xs">
-                          {getInitials(consultation.doctor_name)}
+                        <AvatarFallback>
+                          <User className="h-4 w-4" />
                         </AvatarFallback>
                       </Avatar>
                       <span className="font-medium text-foreground">{consultation.doctor_name}</span>

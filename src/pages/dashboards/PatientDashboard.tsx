@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, LogOut, Calendar, FileText, Plus, Clock, CheckCircle, AlertCircle, ChevronRight } from "lucide-react";
 import teledermLogo from "@/assets/logo/telederm-logo.png";
 import { ConsultationDetailDialog } from "@/components/patient/ConsultationDetailDialog";
@@ -74,6 +75,9 @@ const PatientDashboard = () => {
   useEffect(() => {
     const fetchConsultations = async () => {
       if (!user) return;
+
+        // Avoid overly-strict type coupling to the generated DB types for newly-added tables.
+        const db = supabase as any;
       
       const { data, error } = await supabase
         .from("consultations")
@@ -89,23 +93,25 @@ const PatientDashboard = () => {
         // Fetch doctor names for consultations that have a doctor_id
         const doctorIds = [...new Set(data.filter((c) => c.doctor_id).map((c) => c.doctor_id))];
         
-        let doctorMap: Record<string, { full_name: string | null; avatar_url: string | null }> = {};
+        // NOTE: Patients cannot read full doctor `profiles` rows (PII). We fetch a safe subset instead.
+        let doctorMap: Record<string, { display_name: string | null; avatar_url: string | null }> = {};
         if (doctorIds.length > 0) {
-          const { data: doctors } = await supabase
-            .from("profiles")
-            .select("id, full_name, avatar_url")
-            .in("id", doctorIds);
-          
+          const { data: doctors } = await db
+            .from("doctor_public_profiles")
+            .select("doctor_id, display_name, avatar_url")
+            .in("doctor_id", doctorIds);
+
           if (doctors) {
+            const rows = doctors as Array<{ doctor_id: string; display_name: string | null; avatar_url: string | null }>;
             doctorMap = Object.fromEntries(
-              doctors.map((d) => [d.id, { full_name: d.full_name, avatar_url: d.avatar_url }])
-            );
+              rows.map((d) => [d.doctor_id, { display_name: d.display_name, avatar_url: d.avatar_url }])
+            ) as Record<string, { display_name: string | null; avatar_url: string | null }>;
           }
         }
         
         const consultationsWithDoctors = data.map(c => ({
           ...c,
-          doctor_name: c.doctor_id ? (doctorMap[c.doctor_id]?.full_name || null) : null,
+          doctor_name: c.doctor_id ? (doctorMap[c.doctor_id]?.display_name || null) : null,
           doctor_avatar_url: c.doctor_id ? (doctorMap[c.doctor_id]?.avatar_url || null) : null,
         }));
         
@@ -235,6 +241,24 @@ const PatientDashboard = () => {
                               <p className="text-sm text-muted-foreground">
                                 {lang === "de" ? "Eingereicht am" : "Submitted"} {formatDate(consultation.submitted_at || consultation.created_at)}
                               </p>
+                              {consultation.doctor_id && (
+                                <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
+                                  <Avatar className="h-6 w-6">
+                                    <AvatarImage
+                                      src={consultation.doctor_avatar_url || undefined}
+                                      alt={consultation.doctor_name || (lang === "de" ? "Arzt" : "Doctor")}
+                                    />
+                                    <AvatarFallback>
+                                      <User className="h-3.5 w-3.5" />
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <span>
+                                    {consultation.doctor_name
+                                      ? consultation.doctor_name
+                                      : (lang === "de" ? "Zugewiesener Arzt" : "Assigned doctor")}
+                                  </span>
+                                </div>
+                              )}
                             </div>
                           </div>
                           <Badge variant={config.variant}>
@@ -275,6 +299,24 @@ const PatientDashboard = () => {
                               <p className="text-sm text-muted-foreground">
                                 {formatDate(consultation.submitted_at || consultation.created_at)}
                               </p>
+                              {consultation.doctor_id && (
+                                <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
+                                  <Avatar className="h-6 w-6">
+                                    <AvatarImage
+                                      src={consultation.doctor_avatar_url || undefined}
+                                      alt={consultation.doctor_name || (lang === "de" ? "Arzt" : "Doctor")}
+                                    />
+                                    <AvatarFallback>
+                                      <User className="h-3.5 w-3.5" />
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <span>
+                                    {consultation.doctor_name
+                                      ? consultation.doctor_name
+                                      : (lang === "de" ? "Zugewiesener Arzt" : "Assigned doctor")}
+                                  </span>
+                                </div>
+                              )}
                             </div>
                             <div className="flex items-center gap-2">
                               <Badge variant="outline">
