@@ -292,32 +292,31 @@
     "title": "Experienced Dermatologists for Your Skin",
     "description": "All our doctors are licensed dermatology specialists with years of experience in treating skin conditions",
     "swipeHint": "← Swipe to see more →",
-    "experience": "years of experience",
     "doctors": {
       "d1": {
         "name": "Dr. Julia Schneider",
         "title": "Dermatology Specialist",
-        "specialty": "General Dermatology, Allergology"
+        "location": "Berlin, Friedrichstraße 42"
       },
       "d2": {
         "name": "Dr. Markus Weber",
         "title": "Dermatology Specialist",
-        "specialty": "Acne, Psoriasis, Eczema"
+        "location": "Munich, Maximilianstraße 15"
       },
       "d3": {
         "name": "Dr. Sarah Hoffmann",
         "title": "Dermatology Specialist",
-        "specialty": "Skin Cancer Prevention, Moles"
+        "location": "Heidelberg, Hauptstraße 78"
       },
       "d4": {
         "name": "Dr. Thomas Müller",
         "title": "Dermatology Specialist",
-        "specialty": "Eczema, Fungal Infections"
+        "location": "Freiburg, Kaiserstraße 23"
       },
       "d5": {
         "name": "Dr. Anna Fischer",
         "title": "Dermatology Specialist",
-        "specialty": "Pediatric Dermatology, Allergies"
+        "location": "Cologne, Schildergasse 56"
       }
     }
   },
