@@ -57,6 +57,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import teledermLogo from "@/assets/logo/telederm-logo.png";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const createDoctorSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -715,6 +716,7 @@ const AdminDashboard = () => {
             <span className="font-serif font-bold text-xl text-foreground">telederm</span>
           </Link>
           <div className="flex items-center gap-4">
+            <LanguageSwitcher />
             <Link to="/profile">
               <Button variant="ghost" size="sm" className="gap-2">
                 <User className="h-4 w-4" />
