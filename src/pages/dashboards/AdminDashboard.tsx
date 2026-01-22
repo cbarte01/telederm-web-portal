@@ -58,6 +58,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import teledermLogo from "@/assets/logo/telederm-logo.png";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { DoctorAvatarManager } from "@/components/admin/DoctorAvatarManager";
 
 const createDoctorSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -75,6 +76,7 @@ interface Doctor {
   is_active: boolean;
   doctor_queue_type: 'group' | 'individual' | 'hybrid' | null;
   referral_code: string | null;
+  avatar_url: string | null;
 }
 
 interface Patient {
@@ -342,6 +344,8 @@ const AdminDashboard = () => {
       }
 
       const userIds = doctorRoles.map((r) => r.user_id);
+      
+      // Fetch profiles
       const { data: profiles, error: profilesError } = await supabase
         .from("profiles")
         .select("id, full_name, is_active, doctor_queue_type, referral_code")
@@ -349,8 +353,20 @@ const AdminDashboard = () => {
 
       if (profilesError) throw profilesError;
 
+      // Fetch public profiles for avatar URLs (avoid tight coupling to generated types)
+      const db = supabase as any;
+      const { data: publicProfiles, error: publicProfilesError } = await db
+        .from("doctor_public_profiles")
+        .select("doctor_id, avatar_url")
+        .in("doctor_id", userIds);
+
+      if (publicProfilesError) {
+        console.error("Error fetching public profiles:", publicProfilesError);
+      }
+
       const doctorsList = doctorRoles.map((role) => {
         const profile = profiles?.find((p) => p.id === role.user_id);
+        const publicProfile = publicProfiles?.find((p: { doctor_id: string }) => p.doctor_id === role.user_id);
         return {
           id: role.user_id,
           user_id: role.user_id,
@@ -359,6 +375,7 @@ const AdminDashboard = () => {
           is_active: profile?.is_active ?? true,
           doctor_queue_type: (profile?.doctor_queue_type as 'group' | 'individual' | 'hybrid' | null) ?? 'group',
           referral_code: profile?.referral_code || null,
+          avatar_url: publicProfile?.avatar_url || null,
         };
       });
 
@@ -366,7 +383,7 @@ const AdminDashboard = () => {
     } catch (err) {
       console.error("Error fetching doctors:", err);
     } finally {
-    setIsLoadingDoctors(false);
+      setIsLoadingDoctors(false);
     }
   };
 
@@ -1033,294 +1050,295 @@ const AdminDashboard = () => {
           </TabsContent>
 
           <TabsContent value="doctors" className="space-y-6">
-            <div className="grid gap-6 lg:grid-cols-2">
-              {/* Create Doctor Form */}
-              <Card className="shadow-card">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <UserPlus className="h-5 w-5 text-primary" />
-                    {t("dashboard.admin.createDoctor")}
-                  </CardTitle>
-                  <CardDescription>
-                    {lang === "de" 
-                      ? "Neues Arztkonto für die Plattform erstellen" 
-                      : "Create new doctor accounts for your platform"}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                      <FormField
-                        control={form.control}
-                        name="fullName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>{t("dashboard.admin.doctorName")}</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Dr. Jane Smith" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>{t("dashboard.admin.doctorEmail")}</FormLabel>
-                            <FormControl>
-                              <Input type="email" placeholder="doctor@example.com" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="password"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>{t("dashboard.admin.doctorPassword")}</FormLabel>
-                            <FormControl>
-                              <Input type="password" placeholder="••••••••" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <Button type="submit" className="w-full" disabled={isSubmitting}>
-                        {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        {t("dashboard.admin.createButton")}
-                      </Button>
-                    </form>
-                  </Form>
-                </CardContent>
-              </Card>
-
-              {/* Doctors List */}
-              <Card className="shadow-card">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Stethoscope className="h-5 w-5 text-primary" />
-                    {t("dashboard.admin.doctorsList")}
-                  </CardTitle>
-                  <CardDescription>
-                    {lang === "de" 
-                      ? "Alle registrierten Ärzte auf der Plattform" 
-                      : "All registered doctors on the platform"}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {isLoadingDoctors ? (
-                    <div className="flex items-center justify-center py-8">
-                      <Loader2 className="h-6 w-6 animate-spin text-primary" />
-                    </div>
-                  ) : doctors.length === 0 ? (
-                    <div className="text-center py-8">
-                      <Stethoscope className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                      <p className="text-muted-foreground text-sm">
-                        {lang === "de" 
-                          ? "Noch keine Ärzte registriert. Erstellen Sie das erste Arztkonto." 
-                          : "No doctors registered yet. Create your first doctor account."}
-                      </p>
-                    </div>
-                  ) : (
-                    <Table>
+            {/* Doctors List - Full width at top */}
+            <Card className="shadow-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Stethoscope className="h-5 w-5 text-primary" />
+                  {t("dashboard.admin.doctorsList")}
+                </CardTitle>
+                <CardDescription>
+                  {lang === "de" 
+                    ? "Alle registrierten Ärzte auf der Plattform. Klicken Sie auf das Profilbild, um es zu ändern." 
+                    : "All registered doctors on the platform. Click on the profile picture to change it."}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {isLoadingDoctors ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                  </div>
+                ) : doctors.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Stethoscope className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground text-sm">
+                      {lang === "de" 
+                        ? "Noch keine Ärzte registriert. Erstellen Sie das erste Arztkonto unten." 
+                        : "No doctors registered yet. Create your first doctor account below."}
+                    </p>
+                  </div>
+                ) : (
+                  <Table>
                     <TableHeader>
-                        <TableRow>
-                          <TableHead>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="h-auto p-0 font-medium hover:bg-transparent"
-                              onClick={() => handleDoctorSort('name')}
-                            >
-                              {lang === "de" ? "Name" : "Name"}
-                              {getDoctorSortIcon('name')}
-                            </Button>
-                          </TableHead>
-                          <TableHead>ID</TableHead>
-                          <TableHead>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="h-auto p-0 font-medium hover:bg-transparent"
-                              onClick={() => handleDoctorSort('queue')}
-                            >
-                              {t("dashboard.admin.queueType")}
-                              {getDoctorSortIcon('queue')}
-                            </Button>
-                          </TableHead>
-                          <TableHead>{lang === "de" ? "Empfehlungslink" : "Referral Link"}</TableHead>
-                          <TableHead>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="h-auto p-0 font-medium hover:bg-transparent"
-                              onClick={() => handleDoctorSort('status')}
-                            >
-                              {t("dashboard.admin.doctorStatus")}
-                              {getDoctorSortIcon('status')}
-                            </Button>
-                          </TableHead>
-                          <TableHead>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="h-auto p-0 font-medium hover:bg-transparent"
-                              onClick={() => handleDoctorSort('created')}
-                            >
-                              {lang === "de" ? "Erstellt" : "Created"}
-                              {getDoctorSortIcon('created')}
-                            </Button>
-                          </TableHead>
-                          <TableHead className="text-right">{t("dashboard.admin.doctorActions")}</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {sortedDoctors.map((doctor) => (
-                          <TableRow key={doctor.id} className={!doctor.is_active ? "opacity-60" : ""}>
-                            <TableCell className="font-medium">
+                      <TableRow>
+                        <TableHead>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-auto p-0 font-medium hover:bg-transparent"
+                            onClick={() => handleDoctorSort('name')}
+                          >
+                            {lang === "de" ? "Name" : "Name"}
+                            {getDoctorSortIcon('name')}
+                          </Button>
+                        </TableHead>
+                        <TableHead>ID</TableHead>
+                        <TableHead>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-auto p-0 font-medium hover:bg-transparent"
+                            onClick={() => handleDoctorSort('queue')}
+                          >
+                            {t("dashboard.admin.queueType")}
+                            {getDoctorSortIcon('queue')}
+                          </Button>
+                        </TableHead>
+                        <TableHead>{lang === "de" ? "Empfehlungslink" : "Referral Link"}</TableHead>
+                        <TableHead>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-auto p-0 font-medium hover:bg-transparent"
+                            onClick={() => handleDoctorSort('status')}
+                          >
+                            {t("dashboard.admin.doctorStatus")}
+                            {getDoctorSortIcon('status')}
+                          </Button>
+                        </TableHead>
+                        <TableHead>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-auto p-0 font-medium hover:bg-transparent"
+                            onClick={() => handleDoctorSort('created')}
+                          >
+                            {lang === "de" ? "Erstellt" : "Created"}
+                            {getDoctorSortIcon('created')}
+                          </Button>
+                        </TableHead>
+                        <TableHead className="text-right">{t("dashboard.admin.doctorActions")}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {sortedDoctors.map((doctor) => (
+                        <TableRow key={doctor.id} className={!doctor.is_active ? "opacity-60" : ""}>
+                          <TableCell className="font-medium">
+                            <div className="flex items-center gap-2">
+                              <DoctorAvatarManager
+                                doctorId={doctor.id}
+                                doctorName={doctor.full_name}
+                                currentAvatarUrl={doctor.avatar_url}
+                                onAvatarChange={fetchDoctors}
+                              />
+                              {doctor.full_name}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <code className="text-xs bg-muted px-2 py-1 rounded font-mono">
+                              {doctor.id.slice(0, 8)}...
+                            </code>
+                          </TableCell>
+                          <TableCell>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="sm" className="h-auto py-1 px-2">
+                                  {getQueueTypeBadge(doctor.doctor_queue_type)}
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="start">
+                                <DropdownMenuItem onClick={() => handleUpdateQueueType(doctor.id, 'group')}>
+                                  <div>
+                                    <div className="font-medium">{t("dashboard.admin.queueTypeGroup")}</div>
+                                    <div className="text-xs text-muted-foreground">{t("dashboard.admin.queueTypeGroupDesc")}</div>
+                                  </div>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleUpdateQueueType(doctor.id, 'individual')}>
+                                  <div>
+                                    <div className="font-medium">{t("dashboard.admin.queueTypeIndividual")}</div>
+                                    <div className="text-xs text-muted-foreground">{t("dashboard.admin.queueTypeIndividualDesc")}</div>
+                                  </div>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleUpdateQueueType(doctor.id, 'hybrid')}>
+                                  <div>
+                                    <div className="font-medium">{t("dashboard.admin.queueTypeHybrid")}</div>
+                                    <div className="text-xs text-muted-foreground">{t("dashboard.admin.queueTypeHybridDesc")}</div>
+                                  </div>
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                          <TableCell>
+                            {doctor.referral_code ? (
                               <div className="flex items-center gap-2">
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${doctor.is_active ? "bg-primary/10" : "bg-muted"}`}>
-                                  <User className={`h-4 w-4 ${doctor.is_active ? "text-primary" : "text-muted-foreground"}`} />
-                                </div>
-                                {doctor.full_name}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <code className="text-xs bg-muted px-2 py-1 rounded font-mono">
-                                {doctor.id.slice(0, 8)}...
-                              </code>
-                            </TableCell>
-                            <TableCell>
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button variant="ghost" size="sm" className="h-auto py-1 px-2">
-                                    {getQueueTypeBadge(doctor.doctor_queue_type)}
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="start">
-                                  <DropdownMenuItem onClick={() => handleUpdateQueueType(doctor.id, 'group')}>
-                                    <div>
-                                      <div className="font-medium">{t("dashboard.admin.queueTypeGroup")}</div>
-                                      <div className="text-xs text-muted-foreground">{t("dashboard.admin.queueTypeGroupDesc")}</div>
-                                    </div>
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => handleUpdateQueueType(doctor.id, 'individual')}>
-                                    <div>
-                                      <div className="font-medium">{t("dashboard.admin.queueTypeIndividual")}</div>
-                                      <div className="text-xs text-muted-foreground">{t("dashboard.admin.queueTypeIndividualDesc")}</div>
-                                    </div>
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => handleUpdateQueueType(doctor.id, 'hybrid')}>
-                                    <div>
-                                      <div className="font-medium">{t("dashboard.admin.queueTypeHybrid")}</div>
-                                      <div className="text-xs text-muted-foreground">{t("dashboard.admin.queueTypeHybridDesc")}</div>
-                                    </div>
-                                  </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </TableCell>
-                            <TableCell>
-                              {doctor.referral_code ? (
-                                <div className="flex items-center gap-2">
-                                  <code className="text-xs bg-muted px-2 py-1 rounded font-mono">
-                                    {doctor.referral_code}
-                                  </code>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-7 w-7"
-                                    onClick={() => handleCopyReferralLink(doctor.referral_code!)}
-                                    disabled={actionInProgress === doctor.id}
-                                  >
-                                    {copiedCode === doctor.referral_code ? (
-                                      <Check className="h-3.5 w-3.5 text-green-600" />
-                                    ) : (
-                                      <Copy className="h-3.5 w-3.5" />
-                                    )}
-                                  </Button>
-                                </div>
-                              ) : (
+                                <code className="text-xs bg-muted px-2 py-1 rounded font-mono">
+                                  {doctor.referral_code}
+                                </code>
                                 <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="gap-1.5 h-7 text-xs"
-                                  onClick={() => handleGenerateReferralCode(doctor)}
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-7 w-7"
+                                  onClick={() => handleCopyReferralLink(doctor.referral_code!)}
+                                  disabled={actionInProgress === doctor.id}
+                                >
+                                  {copiedCode === doctor.referral_code ? (
+                                    <Check className="h-3.5 w-3.5 text-green-600" />
+                                  ) : (
+                                    <Copy className="h-3.5 w-3.5" />
+                                  )}
+                                </Button>
+                              </div>
+                            ) : (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="gap-1.5 h-7 text-xs"
+                                onClick={() => handleGenerateReferralCode(doctor)}
+                                disabled={actionInProgress === doctor.id}
+                              >
+                                {actionInProgress === doctor.id ? (
+                                  <Loader2 className="h-3 w-3 animate-spin" />
+                                ) : (
+                                  <Link2 className="h-3 w-3" />
+                                )}
+                                {lang === "de" ? "Erstellen" : "Generate"}
+                              </Button>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={doctor.is_active ? "default" : "secondary"}>
+                              {doctor.is_active 
+                                ? (lang === "de" ? "Aktiv" : "Active")
+                                : (lang === "de" ? "Inaktiv" : "Inactive")}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {format(new Date(doctor.created_at), "PP", { locale: dateLocale })}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button 
+                                  variant="ghost" 
+                                  size="icon" 
                                   disabled={actionInProgress === doctor.id}
                                 >
                                   {actionInProgress === doctor.id ? (
-                                    <Loader2 className="h-3 w-3 animate-spin" />
+                                    <Loader2 className="h-4 w-4 animate-spin" />
                                   ) : (
-                                    <Link2 className="h-3 w-3" />
+                                    <MoreHorizontal className="h-4 w-4" />
                                   )}
-                                  {lang === "de" ? "Erstellen" : "Generate"}
                                 </Button>
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              <Badge variant={doctor.is_active ? "default" : "secondary"}>
-                                {doctor.is_active 
-                                  ? (lang === "de" ? "Aktiv" : "Active")
-                                  : (lang === "de" ? "Inaktiv" : "Inactive")}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>
-                              {format(new Date(doctor.created_at), "PP", { locale: dateLocale })}
-                            </TableCell>
-                            <TableCell className="text-right">
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="icon" 
-                                    disabled={actionInProgress === doctor.id}
-                                  >
-                                    {actionInProgress === doctor.id ? (
-                                      <Loader2 className="h-4 w-4 animate-spin" />
-                                    ) : (
-                                      <MoreHorizontal className="h-4 w-4" />
-                                    )}
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                  {doctor.is_active ? (
-                                    <DropdownMenuItem 
-                                      onClick={() => openConfirmDialog('deactivate', doctor, 'doctor')}
-                                      className="gap-2"
-                                    >
-                                      <Ban className="h-4 w-4" />
-                                      {t("dashboard.admin.deactivateDoctor")}
-                                    </DropdownMenuItem>
-                                  ) : (
-                                    <DropdownMenuItem 
-                                      onClick={() => openConfirmDialog('reactivate', doctor, 'doctor')}
-                                      className="gap-2"
-                                    >
-                                      <RefreshCw className="h-4 w-4" />
-                                      {t("dashboard.admin.reactivateDoctor")}
-                                    </DropdownMenuItem>
-                                  )}
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                {doctor.is_active ? (
                                   <DropdownMenuItem 
-                                    onClick={() => openConfirmDialog('delete', doctor, 'doctor')}
-                                    className="gap-2 text-destructive focus:text-destructive"
+                                    onClick={() => openConfirmDialog('deactivate', doctor, 'doctor')}
+                                    className="gap-2"
                                   >
-                                    <Trash2 className="h-4 w-4" />
-                                    {t("dashboard.admin.deleteDoctor")}
+                                    <Ban className="h-4 w-4" />
+                                    {t("dashboard.admin.deactivateDoctor")}
                                   </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
+                                ) : (
+                                  <DropdownMenuItem 
+                                    onClick={() => openConfirmDialog('reactivate', doctor, 'doctor')}
+                                    className="gap-2"
+                                  >
+                                    <RefreshCw className="h-4 w-4" />
+                                    {t("dashboard.admin.reactivateDoctor")}
+                                  </DropdownMenuItem>
+                                )}
+                                <DropdownMenuItem 
+                                  onClick={() => openConfirmDialog('delete', doctor, 'doctor')}
+                                  className="gap-2 text-destructive focus:text-destructive"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                  {t("dashboard.admin.deleteDoctor")}
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Create Doctor Form - Below doctors list */}
+            <Card className="shadow-card max-w-xl">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <UserPlus className="h-5 w-5 text-primary" />
+                  {t("dashboard.admin.createDoctor")}
+                </CardTitle>
+                <CardDescription>
+                  {lang === "de" 
+                    ? "Neues Arztkonto für die Plattform erstellen" 
+                    : "Create new doctor accounts for your platform"}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="fullName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t("dashboard.admin.doctorName")}</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Dr. Jane Smith" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t("dashboard.admin.doctorEmail")}</FormLabel>
+                          <FormControl>
+                            <Input type="email" placeholder="doctor@example.com" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t("dashboard.admin.doctorPassword")}</FormLabel>
+                          <FormControl>
+                            <Input type="password" placeholder="••••••••" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="submit" className="w-full" disabled={isSubmitting}>
+                      {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      {t("dashboard.admin.createButton")}
+                    </Button>
+                  </form>
+                </Form>
+              </CardContent>
+            </Card>
 
             {/* Confirmation Dialog */}
             <AlertDialog open={confirmDialog.open} onOpenChange={(open) => setConfirmDialog(prev => ({ ...prev, open }))}>
