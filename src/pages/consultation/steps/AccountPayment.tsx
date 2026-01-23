@@ -594,9 +594,9 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
                 <label htmlFor="healthDataConsent" className="text-sm text-muted-foreground cursor-pointer">
                   <Trans
                     i18nKey="step9.healthDataConsent"
-                    t={t}
+                    ns="consultation"
                     components={{
-                      privacyLink: <Link to="/datenschutz#gesundheitsdaten" className="text-primary underline hover:no-underline" target="_blank" />
+                      privacyLink: <a href="/datenschutz#gesundheitsdaten" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:no-underline" />
                     }}
                   />
                 </label>
@@ -614,9 +614,9 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
                 <label htmlFor="termsConsent" className="text-sm text-muted-foreground cursor-pointer">
                   <Trans
                     i18nKey="step9.termsConsent"
-                    t={t}
+                    ns="consultation"
                     components={{
-                      termsLink: <Link to="/agb" className="text-primary underline hover:no-underline" target="_blank" />
+                      termsLink: <a href="/agb" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:no-underline" />
                     }}
                   />
                 </label>
