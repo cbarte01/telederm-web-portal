@@ -57,6 +57,8 @@ export interface ConsultationPhoto {
   storagePath?: string;
 }
 
+export type PricingPlan = 'standard' | 'urgent';
+
 export interface ConsultationDraft {
   // Step 1 - Concern
   concernCategory?: ConcernCategory;
@@ -90,6 +92,10 @@ export interface ConsultationDraft {
   socialSecurityNumber?: string;
   biologicalSex?: BiologicalSex;
   additionalNotes?: string;
+  
+  // Step 9 - Pricing plan selection
+  pricingPlan?: PricingPlan;
+  consultationPrice?: number;
   
   // Meta
   currentStep: number;
