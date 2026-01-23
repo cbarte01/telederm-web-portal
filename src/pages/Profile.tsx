@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -46,6 +46,8 @@ const Profile = () => {
   const { user, signOut, isLoading: authLoading } = useAuth();
   const { role } = useRole();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const returnTo = searchParams.get("returnTo");
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmittingPatient, setIsSubmittingPatient] = useState(false);
@@ -311,12 +313,19 @@ const Profile = () => {
             <img src={teledermLogo} alt="Telederm" className="w-8 h-8 rounded-lg" />
             <span className="font-serif font-bold text-xl text-foreground">telederm</span>
           </Link>
-          <Link to={getDashboardPath()}>
-            <Button variant="ghost" size="sm" className="gap-2">
+          {returnTo ? (
+            <Button variant="ghost" size="sm" className="gap-2" onClick={() => navigate(returnTo)}>
               <ArrowLeft className="h-4 w-4" />
-              {t("common.dashboard")}
+              {lang === "de" ? "Zurück zur Konsultation" : "Back to Consultation"}
             </Button>
-          </Link>
+          ) : (
+            <Link to={getDashboardPath()}>
+              <Button variant="ghost" size="sm" className="gap-2">
+                <ArrowLeft className="h-4 w-4" />
+                {t("common.dashboard")}
+              </Button>
+            </Link>
+          )}
         </div>
       </header>
 
