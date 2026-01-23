@@ -34,7 +34,7 @@ const Footer = () => {
     ],
     legal: [
       { label: t("footer.privacyPolicy"), href: "/datenschutz", isRoute: true },
-      { label: t("footer.termsOfService"), href: "#" },
+      { label: t("footer.termsOfService"), href: "/agb", isRoute: true },
       { label: t("footer.imprint"), href: "/impressum", isRoute: true },
     ],
   };
