@@ -26,6 +26,8 @@ const doctorProfileSchema = z.object({
   referralCode: z.string().min(3, "Code must be at least 3 characters").max(20, "Code must be at most 20 characters").regex(/^[A-Z0-9_]+$/, "Only uppercase letters, numbers, and underscores allowed"),
   practiceName: z.string().optional(),
   welcomeMessage: z.string().max(200, "Message must be at most 200 characters").optional(),
+  standardPrice: z.number().min(1, "Price must be at least €1").max(999, "Price must be at most €999"),
+  urgentPrice: z.number().min(1, "Price must be at least €1").max(999, "Price must be at most €999"),
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
@@ -51,7 +53,7 @@ const Profile = () => {
 
   const doctorForm = useForm<DoctorProfileFormData>({
     resolver: zodResolver(doctorProfileSchema),
-    defaultValues: { referralCode: "", practiceName: "", welcomeMessage: "" },
+    defaultValues: { referralCode: "", practiceName: "", welcomeMessage: "", standardPrice: 49, urgentPrice: 74 },
   });
 
   useEffect(() => {
@@ -59,13 +61,13 @@ const Profile = () => {
       if (!user) return;
       
       try {
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("full_name, phone, referral_code, practice_name, welcome_message")
-          .eq("id", user.id)
-          .maybeSingle();
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("full_name, phone, referral_code, practice_name, welcome_message, standard_price, urgent_price")
+        .eq("id", user.id)
+        .maybeSingle();
 
-        if (error) throw error;
+      if (error) throw error;
 
         if (data) {
           form.reset({
@@ -78,6 +80,8 @@ const Profile = () => {
               referralCode: data.referral_code || "",
               practiceName: data.practice_name || "",
               welcomeMessage: data.welcome_message || "",
+              standardPrice: (data as any).standard_price ?? 49,
+              urgentPrice: (data as any).urgent_price ?? 74,
             });
           }
         }
@@ -139,12 +143,14 @@ const Profile = () => {
       // Avoid tight coupling to generated DB types for newly-added columns.
       const db = supabase as any;
 
-      const { error } = await supabase
+      const { error } = await db
         .from("profiles")
         .update({
           referral_code: data.referralCode || null,
           practice_name: data.practiceName || null,
           welcome_message: data.welcomeMessage || null,
+          standard_price: data.standardPrice,
+          urgent_price: data.urgentPrice,
         })
         .eq("id", user.id);
 
@@ -421,6 +427,68 @@ const Profile = () => {
                       </FormItem>
                     )}
                   />
+
+                  {/* Pricing Section */}
+                  <div className="border-t border-border pt-6 mt-6">
+                    <h4 className="font-medium text-foreground mb-4">
+                      {lang === "de" ? "Ihre Preise" : "Your Pricing"}
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      {lang === "de" 
+                        ? "Legen Sie Ihre Preise für die beiden Anfragetypen fest. Diese werden Ihren Patienten während des Konsultationsprozesses angezeigt."
+                        : "Set your prices for the two request types. These will be shown to your patients during the consultation process."}
+                    </p>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={doctorForm.control}
+                        name="standardPrice"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{lang === "de" ? "Standard-Anfrage (€)" : "Standard Request (€)"}</FormLabel>
+                            <FormControl>
+                              <Input 
+                                type="number"
+                                min={1}
+                                max={999}
+                                placeholder="49"
+                                {...field}
+                                onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                            <p className="text-xs text-muted-foreground">
+                              {lang === "de" ? "Antwort in 48h" : "48h response"}
+                            </p>
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={doctorForm.control}
+                        name="urgentPrice"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{lang === "de" ? "Dringliche Anfrage (€)" : "Urgent Request (€)"}</FormLabel>
+                            <FormControl>
+                              <Input 
+                                type="number"
+                                min={1}
+                                max={999}
+                                placeholder="74"
+                                {...field}
+                                onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                            <p className="text-xs text-muted-foreground">
+                              {lang === "de" ? "Antwort in 24h" : "24h response"}
+                            </p>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
 
                   <Button type="submit" disabled={isSubmittingDoctor}>
                     {isSubmittingDoctor && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

@@ -53,7 +53,9 @@ import {
   Check,
   ArrowUpDown,
   ArrowUp,
-  ArrowDown
+  ArrowDown,
+  Settings,
+  Euro
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import teledermLogo from "@/assets/logo/telederm-logo.png";
@@ -879,6 +881,10 @@ const AdminDashboard = () => {
               <Stethoscope className="h-4 w-4" />
               {lang === "de" ? "Ärzte" : "Doctors"}
             </TabsTrigger>
+            <TabsTrigger value="settings" className="gap-2">
+              <Settings className="h-4 w-4" />
+              {lang === "de" ? "Einstellungen" : "Settings"}
+            </TabsTrigger>
           </TabsList>
 
           {/* Patients Tab */}
@@ -1406,6 +1412,49 @@ const AdminDashboard = () => {
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
+          </TabsContent>
+
+          {/* Settings Tab */}
+          <TabsContent value="settings" className="space-y-6">
+            <Card className="shadow-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Euro className="h-5 w-5 text-primary" />
+                  {lang === "de" ? "Gruppen-Preise" : "Group Pricing"}
+                </CardTitle>
+                <CardDescription>
+                  {lang === "de" 
+                    ? "Legen Sie die Standardpreise für Konsultationen ohne Arzt-Empfehlung fest."
+                    : "Set default prices for consultations without doctor referral."}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="max-w-md space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    {lang === "de"
+                      ? "Diese Preise werden Patienten angezeigt, die über die Hauptwebsite ohne Arzt-Empfehlungslink kommen."
+                      : "These prices are shown to patients who come through the main website without a doctor referral link."}
+                  </p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-medium">{lang === "de" ? "Standard-Anfrage (€)" : "Standard Request (€)"}</label>
+                      <Input type="number" defaultValue={49} min={1} max={999} className="mt-1" disabled />
+                      <p className="text-xs text-muted-foreground mt-1">{lang === "de" ? "48h Antwortzeit" : "48h response"}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium">{lang === "de" ? "Dringliche Anfrage (€)" : "Urgent Request (€)"}</label>
+                      <Input type="number" defaultValue={74} min={1} max={999} className="mt-1" disabled />
+                      <p className="text-xs text-muted-foreground mt-1">{lang === "de" ? "24h Antwortzeit" : "24h response"}</p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground italic">
+                    {lang === "de" 
+                      ? "Kontaktieren Sie den Support, um diese Preise zu ändern."
+                      : "Contact support to change these prices."}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </main>

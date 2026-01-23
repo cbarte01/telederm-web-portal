@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_settings: {
+        Row: {
+          created_at: string
+          id: string
+          setting_key: string
+          setting_value: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          setting_key: string
+          setting_value: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          setting_key?: string
+          setting_value?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       consultation_photos: {
         Row: {
           consultation_id: string
@@ -54,6 +78,7 @@ export type Database = {
           body_locations: string[] | null
           change_description: string | null
           concern_category: string | null
+          consultation_price: number | null
           created_at: string
           date_of_birth: string | null
           doctor_id: string | null
@@ -64,6 +89,7 @@ export type Database = {
           id: string
           medications_description: string | null
           patient_id: string | null
+          pricing_plan: string | null
           responded_at: string | null
           self_treatment_description: string | null
           status: Database["public"]["Enums"]["consultation_status"]
@@ -81,6 +107,7 @@ export type Database = {
           body_locations?: string[] | null
           change_description?: string | null
           concern_category?: string | null
+          consultation_price?: number | null
           created_at?: string
           date_of_birth?: string | null
           doctor_id?: string | null
@@ -91,6 +118,7 @@ export type Database = {
           id?: string
           medications_description?: string | null
           patient_id?: string | null
+          pricing_plan?: string | null
           responded_at?: string | null
           self_treatment_description?: string | null
           status?: Database["public"]["Enums"]["consultation_status"]
@@ -108,6 +136,7 @@ export type Database = {
           body_locations?: string[] | null
           change_description?: string | null
           concern_category?: string | null
+          consultation_price?: number | null
           created_at?: string
           date_of_birth?: string | null
           doctor_id?: string | null
@@ -118,6 +147,7 @@ export type Database = {
           id?: string
           medications_description?: string | null
           patient_id?: string | null
+          pricing_plan?: string | null
           responded_at?: string | null
           self_treatment_description?: string | null
           status?: Database["public"]["Enums"]["consultation_status"]
@@ -184,7 +214,9 @@ export type Database = {
           phone: string | null
           practice_name: string | null
           referral_code: string | null
+          standard_price: number | null
           updated_at: string
+          urgent_price: number | null
           welcome_message: string | null
         }
         Insert: {
@@ -199,7 +231,9 @@ export type Database = {
           phone?: string | null
           practice_name?: string | null
           referral_code?: string | null
+          standard_price?: number | null
           updated_at?: string
+          urgent_price?: number | null
           welcome_message?: string | null
         }
         Update: {
@@ -214,7 +248,9 @@ export type Database = {
           phone?: string | null
           practice_name?: string | null
           referral_code?: string | null
+          standard_price?: number | null
           updated_at?: string
+          urgent_price?: number | null
           welcome_message?: string | null
         }
         Relationships: []

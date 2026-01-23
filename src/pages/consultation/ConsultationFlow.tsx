@@ -23,10 +23,11 @@ import TimelineChanges from "./steps/TimelineChanges";
 import Symptoms from "./steps/Symptoms";
 import MedicalHistory from "./steps/MedicalHistory";
 import PersonalDetails from "./steps/PersonalDetails";
+import PlanSelection from "./steps/PlanSelection";
 import AccountPayment from "./steps/AccountPayment";
 import Confirmation from "./steps/Confirmation";
 
-const TOTAL_STEPS = 10;
+const TOTAL_STEPS = 11;
 
 const ConsultationFlow = () => {
   const { t } = useTranslation("consultation");
@@ -123,7 +124,7 @@ const ConsultationFlow = () => {
   // Prevent accidental navigation away
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (draft.currentStep > 1 && draft.currentStep < 10) {
+      if (draft.currentStep > 1 && draft.currentStep < 11) {
         e.preventDefault();
         e.returnValue = '';
       }
@@ -162,8 +163,10 @@ const ConsultationFlow = () => {
       case 8:
         return <PersonalDetails draft={draft} updateDraft={updateDraft} onNext={goToNextStep} />;
       case 9:
-        return <AccountPayment draft={draft} updateDraft={updateDraft} onNext={goToNextStep} setStep={setStep} />;
+        return <PlanSelection draft={draft} updateDraft={updateDraft} onNext={goToNextStep} />;
       case 10:
+        return <AccountPayment draft={draft} updateDraft={updateDraft} onNext={goToNextStep} setStep={setStep} />;
+      case 11:
         return <Confirmation />;
       default:
         return <ConcernSelection draft={draft} updateDraft={updateDraft} onNext={goToNextStep} />;
@@ -176,7 +179,7 @@ const ConsultationFlow = () => {
       <header className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
         <div className="container flex items-center justify-between h-14 px-4">
           <div className="flex items-center gap-4">
-            {draft.currentStep > 1 && draft.currentStep < 10 && (
+            {draft.currentStep > 1 && draft.currentStep < 11 && (
               <Button
                 variant="ghost"
                 size="icon"
@@ -216,7 +219,7 @@ const ConsultationFlow = () => {
           )}
           
           {/* Referral Banner */}
-          {draft.referredDoctorName && draft.currentStep < 10 && (
+          {draft.referredDoctorName && draft.currentStep < 11 && (
             <ReferralBanner
               doctorName={draft.referredDoctorName}
               practiceName={draft.referredPracticeName}

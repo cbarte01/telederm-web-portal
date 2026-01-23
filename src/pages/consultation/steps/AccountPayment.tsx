@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, Check, AlertCircle, User, MapPin, Camera, Clock, Activity, Stethoscope, FileText } from "lucide-react";
+import { Loader2, Check, AlertCircle, User, MapPin, Camera, Clock, Activity, Stethoscope, FileText, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -93,7 +93,9 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
       if (!profile) throw new Error("Profile not found");
 
       // Create consultation - pre-assign doctor if from referral
-      const { data: consultation, error: consultationError } = await supabase
+      // Note: pricing_plan and consultation_price are stored but not in generated types yet
+      const db = supabase as any;
+      const { data: consultation, error: consultationError } = await db
         .from("consultations")
         .insert({
           patient_id: profile.id,
@@ -117,6 +119,9 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
           submitted_at: new Date().toISOString(),
           // B2B2C: Pre-assign doctor from referral link
           doctor_id: draft.referredDoctorId || null,
+          // Pricing plan selection
+          pricing_plan: draft.pricingPlan || null,
+          consultation_price: draft.consultationPrice || null,
         })
         .select()
         .single();
@@ -362,6 +367,23 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
                 value={draft.referredPracticeName} 
               />
             )}
+          </SummarySection>
+        )}
+
+        {/* Pricing Plan */}
+        {draft.pricingPlan && (
+          <SummarySection icon={CreditCard} title={lang === "de" ? "Gewählter Plan" : "Selected Plan"}>
+            <SummaryRow 
+              label={lang === "de" ? "Plan" : "Plan"} 
+              value={draft.pricingPlan === 'urgent' 
+                ? (lang === "de" ? "Dringliche Anfrage" : "Urgent Request")
+                : (lang === "de" ? "Standard-Anfrage" : "Standard Request")
+              } 
+            />
+            <SummaryRow 
+              label={lang === "de" ? "Preis" : "Price"} 
+              value={`€${draft.consultationPrice ?? (draft.pricingPlan === 'urgent' ? 74 : 49)}`} 
+            />
           </SummarySection>
         )}
       </div>
