@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useTranslation, Trans } from "react-i18next";
+import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, Check, AlertCircle, User, MapPin, Camera, Clock, Activity, Stethoscope, FileText, CreditCard } from "lucide-react";
+import { Loader2, Check, AlertCircle, User, MapPin, Camera, Clock, Activity, Stethoscope, FileText, CreditCard, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -48,7 +48,8 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
   const { user, signIn, signUp } = useAuth();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [consentChecked, setConsentChecked] = useState(false);
+  const [healthDataConsentChecked, setHealthDataConsentChecked] = useState(false);
+  const [termsConsentChecked, setTermsConsentChecked] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [patientProfile, setPatientProfile] = useState<PatientProfile | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
@@ -115,7 +116,7 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
   };
 
   const handleSubmitConsultation = async () => {
-    if (!user || !consentChecked || !patientProfile) return;
+    if (!user || !healthDataConsentChecked || !termsConsentChecked || !patientProfile) return;
     
     setIsSubmitting(true);
     
@@ -581,15 +582,50 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
                 </Alert>
               )}
               
+              {/* Health Data Consent - Art. 9 DSGVO */}
+              <div className="flex items-start gap-3 p-4 bg-accent/50 rounded-lg border border-primary/30">
+                <Checkbox
+                  id="healthDataConsent"
+                  checked={healthDataConsentChecked}
+                  onCheckedChange={(checked) => setHealthDataConsentChecked(checked === true)}
+                  disabled={!isProfileComplete}
+                  className="mt-0.5"
+                />
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 text-sm font-medium text-primary">
+                    <ShieldCheck className="w-4 h-4" />
+                    {lang === "de" ? "Einwilligung Gesundheitsdaten (Art. 9 DSGVO)" : "Health Data Consent (Art. 9 GDPR)"}
+                  </div>
+                  <label htmlFor="healthDataConsent" className="text-sm text-muted-foreground cursor-pointer block">
+                    <Trans
+                      i18nKey="step9.healthDataConsent"
+                      t={t}
+                      components={{
+                        privacyLink: <Link to="/datenschutz" className="text-primary underline hover:no-underline" target="_blank" />
+                      }}
+                    />
+                  </label>
+                </div>
+              </div>
+
+              {/* General Terms Consent */}
               <div className="flex items-start gap-3">
                 <Checkbox
-                  id="consent"
-                  checked={consentChecked}
-                  onCheckedChange={(checked) => setConsentChecked(checked === true)}
+                  id="termsConsent"
+                  checked={termsConsentChecked}
+                  onCheckedChange={(checked) => setTermsConsentChecked(checked === true)}
                   disabled={!isProfileComplete}
+                  className="mt-0.5"
                 />
-                <label htmlFor="consent" className="text-sm text-muted-foreground cursor-pointer">
-                  {t("step9.consent")}
+                <label htmlFor="termsConsent" className="text-sm text-muted-foreground cursor-pointer">
+                  <Trans
+                    i18nKey="step9.termsConsent"
+                    t={t}
+                    components={{
+                      termsLink: <Link to="/agb" className="text-primary underline hover:no-underline" target="_blank" />,
+                      privacyLink: <Link to="/datenschutz" className="text-primary underline hover:no-underline" target="_blank" />
+                    }}
+                  />
                 </label>
               </div>
               
@@ -597,11 +633,10 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
                 className="w-full"
                 size="lg"
                 onClick={handleSubmitConsultation}
-                disabled={!consentChecked || isSubmitting || !isProfileComplete}
+                disabled={!healthDataConsentChecked || !termsConsentChecked || isSubmitting || !isProfileComplete}
               >
                 {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {t("step9.submit")}
-              </Button>
+                {t("step9.submit")}</Button>
             </>
           )}
         </div>
