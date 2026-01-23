@@ -33,7 +33,7 @@ const Footer = () => {
       { label: t("nav.skinBlog"), href: "/skin-blog", isRoute: true },
     ],
     legal: [
-      { label: t("footer.privacyPolicy"), href: "#" },
+      { label: t("footer.privacyPolicy"), href: "/datenschutz", isRoute: true },
       { label: t("footer.termsOfService"), href: "#" },
       { label: t("footer.imprint"), href: "#" },
     ],
@@ -149,12 +149,21 @@ const Footer = () => {
             <ul className="space-y-3">
               {links.legal.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-sm hover:text-background transition-colors"
-                  >
-                    {link.label}
-                  </a>
+                  {'isRoute' in link && link.isRoute ? (
+                    <Link
+                      to={link.href}
+                      className="text-sm hover:text-background transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a
+                      href={link.href}
+                      className="text-sm hover:text-background transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
