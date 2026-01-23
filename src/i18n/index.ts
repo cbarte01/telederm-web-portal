@@ -10,6 +10,7 @@ import enDoctors from './locales/en/doctors.json';
 import enCompanies from './locales/en/companies.json';
 import enAuth from './locales/en/auth.json';
 import enConsultation from './locales/en/consultation.json';
+import enLegal from './locales/en/legal.json';
 
 import deCommon from './locales/de/common.json';
 import deHome from './locales/de/home.json';
@@ -19,6 +20,7 @@ import deDoctors from './locales/de/doctors.json';
 import deCompanies from './locales/de/companies.json';
 import deAuth from './locales/de/auth.json';
 import deConsultation from './locales/de/consultation.json';
+import deLegal from './locales/de/legal.json';
 
 const resources = {
   en: {
@@ -30,6 +32,7 @@ const resources = {
     companies: enCompanies,
     auth: enAuth,
     consultation: enConsultation,
+    legal: enLegal,
   },
   de: {
     common: deCommon,
@@ -40,6 +43,7 @@ const resources = {
     companies: deCompanies,
     auth: deAuth,
     consultation: deConsultation,
+    legal: deLegal,
   },
 };
 
@@ -50,7 +54,7 @@ i18n
     resources,
     fallbackLng: 'en',
     defaultNS: 'common',
-    ns: ['common', 'home', 'conditions', 'blog', 'doctors', 'companies', 'auth', 'consultation'],
+    ns: ['common', 'home', 'conditions', 'blog', 'doctors', 'companies', 'auth', 'consultation', 'legal'],
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],

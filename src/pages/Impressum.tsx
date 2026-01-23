@@ -1,9 +1,14 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, AlertTriangle } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Impressum = () => {
+  const { t, i18n } = useTranslation("legal");
+  const isEnglish = i18n.language === "en";
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -14,14 +19,14 @@ const Impressum = () => {
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
             <Link to="/" className="hover:text-primary transition-colors">
-              Home
+              {t("breadcrumb.home")}
             </Link>
             <ChevronRight className="w-4 h-4" />
-            <span className="text-foreground">Impressum</span>
+            <span className="text-foreground">{t("impressum.breadcrumb")}</span>
           </nav>
           
           <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground">
-            Impressum
+            {t("impressum.title")}
           </h1>
         </div>
       </section>
@@ -31,27 +36,37 @@ const Impressum = () => {
         <div className="container max-w-4xl">
           <div className="prose prose-lg max-w-none">
             
+            {/* Translation Disclaimer for English */}
+            {isEnglish && (
+              <Alert className="mb-8 border-amber-500/50 bg-amber-50 dark:bg-amber-950/20">
+                <AlertTriangle className="h-4 w-4 text-amber-600" />
+                <AlertDescription className="text-amber-800 dark:text-amber-200">
+                  {t("translationDisclaimer")}
+                </AlertDescription>
+              </Alert>
+            )}
+
             {/* Section 1: Company Information */}
             <section className="mb-10">
               <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
-                Angaben gemäß § 5 ECG
+                {t("impressum.section1.title")}
               </h2>
               <address className="not-italic text-muted-foreground leading-relaxed">
-                <strong className="text-foreground">TeleDerm GmbH</strong><br />
+                <strong className="text-foreground">{t("impressum.section1.companyName")}</strong><br />
                 Testgasse 1<br />
-                1010 Wien<br />
-                Österreich
+                1010 {isEnglish ? "Vienna" : "Wien"}<br />
+                {isEnglish ? "Austria" : "Österreich"}
               </address>
             </section>
 
             {/* Section 2: Contact */}
             <section className="mb-10">
               <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
-                Kontakt
+                {t("impressum.section2.title")}
               </h2>
               <div className="text-muted-foreground leading-relaxed space-y-1">
                 <p>
-                  E-Mail: <a href="mailto:info@telederm.at" className="text-primary hover:underline">info@telederm.at</a>
+                  {t("impressum.section2.email")} <a href="mailto:info@telederm.at" className="text-primary hover:underline">info@telederm.at</a>
                 </p>
               </div>
             </section>
@@ -59,57 +74,57 @@ const Impressum = () => {
             {/* Section 3: Company Registration */}
             <section className="mb-10">
               <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
-                Firmenbuchdaten
+                {t("impressum.section3.title")}
               </h2>
               <div className="text-muted-foreground leading-relaxed space-y-1">
-                <p><strong>Firmenbuchnummer:</strong> FN XXXXXX x</p>
-                <p><strong>Firmenbuchgericht:</strong> Handelsgericht Wien</p>
-                <p><strong>UID-Nummer:</strong> ATU XXXXXXXX</p>
+                <p><strong>{t("impressum.section3.registerNumber")}</strong> {t("impressum.section3.registerNumberValue")}</p>
+                <p><strong>{t("impressum.section3.court")}</strong> {t("impressum.section3.courtValue")}</p>
+                <p><strong>{t("impressum.section3.vatId")}</strong> {t("impressum.section3.vatIdValue")}</p>
               </div>
             </section>
 
             {/* Section 4: Management */}
             <section className="mb-10">
               <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
-                Geschäftsführung
+                {t("impressum.section4.title")}
               </h2>
               <p className="text-muted-foreground leading-relaxed">
-                [Name der Geschäftsführung]
+                {t("impressum.section4.content")}
               </p>
             </section>
 
             {/* Section 5: Regulatory Authority */}
             <section className="mb-10">
               <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
-                Aufsichtsbehörde
+                {t("impressum.section5.title")}
               </h2>
               <p className="text-muted-foreground leading-relaxed">
-                Magistrat der Stadt Wien
+                {t("impressum.section5.content")}
               </p>
             </section>
 
             {/* Section 6: Business Purpose */}
             <section className="mb-10">
               <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
-                Unternehmensgegenstand
+                {t("impressum.section6.title")}
               </h2>
               <p className="text-muted-foreground leading-relaxed">
-                Betrieb einer technischen Plattform zur Vermittlung von telemedizinischen Konsultationen zwischen Patienten und in Österreich zugelassenen Ärzten. TeleDerm GmbH erbringt selbst keine medizinischen Leistungen.
+                {t("impressum.section6.content")}
               </p>
             </section>
 
             {/* Section 7: Professional Regulations */}
             <section className="mb-10">
               <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
-                Berufsrechtliche Vorschriften
+                {t("impressum.section7.title")}
               </h2>
               <div className="text-muted-foreground leading-relaxed">
-                <p className="mb-2">Anwendbare Vorschriften:</p>
+                <p className="mb-2">{t("impressum.section7.intro")}</p>
                 <ul className="list-disc list-inside space-y-1">
-                  <li>E-Commerce-Gesetz (ECG)</li>
-                  <li>Gewerbeordnung (GewO)</li>
-                  <li>Datenschutz-Grundverordnung (DSGVO)</li>
-                  <li>Gesundheitstelematikgesetz (GTelG)</li>
+                  <li>{t("impressum.section7.regulation1")}</li>
+                  <li>{t("impressum.section7.regulation2")}</li>
+                  <li>{t("impressum.section7.regulation3")}</li>
+                  <li>{t("impressum.section7.regulation4")}</li>
                 </ul>
               </div>
             </section>
@@ -117,34 +132,34 @@ const Impressum = () => {
             {/* Section 8: Liability Disclaimer */}
             <section className="mb-10">
               <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
-                Haftungsausschluss
+                {t("impressum.section8.title")}
               </h2>
               
               <div className="space-y-6">
                 <div>
                   <h3 className="font-display text-xl font-medium text-foreground mb-3">
-                    Haftung für Inhalte
+                    {t("impressum.section8.content.title")}
                   </h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs.1 ECG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich.
+                    {t("impressum.section8.content.text")}
                   </p>
                 </div>
 
                 <div>
                   <h3 className="font-display text-xl font-medium text-foreground mb-3">
-                    Haftung für Links
+                    {t("impressum.section8.links.title")}
                   </h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich.
+                    {t("impressum.section8.links.text")}
                   </p>
                 </div>
 
                 <div>
                   <h3 className="font-display text-xl font-medium text-foreground mb-3">
-                    Medizinischer Haftungsausschluss
+                    {t("impressum.section8.medical.title")}
                   </h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    TeleDerm GmbH stellt ausschließlich eine technische Plattform zur Verfügung und übernimmt keine Verantwortung für medizinische Diagnosen, Behandlungen oder Empfehlungen. Die medizinische Verantwortung liegt ausschließlich bei den behandelnden Ärzten. Bei akuten oder lebensbedrohlichen Beschwerden wenden Sie sich bitte umgehend an den Notruf (144) oder die nächste Notaufnahme.
+                    {t("impressum.section8.medical.text")}
                   </p>
                 </div>
               </div>
@@ -153,20 +168,20 @@ const Impressum = () => {
             {/* Section 9: Copyright */}
             <section className="mb-10">
               <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
-                Urheberrecht
+                {t("impressum.section9.title")}
               </h2>
               <p className="text-muted-foreground leading-relaxed">
-                Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem österreichischen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch gestattet.
+                {t("impressum.section9.content")}
               </p>
             </section>
 
             {/* Section 10: Dispute Resolution */}
             <section className="mb-10">
               <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
-                Streitschlichtung
+                {t("impressum.section10.title")}
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:
+                {t("impressum.section10.intro")}
               </p>
               <p className="text-muted-foreground leading-relaxed mb-4">
                 <a 
@@ -179,13 +194,13 @@ const Impressum = () => {
                 </a>
               </p>
               <p className="text-muted-foreground leading-relaxed">
-                Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
+                {t("impressum.section10.conclusion")}
               </p>
             </section>
 
             {/* Date */}
             <p className="text-sm text-muted-foreground mt-12 pt-8 border-t border-border">
-              Stand: März 2026
+              {t("lastUpdated")}
             </p>
           </div>
         </div>

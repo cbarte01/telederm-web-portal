@@ -1,0 +1,233 @@
+{
+  "translationDisclaimer": "",
+  "breadcrumb": {
+    "home": "Home"
+  },
+  "lastUpdated": "Stand: März 2026",
+  "privacyPolicy": {
+    "title": "Datenschutzerklärung",
+    "breadcrumb": "Datenschutz",
+    "intro": "Der Schutz Ihrer persönlichen Daten ist uns ein besonderes Anliegen. Wir verarbeiten Ihre Daten daher ausschließlich auf Grundlage der geltenden gesetzlichen Bestimmungen (DSGVO, DSG, GTelG). In dieser Datenschutzerklärung informieren wir Sie über die wichtigsten Aspekte der Datenverarbeitung im Rahmen unserer Website und Plattform.",
+    "section1": {
+      "title": "1. Verantwortlicher",
+      "content": "TeleDerm GmbH\nTestgasse 1\n1010 Wien\nÖsterreich\nE-Mail: info@telederm.at"
+    },
+    "section2": {
+      "title": "2. Datenschutzbeauftragter",
+      "content": "Ein Datenschutzbeauftragter ist gemäß Art. 37 DSGVO nicht bestellt."
+    },
+    "section3": {
+      "title": "3. Rolle von TeleDerm GmbH",
+      "content": "TeleDerm GmbH ist kein Gesundheitsdienstleister und erbringt keine medizinischen Leistungen. Wir betreiben eine technische Plattform zur Vermittlung zwischen Patienten und in Österreich zugelassenen Ärzten. Die medizinische Verantwortung liegt ausschließlich beim behandelnden Arzt."
+    },
+    "section4": {
+      "title": "4. Verarbeitung personenbezogener Daten",
+      "subsection1": {
+        "title": "4.1 Websitebesuch",
+        "content": "Beim Aufruf unserer Website werden Server-Logfiles verarbeitet. Zweck ist die Systemsicherheit.",
+        "legalBasis": "Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO."
+      },
+      "subsection2": {
+        "title": "4.2 Kontaktaufnahme",
+        "content": "Bei Kontaktaufnahme verarbeiten wir Name, E-Mail-Adresse und Inhalt der Anfrage.",
+        "legalBasis": "Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO."
+      },
+      "subsection3": {
+        "title": "4.3 Patientenportal und Gesundheitsdaten",
+        "content": "Im Rahmen des Patientenportals verarbeiten wir personenbezogene Daten einschließlich Gesundheitsdaten (Art. 9 DSGVO), Freitexteingaben und hochgeladene Bilder. Es erfolgen keine Video- oder Audioaufzeichnungen.",
+        "legalBasisTitle": "Rechtsgrundlagen:",
+        "legalBasis1": "Art. 6 Abs. 1 lit. b DSGVO",
+        "legalBasis2": "Art. 9 Abs. 2 lit. a DSGVO",
+        "legalBasis3": "Art. 9 Abs. 2 lit. h DSGVO",
+        "retention": "Speicherdauer: bis zu 10 Jahre."
+      }
+    },
+    "section5": {
+      "title": "5. Einwilligungserklärung (Checkbox)",
+      "content": "Die Verarbeitung von Gesundheitsdaten erfolgt ausschließlich auf Basis Ihrer ausdrücklichen Einwilligung. Im Rahmen der Nutzung des Patientenportals verwenden wir folgende Einwilligungserklärung."
+    },
+    "section6": {
+      "title": "6. Weitergabe von Daten",
+      "content": "Eine Weitergabe erfolgt ausschließlich an ausgewählte Ärzte, technische Dienstleister sowie Behörden bei gesetzlicher Verpflichtung."
+    },
+    "section7": {
+      "title": "7. Datenübermittlung",
+      "content": "Die Plattform wird in der EU (Frankfurt) betrieben. Unterstützende Dienste (z. B. E-Mail, Domainhosting) können Anbieter außerhalb der EU einsetzen. In diesen Fällen erfolgt die Übermittlung auf Basis geeigneter Garantien gemäß Art. 46 DSGVO."
+    },
+    "section8": {
+      "title": "8. Webanalyse / Cookies",
+      "content": "Unsere Website verwendet Google Analytics ausschließlich nach Ihrer ausdrücklichen Einwilligung über ein Cookie-Consent-Tool.",
+      "legalBasis": "Rechtsgrundlage: Art. 6 Abs. 1 lit. a DSGVO."
+    },
+    "section9": {
+      "title": "9. Zahlungsabwicklung",
+      "content": "Zahlungen erfolgen über Stripe Payments Europe Ltd.",
+      "legalBasis": "Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO."
+    },
+    "section10": {
+      "title": "10. Datensicherheit",
+      "content": "Wir setzen geeignete technische und organisatorische Maßnahmen ein, um Ihre Daten zu schützen."
+    },
+    "section11": {
+      "title": "11. Ihre Rechte",
+      "content": "Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch."
+    },
+    "section12": {
+      "title": "12. Widerruf von Einwilligungen",
+      "content": "Erteilte Einwilligungen können jederzeit mit Wirkung für die Zukunft widerrufen werden."
+    },
+    "section13": {
+      "title": "13. Beschwerderecht",
+      "content": "Österreichische Datenschutzbehörde\nBarichgasse 40–42\n1030 Wien"
+    },
+    "section14": {
+      "title": "14. Änderungen",
+      "content": "Diese Datenschutzerklärung kann angepasst werden."
+    }
+  },
+  "impressum": {
+    "title": "Impressum",
+    "breadcrumb": "Impressum",
+    "section1": {
+      "title": "Angaben gemäß § 5 ECG",
+      "companyName": "TeleDerm GmbH",
+      "address": "Testgasse 1\n1010 Wien\nÖsterreich"
+    },
+    "section2": {
+      "title": "Kontakt",
+      "email": "E-Mail:"
+    },
+    "section3": {
+      "title": "Firmenbuchdaten",
+      "registerNumber": "Firmenbuchnummer:",
+      "registerNumberValue": "FN XXXXXX x",
+      "court": "Firmenbuchgericht:",
+      "courtValue": "Handelsgericht Wien",
+      "vatId": "UID-Nummer:",
+      "vatIdValue": "ATU XXXXXXXX"
+    },
+    "section4": {
+      "title": "Geschäftsführung",
+      "content": "[Name der Geschäftsführung]"
+    },
+    "section5": {
+      "title": "Aufsichtsbehörde",
+      "content": "Magistrat der Stadt Wien"
+    },
+    "section6": {
+      "title": "Unternehmensgegenstand",
+      "content": "Betrieb einer technischen Plattform zur Vermittlung von telemedizinischen Konsultationen zwischen Patienten und in Österreich zugelassenen Ärzten. TeleDerm GmbH erbringt selbst keine medizinischen Leistungen."
+    },
+    "section7": {
+      "title": "Berufsrechtliche Vorschriften",
+      "intro": "Anwendbare Vorschriften:",
+      "regulation1": "E-Commerce-Gesetz (ECG)",
+      "regulation2": "Gewerbeordnung (GewO)",
+      "regulation3": "Datenschutz-Grundverordnung (DSGVO)",
+      "regulation4": "Gesundheitstelematikgesetz (GTelG)"
+    },
+    "section8": {
+      "title": "Haftungsausschluss",
+      "content": {
+        "title": "Haftung für Inhalte",
+        "text": "Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs.1 ECG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich."
+      },
+      "links": {
+        "title": "Haftung für Links",
+        "text": "Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich."
+      },
+      "medical": {
+        "title": "Medizinischer Haftungsausschluss",
+        "text": "TeleDerm GmbH stellt ausschließlich eine technische Plattform zur Verfügung und übernimmt keine Verantwortung für medizinische Diagnosen, Behandlungen oder Empfehlungen. Die medizinische Verantwortung liegt ausschließlich bei den behandelnden Ärzten. Bei akuten oder lebensbedrohlichen Beschwerden wenden Sie sich bitte umgehend an den Notruf (144) oder die nächste Notaufnahme."
+      }
+    },
+    "section9": {
+      "title": "Urheberrecht",
+      "content": "Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem österreichischen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch gestattet."
+    },
+    "section10": {
+      "title": "Streitschlichtung",
+      "intro": "Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:",
+      "conclusion": "Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen."
+    }
+  },
+  "termsOfService": {
+    "title": "Allgemeine Geschäftsbedingungen",
+    "breadcrumb": "AGB",
+    "section1": {
+      "title": "§1 Geltung, Begriffsdefinition",
+      "p1": "Die TeleDerm GmbH (in weiterer Folge «TeleDerm») betreibt unter der Webseite www.telederm.at eine Plattform zur Kommunikation zwischen Nutzern und Experten. Die nachfolgenden allgemeinen Geschäftsbedingungen gelten für sämtliche von uns gegenüber unseren Nutzern («Patienten») erbrachten Leistungen.",
+      "p2": "Nutzer im Sinne dieser AGB ist jeder Anwender, der auf dieser Plattform registriert ist.",
+      "p3": "Soweit nicht ausdrücklich Gegenteiliges vereinbart wurde, gelten unsere, dem Vertragspartner bekannt gegebenen AGB.",
+      "p4": "Unser Vertragspartner stimmt zu, dass im Falle der Verwendung von AGB durch ihn im Zweifel von unseren Bedingungen auszugehen ist, auch wenn Bedingungen des Vertragspartners unwidersprochen bleiben.",
+      "p5": "Vertragserfüllungshandlungen unsererseits gelten insofern nicht als Zustimmung zu von unseren Bedingungen abweichenden Vertragsbedingungen. Verbleiben bei der Vertragsauslegung dennoch Unklarheiten, so sind diese in der Weise auszuräumen, dass jene Inhalte als vereinbart gelten, die üblicherweise in vergleichbaren Fällen vereinbart werden."
+    },
+    "section2": {
+      "title": "§2 Zustandekommen eines Vertrages, Speicherung des Vertragstextes",
+      "p1": "Auf unserer Webseite kommt der Vertrag über die Nutzung unserer Plattform zustande, wenn Sie Ihren Namen und Ihre E-Mail-Adresse bei der Registrierung eingeben und den Button «Registrieren» anklicken.",
+      "p2": "Im Falle des Vertragsschlusses kommt der Vertrag mit der",
+      "p3": "zustande.",
+      "p4": "Eingabefehler können mittels der üblichen Tastatur-, Maus-, Browser-Funktionen berichtigt werden. Sie können auch dadurch berichtigt werden, dass Sie den Registrierungsprozess vorzeitig abbrechen.",
+      "p5": "Die Akzeptanz der AGB ist vor jedem Vertragsabschluss zu bestätigen."
+    },
+    "section3": {
+      "title": "§3 Gegenstand des Vertrages",
+      "p1": "Der Nutzer kann sich auf unserer Plattform, die 7 Tage, 24 Stunden lang, mit Ausnahme von angekündigten Abschaltungen oder höherer Gewalt in Betrieb ist, mit seinen Daten registrieren.",
+      "p2": "Der Nutzer kann auf unserer Plattform an unsere Experten (Vertragspartner der Plattform) anamnestische Informationen über den bisherigen Krankheitsverlauf sowie bis zu vier Fotos der zu kontrollierenden Hautveränderungen über einen gesicherten Kommunikationsweg senden.",
+      "p3": "Nach Nutzung der Bezahlfunktion werden die Daten übertragen und die erfolgreiche Übermittlung per E-Mail bestätigt. Der Experte erhält eine Benachrichtigung, dass die Anfrage eingegangen ist. Nach Öffnen des Links zu den Informationen werden die Fotos vom Experten begutachtet, anamnestische Informationen gelesen und weitere Therapievorschläge innerhalb von zwei Werktagen an den Nutzer gesendet. Die übermittelten Daten von und an den Nutzer werden gespeichert."
+    },
+    "section4": {
+      "title": "§4 Vergütung",
+      "p1": "Je erfolgter Anfrage an den Experten ist über die Bezahlfunktion der jeweils in der Anwendung angegebene Betrag (inkl. USt) an TeleDerm zu überweisen.",
+      "p2": "Der Nutzer ist damit einverstanden, dass Rechnungen an ihn auch elektronisch erstellt und übermittelt werden."
+    },
+    "section5": {
+      "title": "§5 Pflichten des Nutzers",
+      "registration": {
+        "title": "a) Registrierung",
+        "p1": "Voraussetzung für die Nutzung ist die kostenlose Registrierung.",
+        "p2": "Der Nutzer verpflichtet sich, ausschließlich wahrheitsgemäße und vollständige Angaben zu seiner Person zu machen.",
+        "p3": "Der Nutzer verpflichtet sich, die persönlichen Zugangsvoraussetzungen zu seinem persönlichen Bereich geheim zu halten und Missbrauch durch Dritte nach Möglichkeit zu verhindern."
+      },
+      "usage": {
+        "title": "b) Nutzung der Plattform",
+        "p1": "Der Nutzer wird alles unterlassen, was zur Beeinträchtigung oder Beschädigung der Funktionsfähigkeit der Plattform führen kann.",
+        "p2": "Der Experte verpflichtet sich, innerhalb von zwei Werktagen dem Nutzer auf seine übertragenen Daten verbindlich zu antworten."
+      },
+      "liability": {
+        "title": "c) Haftungsfreistellung",
+        "p1": "Der Nutzer haftet bei der von ihm zu vertretenden Verletzung von Rechten Dritter gegenüber diesen selbst und unmittelbar.",
+        "p2": "Der Nutzer verpflichtet sich, TeleDerm alle Schäden zu ersetzen, die wegen der schuldhaften Nichtbeachtung der sich aus diesem Nutzungsvertrag ergebenden Pflichten entstehen."
+      }
+    },
+    "section6": {
+      "title": "§6 Kündigung",
+      "p1": "Der Nutzungsvertrag wird auf unbestimmte Zeit geschlossen.",
+      "p2": "Der Nutzungsvertrag kann vom Nutzer jederzeit gekündigt werden. Dabei reicht eine E-Mail an info@telederm.at.",
+      "p3": "Das Recht zur außerordentlichen Kündigung aus wichtigem Grund bleibt unberührt. Ein wichtiger Grund liegt insbesondere vor, wenn der Nutzer gegen diese AGB oder geltendes Recht verstößt.",
+      "p4": "TeleDerm kann den Nutzungsvertrag unter Einhaltung einer Frist von zwei Wochen ohne Angabe von Gründen kündigen."
+    },
+    "section7": {
+      "title": "§7 Datenschutz, Vertraulichkeit",
+      "p1": "Für die Verarbeitung personenbezogener Daten gilt unsere Datenschutzerklärung.",
+      "p2": "TeleDerm und alle beteiligten Experten sind zur Verschwiegenheit über alle ihnen im Rahmen der Nutzung der Plattform bekannt gewordenen Informationen verpflichtet."
+    },
+    "section8": {
+      "title": "§8 Haftung",
+      "p1": "TeleDerm stellt ausschließlich eine technische Plattform zur Verfügung und übernimmt keine Verantwortung für medizinische Diagnosen, Behandlungen oder Empfehlungen. Die medizinische Verantwortung liegt ausschließlich bei den behandelnden Ärzten.",
+      "p2": "Die Haftung von TeleDerm für leichte Fahrlässigkeit ist ausgeschlossen, sofern keine wesentlichen Vertragspflichten, Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit betroffen sind.",
+      "p3": "Bei akuten oder lebensbedrohlichen Beschwerden ist unverzüglich der Notruf (144) oder die nächste Notaufnahme zu kontaktieren. Die Plattform ersetzt keinen ärztlichen Notdienst."
+    },
+    "section9": {
+      "title": "§9 Gerichtsstand, Anwendbares Recht",
+      "p1": "Es gilt ausschließlich österreichisches Recht unter Ausschluss des UN-Kaufrechts.",
+      "p2": "Gerichtsstand für alle Streitigkeiten aus diesem Vertrag ist Wien, sofern der Nutzer Unternehmer ist oder keinen allgemeinen Gerichtsstand in Österreich hat.",
+      "p3": "Für Verbraucher gelten die zwingenden Bestimmungen des Konsumentenschutzgesetzes (KSchG)."
+    },
+    "section10": {
+      "title": "§10 Schlussbestimmungen",
+      "p1": "Sollten einzelne Bestimmungen dieser AGB unwirksam sein oder werden, bleibt die Wirksamkeit der übrigen Bestimmungen unberührt.",
+      "p2": "TeleDerm behält sich vor, diese AGB jederzeit zu ändern. Änderungen werden dem Nutzer per E-Mail mitgeteilt und gelten als genehmigt, wenn der Nutzer nicht innerhalb von 14 Tagen nach Zugang der Mitteilung widerspricht."
+    }
+  }
+}

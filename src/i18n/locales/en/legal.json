@@ -1,0 +1,233 @@
+{
+  "translationDisclaimer": "This is an English translation of the original German document. The German version is the legally binding document in accordance with Austrian law. In case of any discrepancies, the German version shall prevail.",
+  "breadcrumb": {
+    "home": "Home"
+  },
+  "lastUpdated": "Last updated: March 2026",
+  "privacyPolicy": {
+    "title": "Privacy Policy",
+    "breadcrumb": "Privacy Policy",
+    "intro": "The protection of your personal data is of particular concern to us. We therefore process your data exclusively on the basis of applicable legal provisions (GDPR, DSG, GTelG). In this privacy policy, we inform you about the most important aspects of data processing within the scope of our website and platform.",
+    "section1": {
+      "title": "1. Data Controller",
+      "content": "TeleDerm GmbH\nTestgasse 1\n1010 Vienna\nAustria\nEmail: info@telederm.at"
+    },
+    "section2": {
+      "title": "2. Data Protection Officer",
+      "content": "A Data Protection Officer has not been appointed in accordance with Art. 37 GDPR."
+    },
+    "section3": {
+      "title": "3. Role of TeleDerm GmbH",
+      "content": "TeleDerm GmbH is not a healthcare provider and does not provide medical services. We operate a technical platform for connecting patients with physicians licensed in Austria. Medical responsibility lies exclusively with the treating physician."
+    },
+    "section4": {
+      "title": "4. Processing of Personal Data",
+      "subsection1": {
+        "title": "4.1 Website Visit",
+        "content": "When you visit our website, server log files are processed. The purpose is system security.",
+        "legalBasis": "Legal basis: Art. 6(1)(f) GDPR."
+      },
+      "subsection2": {
+        "title": "4.2 Contact",
+        "content": "When you contact us, we process your name, email address, and the content of your inquiry.",
+        "legalBasis": "Legal basis: Art. 6(1)(b) GDPR."
+      },
+      "subsection3": {
+        "title": "4.3 Patient Portal and Health Data",
+        "content": "Within the patient portal, we process personal data including health data (Art. 9 GDPR), free-text entries, and uploaded images. No video or audio recordings are made.",
+        "legalBasisTitle": "Legal bases:",
+        "legalBasis1": "Art. 6(1)(b) GDPR",
+        "legalBasis2": "Art. 9(2)(a) GDPR",
+        "legalBasis3": "Art. 9(2)(h) GDPR",
+        "retention": "Retention period: up to 10 years."
+      }
+    },
+    "section5": {
+      "title": "5. Consent Declaration (Checkbox)",
+      "content": "The processing of health data is carried out exclusively on the basis of your explicit consent. When using the patient portal, we use the following consent declaration."
+    },
+    "section6": {
+      "title": "6. Data Sharing",
+      "content": "Data is shared exclusively with selected physicians, technical service providers, and authorities when legally required."
+    },
+    "section7": {
+      "title": "7. Data Transfer",
+      "content": "The platform is operated in the EU (Frankfurt). Supporting services (e.g., email, domain hosting) may use providers outside the EU. In these cases, transfer is based on appropriate safeguards pursuant to Art. 46 GDPR."
+    },
+    "section8": {
+      "title": "8. Web Analytics / Cookies",
+      "content": "Our website uses Google Analytics only after your explicit consent via a cookie consent tool.",
+      "legalBasis": "Legal basis: Art. 6(1)(a) GDPR."
+    },
+    "section9": {
+      "title": "9. Payment Processing",
+      "content": "Payments are processed through Stripe Payments Europe Ltd.",
+      "legalBasis": "Legal basis: Art. 6(1)(b) GDPR."
+    },
+    "section10": {
+      "title": "10. Data Security",
+      "content": "We implement appropriate technical and organizational measures to protect your data."
+    },
+    "section11": {
+      "title": "11. Your Rights",
+      "content": "You have the right to access, rectification, erasure, restriction of processing, data portability, and objection."
+    },
+    "section12": {
+      "title": "12. Withdrawal of Consent",
+      "content": "Granted consents can be withdrawn at any time with effect for the future."
+    },
+    "section13": {
+      "title": "13. Right to Lodge a Complaint",
+      "content": "Austrian Data Protection Authority\nBarichgasse 40–42\n1030 Vienna"
+    },
+    "section14": {
+      "title": "14. Changes",
+      "content": "This privacy policy may be updated."
+    }
+  },
+  "impressum": {
+    "title": "Legal Notice",
+    "breadcrumb": "Legal Notice",
+    "section1": {
+      "title": "Information according to § 5 ECG",
+      "companyName": "TeleDerm GmbH",
+      "address": "Testgasse 1\n1010 Vienna\nAustria"
+    },
+    "section2": {
+      "title": "Contact",
+      "email": "Email:"
+    },
+    "section3": {
+      "title": "Company Registration Data",
+      "registerNumber": "Company Register Number:",
+      "registerNumberValue": "FN XXXXXX x",
+      "court": "Company Register Court:",
+      "courtValue": "Commercial Court Vienna",
+      "vatId": "VAT ID:",
+      "vatIdValue": "ATU XXXXXXXX"
+    },
+    "section4": {
+      "title": "Management",
+      "content": "[Name of Management]"
+    },
+    "section5": {
+      "title": "Regulatory Authority",
+      "content": "Municipal Authority of Vienna"
+    },
+    "section6": {
+      "title": "Business Purpose",
+      "content": "Operation of a technical platform for facilitating telemedicine consultations between patients and physicians licensed in Austria. TeleDerm GmbH does not provide medical services itself."
+    },
+    "section7": {
+      "title": "Professional Regulations",
+      "intro": "Applicable regulations:",
+      "regulation1": "E-Commerce Act (ECG)",
+      "regulation2": "Trade Regulation Act (GewO)",
+      "regulation3": "General Data Protection Regulation (GDPR)",
+      "regulation4": "Health Telematics Act (GTelG)"
+    },
+    "section8": {
+      "title": "Disclaimer",
+      "content": {
+        "title": "Liability for Content",
+        "text": "The contents of our pages have been created with the greatest care. However, we cannot guarantee the accuracy, completeness, and timeliness of the content. As a service provider, we are responsible for our own content on these pages in accordance with general laws pursuant to § 7(1) ECG."
+      },
+      "links": {
+        "title": "Liability for Links",
+        "text": "Our offer contains links to external third-party websites, over whose content we have no influence. Therefore, we cannot assume any liability for this external content. The respective provider or operator of the pages is always responsible for the content of the linked pages."
+      },
+      "medical": {
+        "title": "Medical Disclaimer",
+        "text": "TeleDerm GmbH exclusively provides a technical platform and assumes no responsibility for medical diagnoses, treatments, or recommendations. Medical responsibility lies exclusively with the treating physicians. In case of acute or life-threatening symptoms, please contact emergency services (144) or the nearest emergency room immediately."
+      }
+    },
+    "section9": {
+      "title": "Copyright",
+      "content": "The content and works created by the site operators on these pages are subject to Austrian copyright law. Reproduction, editing, distribution, and any kind of exploitation outside the limits of copyright require the written consent of the respective author or creator. Downloads and copies of this page are only permitted for private, non-commercial use."
+    },
+    "section10": {
+      "title": "Dispute Resolution",
+      "intro": "The European Commission provides a platform for online dispute resolution (ODR):",
+      "conclusion": "We are not willing or obliged to participate in dispute resolution proceedings before a consumer arbitration board."
+    }
+  },
+  "termsOfService": {
+    "title": "Terms and Conditions",
+    "breadcrumb": "Terms",
+    "section1": {
+      "title": "§1 Scope, Definitions",
+      "p1": "TeleDerm GmbH (hereinafter referred to as \"TeleDerm\") operates a platform for communication between users and experts at www.telederm.at. The following general terms and conditions apply to all services provided by us to our users (\"Patients\").",
+      "p2": "A user within the meaning of these terms is any user who is registered on this platform.",
+      "p3": "Unless expressly agreed otherwise, our terms and conditions communicated to the contractual partner shall apply.",
+      "p4": "Our contractual partner agrees that in case of doubt when using their own terms and conditions, our conditions shall prevail, even if the contractual partner's conditions remain unchallenged.",
+      "p5": "Contract fulfillment actions on our part do not constitute consent to contractual conditions that deviate from our terms. If ambiguities remain in the interpretation of the contract, they shall be resolved in such a way that those contents are deemed agreed which are usually agreed in comparable cases."
+    },
+    "section2": {
+      "title": "§2 Formation of Contract, Storage of Contract Text",
+      "p1": "On our website, the contract for the use of our platform is concluded when you enter your name and email address during registration and click the \"Register\" button.",
+      "p2": "In the event of contract conclusion, the contract is entered into with",
+      "p3": ".",
+      "p4": "Input errors can be corrected using the usual keyboard, mouse, and browser functions. They can also be corrected by terminating the registration process prematurely.",
+      "p5": "Acceptance of the terms and conditions must be confirmed before each contract conclusion."
+    },
+    "section3": {
+      "title": "§3 Subject of the Contract",
+      "p1": "The user can register with their data on our platform, which is operational 7 days a week, 24 hours a day, except for announced shutdowns or force majeure.",
+      "p2": "The user can send anamnestic information about the previous course of illness and up to four photos of the skin changes to be examined to our experts (contractual partners of the platform) via a secure communication channel.",
+      "p3": "After using the payment function, the data is transmitted and successful transmission is confirmed by email. The expert receives a notification that the request has been received. After opening the link to the information, the photos are reviewed by the expert, anamnestic information is read, and further therapy suggestions are sent to the user within two business days. The transmitted data to and from the user is stored."
+    },
+    "section4": {
+      "title": "§4 Remuneration",
+      "p1": "For each request made to the expert, the amount specified in the application (incl. VAT) must be transferred to TeleDerm via the payment function.",
+      "p2": "The user agrees that invoices may also be created and transmitted to them electronically."
+    },
+    "section5": {
+      "title": "§5 User Obligations",
+      "registration": {
+        "title": "a) Registration",
+        "p1": "Free registration is a prerequisite for use.",
+        "p2": "The user undertakes to provide only truthful and complete information about themselves.",
+        "p3": "The user undertakes to keep the personal access requirements to their personal area secret and to prevent misuse by third parties as far as possible."
+      },
+      "usage": {
+        "title": "b) Use of the Platform",
+        "p1": "The user shall refrain from anything that could impair or damage the functionality of the platform.",
+        "p2": "The expert undertakes to respond bindingly to the user's transmitted data within two business days."
+      },
+      "liability": {
+        "title": "c) Indemnification",
+        "p1": "The user is liable for any violation of third-party rights attributable to them directly and personally.",
+        "p2": "The user undertakes to compensate TeleDerm for all damages arising from culpable non-compliance with the obligations arising from this usage agreement."
+      }
+    },
+    "section6": {
+      "title": "§6 Termination",
+      "p1": "The usage agreement is concluded for an indefinite period.",
+      "p2": "The usage agreement can be terminated by the user at any time. An email to info@telederm.at is sufficient.",
+      "p3": "The right to extraordinary termination for good cause remains unaffected. A good cause exists in particular if the user violates these terms and conditions or applicable law.",
+      "p4": "TeleDerm can terminate the usage agreement with two weeks' notice without giving reasons."
+    },
+    "section7": {
+      "title": "§7 Data Protection, Confidentiality",
+      "p1": "Our Privacy Policy applies to the processing of personal data.",
+      "p2": "TeleDerm and all participating experts are obliged to maintain confidentiality regarding all information that has become known to them in the course of using the platform."
+    },
+    "section8": {
+      "title": "§8 Liability",
+      "p1": "TeleDerm exclusively provides a technical platform and assumes no responsibility for medical diagnoses, treatments, or recommendations. Medical responsibility lies exclusively with the treating physicians.",
+      "p2": "TeleDerm's liability for slight negligence is excluded unless essential contractual obligations, damages from injury to life, body, or health are affected.",
+      "p3": "In case of acute or life-threatening symptoms, emergency services (144) or the nearest emergency room must be contacted immediately. The platform does not replace emergency medical services."
+    },
+    "section9": {
+      "title": "§9 Jurisdiction, Applicable Law",
+      "p1": "Austrian law shall apply exclusively, excluding the UN Convention on Contracts for the International Sale of Goods.",
+      "p2": "The place of jurisdiction for all disputes arising from this contract is Vienna, provided the user is an entrepreneur or has no general place of jurisdiction in Austria.",
+      "p3": "The mandatory provisions of the Consumer Protection Act (KSchG) apply to consumers."
+    },
+    "section10": {
+      "title": "§10 Final Provisions",
+      "p1": "Should individual provisions of these terms and conditions be or become invalid, the validity of the remaining provisions shall remain unaffected.",
+      "p2": "TeleDerm reserves the right to change these terms and conditions at any time. Changes will be communicated to the user by email and are deemed approved if the user does not object within 14 days of receipt of the notification."
+    }
+  }
+}
