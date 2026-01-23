@@ -22,20 +22,30 @@ const stripSensitiveFields = (draft: ConsultationDraft): ConsultationDraft => {
   return sanitized;
 };
 
-export const useConsultationDraft = () => {
+export const useConsultationDraft = (preserveDraft = false) => {
   const [draft, setDraft] = useState<ConsultationDraft>(INITIAL_DRAFT);
   const [isLoaded, setIsLoaded] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
 
-  // Always start fresh - clear any existing draft on mount
+  // Clear draft on mount unless we're resuming (e.g., returning from profile page)
   useEffect(() => {
     try {
-      sessionStorage.removeItem(STORAGE_KEY);
+      if (preserveDraft) {
+        // Restore draft from storage if available
+        const savedDraft = sessionStorage.getItem(STORAGE_KEY);
+        if (savedDraft) {
+          const parsed = JSON.parse(savedDraft);
+          setDraft(parsed);
+        }
+      } else {
+        // Clear any existing draft for a fresh start
+        sessionStorage.removeItem(STORAGE_KEY);
+      }
     } catch {
       // Ignore storage errors
     }
     setIsLoaded(true);
-  }, []);
+  }, [preserveDraft]);
 
   // Save draft to sessionStorage whenever it changes (excluding sensitive fields)
   useEffect(() => {

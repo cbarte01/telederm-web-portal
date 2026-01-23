@@ -31,7 +31,11 @@ const TOTAL_STEPS = 10;
 const ConsultationFlow = () => {
   const { t } = useTranslation("consultation");
   const [searchParams] = useSearchParams();
-  const { draft, isLoaded, updateDraft, goToNextStep, goToPreviousStep, setStep } = useConsultationDraft();
+  
+  // Check if we should resume (e.g., returning from profile page)
+  const shouldResume = searchParams.get("resume") === "true";
+  
+  const { draft, isLoaded, updateDraft, goToNextStep, goToPreviousStep, setStep } = useConsultationDraft(shouldResume);
   const { signOut } = useAuth();
   const { role, isLoading: isLoadingRole } = useRole();
   const [hasCheckedSession, setHasCheckedSession] = useState(false);

@@ -573,7 +573,7 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
                     <Button 
                       variant="outline" 
                       size="sm"
-                      onClick={() => navigate("/profile?returnTo=/consultation")}
+                      onClick={() => navigate("/profile?returnTo=/consultation?resume=true")}
                     >
                       {lang === "de" ? "Profil bearbeiten" : "Edit Profile"}
                     </Button>
