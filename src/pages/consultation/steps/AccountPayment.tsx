@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -23,6 +23,14 @@ interface AccountPaymentProps {
   setStep: (step: number) => void;
 }
 
+interface PatientProfile {
+  id: string;
+  full_name: string | null;
+  date_of_birth: string | null;
+  social_security_number: string | null;
+  biological_sex: string | null;
+}
+
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
@@ -42,6 +50,8 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [consentChecked, setConsentChecked] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [patientProfile, setPatientProfile] = useState<PatientProfile | null>(null);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(false);
   const lang = i18n.language === "de" ? "de" : "en";
 
   const loginForm = useForm<z.infer<typeof loginSchema>>({
@@ -53,6 +63,34 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
     resolver: zodResolver(signupSchema),
     defaultValues: { fullName: "", email: "", password: "" },
   });
+
+  // Fetch patient profile when user is logged in
+  useEffect(() => {
+    const fetchPatientProfile = async () => {
+      if (!user) {
+        setPatientProfile(null);
+        return;
+      }
+
+      setIsLoadingProfile(true);
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("id, full_name, date_of_birth, social_security_number, biological_sex")
+          .eq("id", user.id)
+          .maybeSingle();
+
+        if (error) throw error;
+        setPatientProfile(data as PatientProfile);
+      } catch (err) {
+        console.error("Error fetching patient profile:", err);
+      } finally {
+        setIsLoadingProfile(false);
+      }
+    };
+
+    fetchPatientProfile();
+  }, [user]);
 
   const handleLogin = async (values: z.infer<typeof loginSchema>) => {
     setAuthError(null);
@@ -77,28 +115,17 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
   };
 
   const handleSubmitConsultation = async () => {
-    if (!user || !consentChecked) return;
+    if (!user || !consentChecked || !patientProfile) return;
     
     setIsSubmitting(true);
     
     try {
-      // Get the user's profile id
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("id", user.id)
-        .maybeSingle();
-
-      if (profileError) throw profileError;
-      if (!profile) throw new Error("Profile not found");
-
       // Create consultation - pre-assign doctor if from referral
-      // Note: pricing_plan and consultation_price are stored but not in generated types yet
       const db = supabase as any;
       const { data: consultation, error: consultationError } = await db
         .from("consultations")
         .insert({
-          patient_id: profile.id,
+          patient_id: patientProfile.id,
           status: "submitted",
           concern_category: draft.concernCategory,
           body_locations: draft.bodyLocations,
@@ -113,8 +140,9 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
           medications_description: draft.medicationsDescription,
           has_self_treated: draft.hasSelfTreated,
           self_treatment_description: draft.selfTreatmentDescription,
-          date_of_birth: draft.dateOfBirth,
-          biological_sex: draft.biologicalSex,
+          // Personal details now come from profile
+          date_of_birth: patientProfile.date_of_birth,
+          biological_sex: patientProfile.biological_sex,
           additional_notes: draft.additionalNotes,
           submitted_at: new Date().toISOString(),
           // B2B2C: Pre-assign doctor from referral link
@@ -242,6 +270,12 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
     );
   };
 
+  // Check if profile is complete for submission
+  const isProfileComplete = patientProfile && 
+    patientProfile.full_name && 
+    patientProfile.date_of_birth && 
+    patientProfile.biological_sex;
+
   return (
     <div className="space-y-6">
       <div className="text-center space-y-2">
@@ -259,16 +293,28 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
           {t("step9.summary.title")}
         </h3>
         
-        {/* Personal Details */}
-        <SummarySection icon={User} title={lang === "de" ? "Persönliche Angaben" : "Personal Details"}>
-          <SummaryRow label={lang === "de" ? "Name" : "Name"} value={draft.fullName} />
-          <SummaryRow label={lang === "de" ? "Geburtsdatum" : "Date of birth"} value={draft.dateOfBirth} />
-          <SummaryRow label={lang === "de" ? "SVNr" : "SSN"} value={draft.socialSecurityNumber} />
-          <SummaryRow 
-            label={lang === "de" ? "Geschlecht" : "Sex"} 
-            value={draft.biologicalSex ? sexLabels[draft.biologicalSex]?.[lang] : undefined} 
-          />
-        </SummarySection>
+        {/* Personal Details - from profile */}
+        {user && patientProfile && (
+          <SummarySection icon={User} title={lang === "de" ? "Persönliche Angaben" : "Personal Details"}>
+            <SummaryRow label={lang === "de" ? "Name" : "Name"} value={patientProfile.full_name} />
+            <SummaryRow label={lang === "de" ? "Geburtsdatum" : "Date of birth"} value={patientProfile.date_of_birth} />
+            <SummaryRow label={lang === "de" ? "SVNr" : "SSN"} value={patientProfile.social_security_number} />
+            <SummaryRow 
+              label={lang === "de" ? "Geschlecht" : "Sex"} 
+              value={patientProfile.biological_sex ? sexLabels[patientProfile.biological_sex as BiologicalSex]?.[lang] : undefined} 
+            />
+            {!isProfileComplete && (
+              <Alert className="mt-2">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  {lang === "de" 
+                    ? "Bitte vervollständigen Sie Ihr Profil vor der Einreichung (Name, Geburtsdatum, Geschlecht)."
+                    : "Please complete your profile before submitting (name, date of birth, sex)."}
+                </AlertDescription>
+              </Alert>
+            )}
+          </SummarySection>
+        )}
 
         {/* Concern & Location */}
         <SummarySection icon={MapPin} title={lang === "de" ? "Anliegen & Betroffene Stellen" : "Concern & Affected Areas"}>
@@ -497,38 +543,67 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
         </Tabs>
       ) : (
         <div className="space-y-4">
-          <div className="flex items-center gap-3 p-4 rounded-xl border border-primary bg-primary/5">
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-              <Check className="w-5 h-5 text-primary-foreground" />
+          {isLoadingProfile ? (
+            <div className="flex items-center justify-center py-4">
+              <Loader2 className="h-6 w-6 animate-spin text-primary" />
             </div>
-            <div>
-              <p className="font-medium text-foreground">
-                {user.user_metadata?.full_name || user.email}
-              </p>
-              <p className="text-sm text-muted-foreground">{user.email}</p>
-            </div>
-          </div>
-          
-          <div className="flex items-start gap-3">
-            <Checkbox
-              id="consent"
-              checked={consentChecked}
-              onCheckedChange={(checked) => setConsentChecked(checked === true)}
-            />
-            <label htmlFor="consent" className="text-sm text-muted-foreground cursor-pointer">
-              {t("step9.consent")}
-            </label>
-          </div>
-          
-          <Button
-            className="w-full"
-            size="lg"
-            onClick={handleSubmitConsultation}
-            disabled={!consentChecked || isSubmitting}
-          >
-            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {t("step9.submit")}
-          </Button>
+          ) : (
+            <>
+              <div className="flex items-center gap-3 p-4 rounded-xl border border-primary bg-primary/5">
+                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                  <Check className="w-5 h-5 text-primary-foreground" />
+                </div>
+                <div>
+                  <p className="font-medium text-foreground">
+                    {patientProfile?.full_name || user.user_metadata?.full_name || user.email}
+                  </p>
+                  <p className="text-sm text-muted-foreground">{user.email}</p>
+                </div>
+              </div>
+              
+              {!isProfileComplete && (
+                <Alert>
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription className="flex items-center justify-between">
+                    <span>
+                      {lang === "de" 
+                        ? "Ihr Profil ist unvollständig. Bitte ergänzen Sie Ihre Daten."
+                        : "Your profile is incomplete. Please update your details."}
+                    </span>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => navigate("/profile")}
+                    >
+                      {lang === "de" ? "Profil bearbeiten" : "Edit Profile"}
+                    </Button>
+                  </AlertDescription>
+                </Alert>
+              )}
+              
+              <div className="flex items-start gap-3">
+                <Checkbox
+                  id="consent"
+                  checked={consentChecked}
+                  onCheckedChange={(checked) => setConsentChecked(checked === true)}
+                  disabled={!isProfileComplete}
+                />
+                <label htmlFor="consent" className="text-sm text-muted-foreground cursor-pointer">
+                  {t("step9.consent")}
+                </label>
+              </div>
+              
+              <Button
+                className="w-full"
+                size="lg"
+                onClick={handleSubmitConsultation}
+                disabled={!consentChecked || isSubmitting || !isProfileComplete}
+              >
+                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {t("step9.submit")}
+              </Button>
+            </>
+          )}
         </div>
       )}
     </div>

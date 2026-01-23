@@ -22,12 +22,11 @@ import PhotoUpload from "./steps/PhotoUpload";
 import TimelineChanges from "./steps/TimelineChanges";
 import Symptoms from "./steps/Symptoms";
 import MedicalHistory from "./steps/MedicalHistory";
-import PersonalDetails from "./steps/PersonalDetails";
 import PlanSelection from "./steps/PlanSelection";
 import AccountPayment from "./steps/AccountPayment";
 import Confirmation from "./steps/Confirmation";
 
-const TOTAL_STEPS = 11;
+const TOTAL_STEPS = 10;
 
 const ConsultationFlow = () => {
   const { t } = useTranslation("consultation");
@@ -161,12 +160,10 @@ const ConsultationFlow = () => {
       case 7:
         return <MedicalHistory draft={draft} updateDraft={updateDraft} onNext={goToNextStep} />;
       case 8:
-        return <PersonalDetails draft={draft} updateDraft={updateDraft} onNext={goToNextStep} />;
-      case 9:
         return <PlanSelection draft={draft} updateDraft={updateDraft} onNext={goToNextStep} />;
-      case 10:
+      case 9:
         return <AccountPayment draft={draft} updateDraft={updateDraft} onNext={goToNextStep} setStep={setStep} />;
-      case 11:
+      case 10:
         return <Confirmation />;
       default:
         return <ConcernSelection draft={draft} updateDraft={updateDraft} onNext={goToNextStep} />;

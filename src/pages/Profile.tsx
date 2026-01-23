@@ -22,6 +22,12 @@ const profileSchema = z.object({
   phone: z.string().optional(),
 });
 
+const patientProfileSchema = z.object({
+  dateOfBirth: z.string().optional(),
+  socialSecurityNumber: z.string().optional(),
+  biologicalSex: z.enum(["male", "female", "diverse"]).optional(),
+});
+
 const doctorProfileSchema = z.object({
   referralCode: z.string().min(3, "Code must be at least 3 characters").max(20, "Code must be at most 20 characters").regex(/^[A-Z0-9_]+$/, "Only uppercase letters, numbers, and underscores allowed"),
   practiceName: z.string().optional(),
@@ -31,6 +37,7 @@ const doctorProfileSchema = z.object({
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
+type PatientProfileFormData = z.infer<typeof patientProfileSchema>;
 type DoctorProfileFormData = z.infer<typeof doctorProfileSchema>;
 
 const Profile = () => {
@@ -41,6 +48,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmittingPatient, setIsSubmittingPatient] = useState(false);
   const [isSubmittingDoctor, setIsSubmittingDoctor] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
@@ -49,6 +57,11 @@ const Profile = () => {
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: { fullName: "", phone: "" },
+  });
+
+  const patientForm = useForm<PatientProfileFormData>({
+    resolver: zodResolver(patientProfileSchema),
+    defaultValues: { dateOfBirth: "", socialSecurityNumber: "", biologicalSex: undefined },
   });
 
   const doctorForm = useForm<DoctorProfileFormData>({
@@ -63,7 +76,7 @@ const Profile = () => {
       try {
       const { data, error } = await supabase
         .from("profiles")
-        .select("full_name, phone, referral_code, practice_name, welcome_message, standard_price, urgent_price")
+        .select("full_name, phone, referral_code, practice_name, welcome_message, standard_price, urgent_price, date_of_birth, social_security_number, biological_sex")
         .eq("id", user.id)
         .maybeSingle();
 
@@ -74,6 +87,15 @@ const Profile = () => {
             fullName: data.full_name || "",
             phone: data.phone || "",
           });
+          
+          // Patient-specific fields
+          if (role === "patient") {
+            patientForm.reset({
+              dateOfBirth: (data as any).date_of_birth || "",
+              socialSecurityNumber: (data as any).social_security_number || "",
+              biologicalSex: (data as any).biological_sex || undefined,
+            });
+          }
           
           if (role === "doctor") {
             doctorForm.reset({
@@ -93,7 +115,7 @@ const Profile = () => {
     };
 
     fetchProfile();
-  }, [user, form, doctorForm, role]);
+  }, [user, form, patientForm, doctorForm, role]);
 
   const getDashboardPath = () => {
     switch (role) {
@@ -132,6 +154,37 @@ const Profile = () => {
       });
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const onSubmitPatient = async (data: PatientProfileFormData) => {
+    if (!user) return;
+    
+    setIsSubmittingPatient(true);
+    try {
+      const db = supabase as any;
+      const { error } = await db
+        .from("profiles")
+        .update({
+          date_of_birth: data.dateOfBirth || null,
+          social_security_number: data.socialSecurityNumber || null,
+          biological_sex: data.biologicalSex || null,
+        })
+        .eq("id", user.id);
+
+      if (error) throw error;
+
+      toast({
+        title: lang === "de" ? "Medizinische Daten gespeichert" : "Medical details saved",
+      });
+    } catch (err) {
+      console.error("Error updating patient profile:", err);
+      toast({
+        variant: "destructive",
+        title: t("errors.generic"),
+      });
+    } finally {
+      setIsSubmittingPatient(false);
     }
   };
 
@@ -327,6 +380,100 @@ const Profile = () => {
             </Form>
           </CardContent>
         </Card>
+
+        {/* Patient Medical Details - Only visible to patients */}
+        {role === "patient" && (
+          <Card className="shadow-card mb-8">
+            <CardHeader>
+              <CardTitle>{lang === "de" ? "Medizinische Angaben" : "Medical Details"}</CardTitle>
+              <CardDescription>
+                {lang === "de" 
+                  ? "Diese Informationen werden für Ihre Konsultationen benötigt."
+                  : "This information is required for your consultations."}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Form {...patientForm}>
+                <form onSubmit={patientForm.handleSubmit(onSubmitPatient)} className="space-y-6">
+                  <div className="space-y-4">
+                    <FormField
+                      control={patientForm.control}
+                      name="dateOfBirth"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{lang === "de" ? "Geburtsdatum" : "Date of Birth"}</FormLabel>
+                          <FormControl>
+                            <Input 
+                              type="date" 
+                              max={new Date().toISOString().split("T")[0]}
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={patientForm.control}
+                      name="socialSecurityNumber"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{lang === "de" ? "Sozialversicherungsnummer" : "Social Security Number"}</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder={lang === "de" ? "z.B. 1234 010190" : "e.g. 1234 010190"} 
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={patientForm.control}
+                      name="biologicalSex"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{lang === "de" ? "Biologisches Geschlecht" : "Biological Sex"}</FormLabel>
+                          <div className="flex gap-3 mt-2">
+                            {(["male", "female", "diverse"] as const).map((sex) => (
+                              <button
+                                key={sex}
+                                type="button"
+                                onClick={() => field.onChange(sex)}
+                                className={`flex-1 py-3 px-4 rounded-xl border-2 transition-all hover:border-primary hover:bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+                                  field.value === sex
+                                    ? "border-primary bg-primary/5"
+                                    : "border-border bg-card"
+                                }`}
+                              >
+                                <span className="font-medium text-foreground">
+                                  {sex === "male" 
+                                    ? (lang === "de" ? "Männlich" : "Male")
+                                    : sex === "female"
+                                    ? (lang === "de" ? "Weiblich" : "Female")
+                                    : (lang === "de" ? "Divers" : "Diverse")}
+                                </span>
+                              </button>
+                            ))}
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <Button type="submit" disabled={isSubmittingPatient}>
+                    {isSubmittingPatient && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    {t("profile.save")}
+                  </Button>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Doctor Referral Settings - Only visible to doctors */}
         {role === "doctor" && (
