@@ -56,14 +56,17 @@ export const useConsultationDraft = () => {
         const now = new Date();
         const hoursDiff = (now.getTime() - lastUpdated.getTime()) / (1000 * 60 * 60);
         
-        if (hoursDiff < 2) {
+        // Also check if step is valid (max 10 steps now)
+        const hasValidStep = validatedData.currentStep >= 1 && validatedData.currentStep <= 10;
+        
+        if (hoursDiff < 2 && hasValidStep) {
           // Merge validated data with INITIAL_DRAFT to ensure all required fields exist
           setDraft({
             ...INITIAL_DRAFT,
             ...validatedData,
           } as ConsultationDraft);
         } else {
-          // Clear stale draft
+          // Clear stale or invalid draft
           sessionStorage.removeItem(STORAGE_KEY);
         }
       }
