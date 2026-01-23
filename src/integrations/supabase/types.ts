@@ -204,7 +204,9 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          biological_sex: string | null
           created_at: string
+          date_of_birth: string | null
           doctor_queue_type:
             | Database["public"]["Enums"]["doctor_queue_type"]
             | null
@@ -214,6 +216,7 @@ export type Database = {
           phone: string | null
           practice_name: string | null
           referral_code: string | null
+          social_security_number: string | null
           standard_price: number | null
           updated_at: string
           urgent_price: number | null
@@ -221,7 +224,9 @@ export type Database = {
         }
         Insert: {
           avatar_url?: string | null
+          biological_sex?: string | null
           created_at?: string
+          date_of_birth?: string | null
           doctor_queue_type?:
             | Database["public"]["Enums"]["doctor_queue_type"]
             | null
@@ -231,6 +236,7 @@ export type Database = {
           phone?: string | null
           practice_name?: string | null
           referral_code?: string | null
+          social_security_number?: string | null
           standard_price?: number | null
           updated_at?: string
           urgent_price?: number | null
@@ -238,7 +244,9 @@ export type Database = {
         }
         Update: {
           avatar_url?: string | null
+          biological_sex?: string | null
           created_at?: string
+          date_of_birth?: string | null
           doctor_queue_type?:
             | Database["public"]["Enums"]["doctor_queue_type"]
             | null
@@ -248,6 +256,7 @@ export type Database = {
           phone?: string | null
           practice_name?: string | null
           referral_code?: string | null
+          social_security_number?: string | null
           standard_price?: number | null
           updated_at?: string
           urgent_price?: number | null

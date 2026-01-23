@@ -86,16 +86,12 @@ export interface ConsultationDraft {
   hasSelfTreated?: boolean;
   selfTreatmentDescription?: string;
   
-  // Step 8 - Personal details
-  fullName?: string;
-  dateOfBirth?: string;
-  socialSecurityNumber?: string;
-  biologicalSex?: BiologicalSex;
-  additionalNotes?: string;
-  
-  // Step 9 - Pricing plan selection
+  // Step 8 - Pricing plan selection
   pricingPlan?: PricingPlan;
   consultationPrice?: number;
+  
+  // Additional notes (now separate from personal details)
+  additionalNotes?: string;
   
   // Meta
   currentStep: number;

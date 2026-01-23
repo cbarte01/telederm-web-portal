@@ -10,10 +10,11 @@ import { sanitizeDraft } from '@/lib/validation/sanitization';
 const STORAGE_KEY = 'telederm_consultation_draft';
 
 // Fields that should NEVER be persisted to storage for security reasons
-const SENSITIVE_FIELDS: (keyof ConsultationDraft)[] = ['socialSecurityNumber'];
+// (Note: personal details like SSN are now stored in profiles table, not in draft)
+const SENSITIVE_FIELDS: string[] = [];
 
 // Strips sensitive fields before saving to storage
-const stripSensitiveFields = (draft: ConsultationDraft): Omit<ConsultationDraft, 'socialSecurityNumber'> => {
+const stripSensitiveFields = (draft: ConsultationDraft): ConsultationDraft => {
   const sanitized = { ...draft };
   for (const field of SENSITIVE_FIELDS) {
     delete (sanitized as Record<string, unknown>)[field];

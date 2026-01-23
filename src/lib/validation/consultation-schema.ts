@@ -112,19 +112,11 @@ export const ConsultationDraftSchema = z.object({
     .max(1000, "Self-treatment description must be 1000 characters or less")
     .optional(),
 
-  // Step 8 - Personal details
-  fullName: z
-    .string()
-    .max(200, "Full name must be 200 characters or less")
-    .optional(),
-  dateOfBirth: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format")
-    .optional()
-    .or(z.literal("")),
-  // Note: socialSecurityNumber is intentionally NOT in this schema
-  // It's kept in memory only and never persisted to storage
-  biologicalSex: BiologicalSexSchema.optional(),
+  // Step 8 - Pricing plan selection
+  pricingPlan: z.enum(["standard", "urgent"]).optional(),
+  consultationPrice: z.number().min(0).max(9999).optional(),
+
+  // Additional notes (now separate from personal details which are in profile)
   additionalNotes: z
     .string()
     .max(3000, "Additional notes must be 3000 characters or less")
