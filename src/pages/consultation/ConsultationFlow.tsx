@@ -74,12 +74,16 @@ const ConsultationFlow = () => {
     // Skip if still loading or already processed
     if (isLoadingReferral || referralProcessed) return;
     
+    // Check if draft needs to be reset (completed or invalid step from old flow)
+    const isCompletedDraft = draft.currentStep === 10;
+    const isInvalidStep = draft.currentStep > 10; // Old 11-step flow had step 11
+    const shouldResetDraft = isCompletedDraft || isInvalidStep;
+    
     // If we have a URL referral code, check if we need to reset
     if (urlReferralCode) {
       const isDifferentReferral = draft.referralCode !== urlReferralCode;
-      const isCompletedDraft = draft.currentStep === 10;
       
-      if (isDifferentReferral || isCompletedDraft) {
+      if (isDifferentReferral || shouldResetDraft) {
         // Start fresh with this referral
         if (referralDoctor) {
           updateDraft({
@@ -115,7 +119,13 @@ const ConsultationFlow = () => {
         setReferralProcessed(true);
       }
     } else {
-      // No referral code - just mark as processed
+      // No referral code - reset if draft is completed or invalid
+      if (shouldResetDraft) {
+        updateDraft({
+          ...INITIAL_DRAFT,
+          currentStep: 1,
+        });
+      }
       setReferralProcessed(true);
     }
   }, [referralDoctor, draft.referralCode, draft.referredDoctorId, draft.currentStep, urlReferralCode, updateDraft, isLoadingReferral, referralProcessed]);
