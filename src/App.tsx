@@ -13,6 +13,7 @@ import NotFound from "./pages/NotFound";
 import ScrollToHash from "./components/ScrollToHash";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Impressum from "./pages/Impressum";
 
 // Auth pages
 import PatientAuth from "./pages/auth/PatientAuth";
@@ -47,6 +48,7 @@ const App = () => (
             <Route path="/for-doctors" element={<ForDoctors />} />
             <Route path="/for-companies" element={<ForCompanies />} />
             <Route path="/datenschutz" element={<PrivacyPolicy />} />
+            <Route path="/impressum" element={<Impressum />} />
             <Route path="/consultation" element={<ConsultationFlow />} />
             
             {/* Auth pages */}
