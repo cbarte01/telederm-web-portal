@@ -27,58 +27,12 @@ export const useConsultationDraft = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
 
-  // Load draft from sessionStorage on mount (clears when tab closes)
+  // Always start fresh - clear any existing draft on mount
   useEffect(() => {
     try {
-      const saved = sessionStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        
-        // Validate the loaded data against our schema
-        const validationResult = validateConsultationDraft(parsed);
-        
-        if (!validationResult.success) {
-          // Data failed validation - could be corrupted or tampered
-          console.warn(
-            'Consultation draft validation failed, clearing corrupted data:',
-            validationResult.errors?.issues.map(i => i.message).join(', ')
-          );
-          sessionStorage.removeItem(STORAGE_KEY);
-          setValidationError('Previous draft data was invalid and has been cleared.');
-          setIsLoaded(true);
-          return;
-        }
-
-        const validatedData = validationResult.data!;
-        
-        // Check if draft is not too old (2 hours for session data)
-        const lastUpdated = new Date(validatedData.lastUpdated);
-        const now = new Date();
-        const hoursDiff = (now.getTime() - lastUpdated.getTime()) / (1000 * 60 * 60);
-        
-        // Also check if step is valid (max 10 steps now)
-        const hasValidStep = validatedData.currentStep >= 1 && validatedData.currentStep <= 10;
-        
-        if (hoursDiff < 2 && hasValidStep) {
-          // Merge validated data with INITIAL_DRAFT to ensure all required fields exist
-          setDraft({
-            ...INITIAL_DRAFT,
-            ...validatedData,
-          } as ConsultationDraft);
-        } else {
-          // Clear stale or invalid draft
-          sessionStorage.removeItem(STORAGE_KEY);
-        }
-      }
-    } catch (e) {
-      console.error('Failed to load consultation draft:', e);
-      // Clear potentially corrupted storage
-      try {
-        sessionStorage.removeItem(STORAGE_KEY);
-      } catch {
-        // Ignore storage errors
-      }
-      setValidationError('Failed to load previous draft.');
+      sessionStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // Ignore storage errors
     }
     setIsLoaded(true);
   }, []);
