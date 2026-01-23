@@ -14,6 +14,7 @@ import ScrollToHash from "./components/ScrollToHash";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Impressum from "./pages/Impressum";
+import TermsOfService from "./pages/TermsOfService";
 
 // Auth pages
 import PatientAuth from "./pages/auth/PatientAuth";
@@ -49,6 +50,7 @@ const App = () => (
             <Route path="/for-companies" element={<ForCompanies />} />
             <Route path="/datenschutz" element={<PrivacyPolicy />} />
             <Route path="/impressum" element={<Impressum />} />
+            <Route path="/agb" element={<TermsOfService />} />
             <Route path="/consultation" element={<ConsultationFlow />} />
             
             {/* Auth pages */}
