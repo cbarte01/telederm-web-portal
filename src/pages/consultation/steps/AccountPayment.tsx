@@ -583,7 +583,7 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
               )}
               
               {/* Health Data Consent - Art. 9 DSGVO */}
-              <div className="flex items-start gap-3 p-4 bg-accent/50 rounded-lg border border-primary/30">
+              <div className="flex items-start gap-3 p-4 rounded-lg border border-border bg-accent/30">
                 <Checkbox
                   id="healthDataConsent"
                   checked={healthDataConsentChecked}
@@ -591,25 +591,19 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
                   disabled={!isProfileComplete}
                   className="mt-0.5"
                 />
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2 text-sm font-medium text-primary">
-                    <ShieldCheck className="w-4 h-4" />
-                    {lang === "de" ? "Einwilligung Gesundheitsdaten (Art. 9 DSGVO)" : "Health Data Consent (Art. 9 GDPR)"}
-                  </div>
-                  <label htmlFor="healthDataConsent" className="text-sm text-muted-foreground cursor-pointer block">
-                    <Trans
-                      i18nKey="step9.healthDataConsent"
-                      t={t}
-                      components={{
-                        privacyLink: <Link to="/datenschutz" className="text-primary underline hover:no-underline" target="_blank" />
-                      }}
-                    />
-                  </label>
-                </div>
+                <label htmlFor="healthDataConsent" className="text-sm text-muted-foreground cursor-pointer">
+                  <Trans
+                    i18nKey="step9.healthDataConsent"
+                    t={t}
+                    components={{
+                      privacyLink: <Link to="/datenschutz#gesundheitsdaten" className="text-primary underline hover:no-underline" target="_blank" />
+                    }}
+                  />
+                </label>
               </div>
 
               {/* General Terms Consent */}
-              <div className="flex items-start gap-3">
+              <div className="flex items-start gap-3 p-4 rounded-lg border border-border bg-accent/30">
                 <Checkbox
                   id="termsConsent"
                   checked={termsConsentChecked}
@@ -622,8 +616,7 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
                     i18nKey="step9.termsConsent"
                     t={t}
                     components={{
-                      termsLink: <Link to="/agb" className="text-primary underline hover:no-underline" target="_blank" />,
-                      privacyLink: <Link to="/datenschutz" className="text-primary underline hover:no-underline" target="_blank" />
+                      termsLink: <Link to="/agb" className="text-primary underline hover:no-underline" target="_blank" />
                     }}
                   />
                 </label>

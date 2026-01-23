@@ -165,8 +165,8 @@
       "location": "Location",
       "photos": "Photos uploaded"
     },
-    "healthDataConsent": "I explicitly consent to the processing of my health data (including uploaded photos and medical information) for the purpose of dermatological remote assessment by licensed physicians. I may withdraw this consent at any time with effect for the future. Details can be found in our <privacyLink>Privacy Policy</privacyLink>.",
-    "termsConsent": "I accept the <termsLink>Terms of Service</termsLink> and have read the <privacyLink>Privacy Policy</privacyLink>.",
+    "healthDataConsent": "I explicitly consent to the processing of my health data (including uploaded photos and medical information) for the purpose of dermatological remote assessment by licensed physicians. I may withdraw this consent at any time with effect for the future. Details can be found in our <privacyLink>Privacy Policy (Health Data section)</privacyLink>.",
+    "termsConsent": "I accept the <termsLink>Terms of Service</termsLink>.",
     "submit": "Submit Consultation"
   },
   "step10": {
