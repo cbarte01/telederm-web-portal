@@ -165,7 +165,8 @@
       "location": "Stelle",
       "photos": "Hochgeladene Fotos"
     },
-    "consent": "Ich stimme den Nutzungsbedingungen und der Datenschutzerklärung zu und willige in die Verarbeitung meiner Gesundheitsdaten für Diagnosezwecke ein.",
+    "healthDataConsent": "Ich willige ausdrücklich in die Verarbeitung meiner Gesundheitsdaten (einschließlich hochgeladener Fotos und medizinischer Angaben) zum Zwecke der dermatologischen Fernbeurteilung durch zugelassene Ärzte ein. Diese Einwilligung kann ich jederzeit mit Wirkung für die Zukunft widerrufen. Details finden Sie in unserer <privacyLink>Datenschutzerklärung</privacyLink>.",
+    "termsConsent": "Ich akzeptiere die <termsLink>Allgemeinen Geschäftsbedingungen</termsLink> und habe die <privacyLink>Datenschutzerklärung</privacyLink> zur Kenntnis genommen.",
     "submit": "Anfrage einreichen"
   },
   "step10": {
