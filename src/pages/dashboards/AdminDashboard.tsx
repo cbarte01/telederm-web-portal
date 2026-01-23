@@ -55,7 +55,10 @@ import {
   ArrowUp,
   ArrowDown,
   Settings,
-  Euro
+  Euro,
+  Pencil,
+  Save,
+  X
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import teledermLogo from "@/assets/logo/telederm-logo.png";
@@ -79,6 +82,8 @@ interface Doctor {
   doctor_queue_type: 'group' | 'individual' | 'hybrid' | null;
   referral_code: string | null;
   avatar_url: string | null;
+  standard_price: number | null;
+  urgent_price: number | null;
 }
 
 interface Patient {
@@ -135,6 +140,16 @@ const AdminDashboard = () => {
     target: Doctor | Patient | null;
     targetType: 'doctor' | 'patient';
   }>({ open: false, type: 'deactivate', target: null, targetType: 'doctor' });
+
+  // Group pricing state
+  const [groupStandardPrice, setGroupStandardPrice] = useState<number>(49);
+  const [groupUrgentPrice, setGroupUrgentPrice] = useState<number>(74);
+  const [isSavingGroupPricing, setIsSavingGroupPricing] = useState(false);
+  const [isLoadingGroupPricing, setIsLoadingGroupPricing] = useState(true);
+
+  // Doctor pricing edit state
+  const [editingDoctorPricing, setEditingDoctorPricing] = useState<string | null>(null);
+  const [doctorPriceInputs, setDoctorPriceInputs] = useState<{ standard: number; urgent: number }>({ standard: 49, urgent: 74 });
 
   const lang = i18n.language === "de" ? "de" : "en";
   const dateLocale = lang === "de" ? de : enUS;
@@ -350,7 +365,7 @@ const AdminDashboard = () => {
       // Fetch profiles
       const { data: profiles, error: profilesError } = await supabase
         .from("profiles")
-        .select("id, full_name, is_active, doctor_queue_type, referral_code")
+        .select("id, full_name, is_active, doctor_queue_type, referral_code, standard_price, urgent_price")
         .in("id", userIds);
 
       if (profilesError) throw profilesError;
@@ -378,6 +393,8 @@ const AdminDashboard = () => {
           doctor_queue_type: (profile?.doctor_queue_type as 'group' | 'individual' | 'hybrid' | null) ?? 'group',
           referral_code: profile?.referral_code || null,
           avatar_url: publicProfile?.avatar_url || null,
+          standard_price: profile?.standard_price ?? null,
+          urgent_price: profile?.urgent_price ?? null,
         };
       });
 
@@ -663,10 +680,114 @@ const AdminDashboard = () => {
     );
   };
 
+  const fetchGroupPricing = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("admin_settings")
+        .select("setting_value")
+        .eq("setting_key", "group_pricing")
+        .single();
+
+      if (error && error.code !== "PGRST116") throw error;
+
+      if (data?.setting_value) {
+        const pricing = data.setting_value as { standard: number; urgent: number };
+        setGroupStandardPrice(pricing.standard || 49);
+        setGroupUrgentPrice(pricing.urgent || 74);
+      }
+    } catch (err) {
+      console.error("Error fetching group pricing:", err);
+    } finally {
+      setIsLoadingGroupPricing(false);
+    }
+  };
+
+  const handleSaveGroupPricing = async () => {
+    setIsSavingGroupPricing(true);
+    try {
+      const { data: existing } = await supabase
+        .from("admin_settings")
+        .select("id")
+        .eq("setting_key", "group_pricing")
+        .single();
+
+      if (existing) {
+        const { error } = await supabase
+          .from("admin_settings")
+          .update({
+            setting_value: { standard: groupStandardPrice, urgent: groupUrgentPrice },
+          })
+          .eq("setting_key", "group_pricing");
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from("admin_settings")
+          .insert({
+            setting_key: "group_pricing",
+            setting_value: { standard: groupStandardPrice, urgent: groupUrgentPrice },
+          });
+        if (error) throw error;
+      }
+
+      toast({
+        title: lang === "de" ? "Preise gespeichert" : "Prices saved",
+      });
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to save pricing";
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: errorMessage,
+      });
+    } finally {
+      setIsSavingGroupPricing(false);
+    }
+  };
+
+  const handleSaveDoctorPricing = async (doctorId: string) => {
+    setActionInProgress(doctorId);
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          standard_price: doctorPriceInputs.standard,
+          urgent_price: doctorPriceInputs.urgent,
+        })
+        .eq("id", doctorId);
+
+      if (error) throw error;
+
+      toast({
+        title: lang === "de" ? "Arztpreise gespeichert" : "Doctor pricing saved",
+      });
+
+      setEditingDoctorPricing(null);
+      fetchDoctors();
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to save doctor pricing";
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: errorMessage,
+      });
+    } finally {
+      setActionInProgress(null);
+    }
+  };
+
+  const startEditingDoctorPricing = (doctor: Doctor) => {
+    setEditingDoctorPricing(doctor.id);
+    setDoctorPriceInputs({
+      standard: doctor.standard_price ?? 49,
+      urgent: doctor.urgent_price ?? 74,
+    });
+  };
+
   useEffect(() => {
     fetchDoctors();
     fetchPatients();
     fetchStats();
+    fetchGroupPricing();
   }, []);
 
   const onSubmit = async (data: CreateDoctorFormData) => {
@@ -1111,6 +1232,7 @@ const AdminDashboard = () => {
                           </Button>
                         </TableHead>
                         <TableHead>{lang === "de" ? "Empfehlungslink" : "Referral Link"}</TableHead>
+                        <TableHead>{lang === "de" ? "Preise (€)" : "Pricing (€)"}</TableHead>
                         <TableHead>
                           <Button 
                             variant="ghost" 
@@ -1219,6 +1341,65 @@ const AdminDashboard = () => {
                                 )}
                                 {lang === "de" ? "Erstellen" : "Generate"}
                               </Button>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {editingDoctorPricing === doctor.id ? (
+                              <div className="flex items-center gap-2">
+                                <div className="flex gap-1">
+                                  <Input
+                                    type="number"
+                                    value={doctorPriceInputs.standard}
+                                    onChange={(e) => setDoctorPriceInputs(prev => ({ ...prev, standard: Number(e.target.value) }))}
+                                    className="w-16 h-7 text-xs"
+                                    min={1}
+                                    max={999}
+                                  />
+                                  <Input
+                                    type="number"
+                                    value={doctorPriceInputs.urgent}
+                                    onChange={(e) => setDoctorPriceInputs(prev => ({ ...prev, urgent: Number(e.target.value) }))}
+                                    className="w-16 h-7 text-xs"
+                                    min={1}
+                                    max={999}
+                                  />
+                                </div>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-7 w-7"
+                                  onClick={() => handleSaveDoctorPricing(doctor.id)}
+                                  disabled={actionInProgress === doctor.id}
+                                >
+                                  {actionInProgress === doctor.id ? (
+                                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                  ) : (
+                                    <Save className="h-3.5 w-3.5 text-primary" />
+                                  )}
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-7 w-7"
+                                  onClick={() => setEditingDoctorPricing(null)}
+                                >
+                                  <X className="h-3.5 w-3.5" />
+                                </Button>
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm">
+                                  {doctor.standard_price ?? 49} / {doctor.urgent_price ?? 74}
+                                </span>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-7 w-7"
+                                  onClick={() => startEditingDoctorPricing(doctor)}
+                                >
+                                  <Pencil className="h-3.5 w-3.5" />
+                                </Button>
+                              </div>
                             )}
                           </TableCell>
                           <TableCell>
@@ -1429,30 +1610,57 @@ const AdminDashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="max-w-md space-y-4">
-                  <p className="text-sm text-muted-foreground">
-                    {lang === "de"
-                      ? "Diese Preise werden Patienten angezeigt, die über die Hauptwebsite ohne Arzt-Empfehlungslink kommen."
-                      : "These prices are shown to patients who come through the main website without a doctor referral link."}
-                  </p>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-sm font-medium">{lang === "de" ? "Standard-Anfrage (€)" : "Standard Request (€)"}</label>
-                      <Input type="number" defaultValue={49} min={1} max={999} className="mt-1" disabled />
-                      <p className="text-xs text-muted-foreground mt-1">{lang === "de" ? "48h Antwortzeit" : "48h response"}</p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium">{lang === "de" ? "Dringliche Anfrage (€)" : "Urgent Request (€)"}</label>
-                      <Input type="number" defaultValue={74} min={1} max={999} className="mt-1" disabled />
-                      <p className="text-xs text-muted-foreground mt-1">{lang === "de" ? "24h Antwortzeit" : "24h response"}</p>
-                    </div>
+                {isLoadingGroupPricing ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin text-primary" />
                   </div>
-                  <p className="text-xs text-muted-foreground italic">
-                    {lang === "de" 
-                      ? "Kontaktieren Sie den Support, um diese Preise zu ändern."
-                      : "Contact support to change these prices."}
-                  </p>
-                </div>
+                ) : (
+                  <div className="max-w-md space-y-4">
+                    <p className="text-sm text-muted-foreground">
+                      {lang === "de"
+                        ? "Diese Preise werden Patienten angezeigt, die über die Hauptwebsite ohne Arzt-Empfehlungslink kommen."
+                        : "These prices are shown to patients who come through the main website without a doctor referral link."}
+                    </p>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-sm font-medium">{lang === "de" ? "Standard-Anfrage (€)" : "Standard Request (€)"}</label>
+                        <Input 
+                          type="number" 
+                          value={groupStandardPrice} 
+                          onChange={(e) => setGroupStandardPrice(Number(e.target.value))}
+                          min={1} 
+                          max={999} 
+                          className="mt-1" 
+                        />
+                        <p className="text-xs text-muted-foreground mt-1">{lang === "de" ? "48h Antwortzeit" : "48h response"}</p>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium">{lang === "de" ? "Dringliche Anfrage (€)" : "Urgent Request (€)"}</label>
+                        <Input 
+                          type="number" 
+                          value={groupUrgentPrice} 
+                          onChange={(e) => setGroupUrgentPrice(Number(e.target.value))}
+                          min={1} 
+                          max={999} 
+                          className="mt-1" 
+                        />
+                        <p className="text-xs text-muted-foreground mt-1">{lang === "de" ? "24h Antwortzeit" : "24h response"}</p>
+                      </div>
+                    </div>
+                    <Button 
+                      onClick={handleSaveGroupPricing} 
+                      disabled={isSavingGroupPricing}
+                      className="gap-2"
+                    >
+                      {isSavingGroupPricing ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Save className="h-4 w-4" />
+                      )}
+                      {lang === "de" ? "Preise speichern" : "Save Prices"}
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
