@@ -21,7 +21,9 @@ import {
   FileText,
   Clock,
   Send,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Download,
+  Loader2
 } from "lucide-react";
 
 interface ConsultationPhoto {
@@ -121,6 +123,7 @@ const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: Consulta
   const [icd10Description, setIcd10Description] = useState((consultation as any).icd10_description || "");
   const [showIcd10Suggestions, setShowIcd10Suggestions] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDownloadingHonorarnote, setIsDownloadingHonorarnote] = useState(false);
   const [photoUrls, setPhotoUrls] = useState<Record<string, string>>({});
   
   const lang = i18n.language === "de" ? "de" : "en";
@@ -128,6 +131,41 @@ const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: Consulta
 
   // Check if this is an unclaimed consultation (for Group/Hybrid doctors)
   const isUnclaimed = consultation.doctor_id === null;
+  
+  // Check if honorarnote can be downloaded (completed + ICD-10)
+  const canDownloadHonorarnote = consultation.status === "completed" && !!(consultation as any).icd10_code;
+
+  const handleDownloadHonorarnote = async () => {
+    setIsDownloadingHonorarnote(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-honorarnote", {
+        body: { consultation_id: consultation.id },
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.open(data.url, "_blank");
+        toast({
+          title: lang === "de" ? "Honorarnote erstellt" : "Medical fee note generated",
+          description: lang === "de" 
+            ? `Nummer: ${data.honorarnote_number}` 
+            : `Number: ${data.honorarnote_number}`,
+        });
+      }
+    } catch (err) {
+      console.error("Honorarnote download error:", err);
+      toast({
+        variant: "destructive",
+        title: lang === "de" ? "Fehler" : "Error",
+        description: lang === "de" 
+          ? "Honorarnote konnte nicht erstellt werden." 
+          : "Could not generate medical fee note.",
+      });
+    } finally {
+      setIsDownloadingHonorarnote(false);
+    }
+  };
 
   // Load photo URLs
   useEffect(() => {
@@ -451,6 +489,30 @@ const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: Consulta
                       {lang === "de" ? "Beantwortet am" : "Responded"}{" "}
                       {format(new Date(consultation.responded_at), "PPP", { locale: dateLocale })}
                     </p>
+                  )}
+                  
+                  {/* Download Honorarnote Button */}
+                  {canDownloadHonorarnote && (
+                    <div className="pt-4 border-t border-border">
+                      <Button 
+                        variant="outline" 
+                        className="w-full gap-2"
+                        onClick={handleDownloadHonorarnote}
+                        disabled={isDownloadingHonorarnote}
+                      >
+                        {isDownloadingHonorarnote ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Download className="h-4 w-4" />
+                        )}
+                        {lang === "de" ? "Honorarnote herunterladen" : "Download Medical Fee Note"}
+                      </Button>
+                      <p className="text-xs text-muted-foreground mt-2 text-center">
+                        {lang === "de"
+                          ? "Honorarnote zur Überprüfung anzeigen"
+                          : "View fee note for verification"}
+                      </p>
+                    </div>
                   )}
                 </div>
               ) : (

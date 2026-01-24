@@ -28,6 +28,8 @@ interface Consultation {
   doctor_id: string | null;
   doctor_name: string | null;
   doctor_avatar_url: string | null;
+  icd10_code: string | null;
+  icd10_description: string | null;
 }
 
 const statusConfig: Record<string, { label: string; labelDe: string; icon: React.ElementType; variant: "default" | "secondary" | "destructive" | "outline" }> = {
@@ -85,7 +87,7 @@ const PatientDashboard = () => {
         .select(`
           id, status, concern_category, body_locations, symptom_onset, 
           symptoms, symptom_severity, doctor_response, created_at, 
-          submitted_at, responded_at, doctor_id
+          submitted_at, responded_at, doctor_id, icd10_code, icd10_description
         `)
         .eq("patient_id", user.id)
         .order("created_at", { ascending: false });

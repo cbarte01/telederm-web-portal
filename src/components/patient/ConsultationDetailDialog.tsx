@@ -24,6 +24,8 @@ interface ConsultationDetail {
   responded_at: string | null;
   doctor_name: string | null;
   doctor_avatar_url?: string | null;
+  icd10_code?: string | null;
+  icd10_description?: string | null;
 }
 
 interface ConsultationDetailDialogProps {
@@ -82,7 +84,7 @@ export const ConsultationDetailDialog = ({ consultation, open, onOpenChange }: C
   if (!consultation) return null;
 
   const config = statusConfig[consultation.status] || statusConfig.completed;
-  const hasIcd10 = !!(consultation as any).icd10_code;
+  const hasIcd10 = !!consultation.icd10_code;
 
   const handleDownloadHonorarnote = async () => {
     setIsDownloading(true);
