@@ -1,63 +1,30 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Check, ArrowRight, Clock, Zap, Loader2 } from "lucide-react";
+import { Check, ArrowRight, Clock, Zap } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { supabase } from "@/integrations/supabase/client";
 
-interface PricingData {
-  standard_price: number;
-  urgent_price: number;
-}
+// Hard-coded public pricing - admin_settings table is now restricted to admins only
+const PUBLIC_PRICING = {
+  standard_price: 49,
+  urgent_price: 74,
+};
 
 const Pricing = () => {
   const { t, i18n } = useTranslation("home");
   const lang = i18n.language === "de" ? "de" : "en";
-  const [pricing, setPricing] = useState<PricingData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Fetch group pricing from admin settings
-  useEffect(() => {
-    const fetchPricing = async () => {
-      try {
-        const { data: settings, error } = await supabase
-          .from("admin_settings")
-          .select("setting_value")
-          .eq("setting_key", "group_pricing")
-          .maybeSingle();
-
-        if (!error && settings) {
-          const groupPricing = settings.setting_value as unknown as PricingData;
-          setPricing({
-            standard_price: groupPricing.standard_price ?? 49,
-            urgent_price: groupPricing.urgent_price ?? 74,
-          });
-        } else {
-          setPricing({ standard_price: 49, urgent_price: 74 });
-        }
-      } catch (error) {
-        console.error("Error fetching pricing:", error);
-        setPricing({ standard_price: 49, urgent_price: 74 });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPricing();
-  }, []);
 
   const planConfigs = [
     {
       key: "standard",
       icon: Clock,
-      price: pricing?.standard_price ?? 49,
+      price: PUBLIC_PRICING.standard_price,
       responseTime: lang === "de" ? "48 Stunden" : "48 hours",
       popular: false,
     },
     {
       key: "urgent",
       icon: Zap,
-      price: pricing?.urgent_price ?? 74,
+      price: PUBLIC_PRICING.urgent_price,
       responseTime: lang === "de" ? "24 Stunden" : "24 hours",
       popular: true,
     },
