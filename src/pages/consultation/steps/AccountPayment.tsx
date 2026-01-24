@@ -21,6 +21,7 @@ interface AccountPaymentProps {
   updateDraft: (updates: Partial<ConsultationDraft>) => void;
   onNext: () => void;
   setStep: (step: number) => void;
+  onAllowNavigation?: () => void;
 }
 
 interface PatientProfile {
@@ -42,7 +43,7 @@ const signupSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentProps) => {
+const AccountPayment = ({ draft, updateDraft, onNext, setStep, onAllowNavigation }: AccountPaymentProps) => {
   const { t, i18n } = useTranslation("consultation");
   const navigate = useNavigate();
   const { user, signIn, signUp } = useAuth();
@@ -196,7 +197,9 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
       if (checkoutError) throw checkoutError;
 
       if (checkoutData?.url) {
-        // Clear beforeunload handler to prevent "Leave Site?" warning
+        // Signal parent to allow navigation without warning
+        onAllowNavigation?.();
+        // Clear beforeunload handler as backup
         window.onbeforeunload = null;
         // Redirect to Stripe Checkout
         window.location.href = checkoutData.url;

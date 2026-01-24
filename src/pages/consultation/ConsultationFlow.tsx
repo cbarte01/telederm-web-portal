@@ -134,9 +134,15 @@ const ConsultationFlow = () => {
     }
   }, [referralDoctor, draft.referralCode, draft.referredDoctorId, draft.currentStep, urlReferralCode, updateDraft, isLoadingReferral, referralProcessed]);
 
-  // Prevent accidental navigation away
+  // State to allow navigation (e.g., when redirecting to Stripe)
+  const [allowNavigation, setAllowNavigation] = useState(false);
+
+  // Prevent accidental navigation away (unless explicitly allowed)
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      // Skip warning if navigation is explicitly allowed (e.g., Stripe redirect)
+      if (allowNavigation) return;
+      
       if (draft.currentStep > 1 && draft.currentStep < 11) {
         e.preventDefault();
         e.returnValue = '';
@@ -145,7 +151,7 @@ const ConsultationFlow = () => {
 
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [draft.currentStep]);
+  }, [draft.currentStep, allowNavigation]);
 
   if (!isLoaded || isLoadingReferral || isLoadingRole || !hasCheckedSession) {
     return (
@@ -176,7 +182,7 @@ const ConsultationFlow = () => {
       case 8:
         return <PlanSelection draft={draft} updateDraft={updateDraft} onNext={goToNextStep} />;
       case 9:
-        return <AccountPayment draft={draft} updateDraft={updateDraft} onNext={goToNextStep} setStep={setStep} />;
+        return <AccountPayment draft={draft} updateDraft={updateDraft} onNext={goToNextStep} setStep={setStep} onAllowNavigation={() => setAllowNavigation(true)} />;
       case 10:
         return <Confirmation />;
       default:
