@@ -116,8 +116,6 @@ export const ConsultationDetailDialog = ({ consultation, open, onOpenChange }: C
     }
   };
 
-  const config = statusConfig[consultation.status] || statusConfig.completed;
-
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "-";
     const date = new Date(dateString);
