@@ -196,6 +196,8 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
       if (checkoutError) throw checkoutError;
 
       if (checkoutData?.url) {
+        // Clear beforeunload handler to prevent "Leave Site?" warning
+        window.onbeforeunload = null;
         // Redirect to Stripe Checkout
         window.location.href = checkoutData.url;
       } else {

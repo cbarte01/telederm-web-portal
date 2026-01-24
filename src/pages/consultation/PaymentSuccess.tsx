@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,24 +12,44 @@ const PaymentSuccess = () => {
   const { i18n } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const hasVerified = useRef(false);
 
   const lang = i18n.language === "de" ? "de" : "en";
   const sessionId = searchParams.get("session_id");
   const consultationId = searchParams.get("consultation_id");
 
   useEffect(() => {
+    // Don't do anything while auth is still loading
+    if (authLoading) return;
+
+    // Prevent multiple verification attempts
+    if (hasVerified.current) return;
+
     const verifyPayment = async () => {
-      if (!sessionId || !consultationId || !user) {
+      // Check for required parameters
+      if (!sessionId || !consultationId) {
         setStatus("error");
         setErrorMessage(lang === "de" 
           ? "Fehlende Zahlungsinformationen" 
           : "Missing payment information");
         return;
       }
+
+      // Check if user is authenticated
+      if (!user) {
+        setStatus("error");
+        setErrorMessage(lang === "de" 
+          ? "Bitte melden Sie sich an, um Ihre Zahlung zu verifizieren" 
+          : "Please log in to verify your payment");
+        return;
+      }
+
+      // Mark as verified to prevent duplicate calls
+      hasVerified.current = true;
 
       try {
         const { data, error } = await supabase.functions.invoke("verify-payment", {
@@ -65,7 +85,13 @@ const PaymentSuccess = () => {
     };
 
     verifyPayment();
-  }, [sessionId, consultationId, user, lang, toast]);
+  }, [authLoading, user, sessionId, consultationId, lang, toast]);
+
+  // Show loading while auth is being restored
+  const isRestoring = authLoading;
+  const loadingMessage = isRestoring
+    ? (lang === "de" ? "Sitzung wird wiederhergestellt..." : "Restoring session...")
+    : (lang === "de" ? "Zahlung wird verifiziert..." : "Verifying payment...");
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
@@ -82,7 +108,7 @@ const PaymentSuccess = () => {
           <>
             <Loader2 className="h-16 w-16 animate-spin text-primary mx-auto" />
             <h1 className="text-2xl font-bold text-foreground">
-              {lang === "de" ? "Zahlung wird verifiziert..." : "Verifying payment..."}
+              {loadingMessage}
             </h1>
             <p className="text-muted-foreground">
               {lang === "de" 
