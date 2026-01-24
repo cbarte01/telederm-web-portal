@@ -69,8 +69,11 @@ serve(async (req) => {
       throw new Error(`Consultation not found: ${consultationError?.message}`);
     }
 
-    // Verify user owns this consultation
-    if (consultation.patient_id !== user.id) {
+    // Verify user is either the patient OR the assigned doctor
+    const isPatient = consultation.patient_id === user.id;
+    const isAssignedDoctor = consultation.doctor_id === user.id;
+    
+    if (!isPatient && !isAssignedDoctor) {
       throw new Error("Not authorized to access this consultation");
     }
 
