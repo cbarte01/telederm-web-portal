@@ -145,7 +145,15 @@ const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: Consulta
       if (error) throw error;
 
       if (data?.url) {
-        window.open(data.url, "_blank");
+        // Use anchor tag with download to bypass ad blocker issues with window.open
+        const link = document.createElement('a');
+        link.href = data.url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
         toast({
           title: lang === "de" ? "Honorarnote erstellt" : "Medical fee note generated",
           description: lang === "de" 
