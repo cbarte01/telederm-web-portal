@@ -86,13 +86,20 @@ export type Database = {
           has_allergies: boolean | null
           has_changed: boolean | null
           has_self_treated: boolean | null
+          honorarnote_number: string | null
+          honorarnote_storage_path: string | null
+          icd10_code: string | null
+          icd10_description: string | null
           id: string
           medications_description: string | null
           patient_id: string | null
+          payment_status: string | null
           pricing_plan: string | null
           responded_at: string | null
           self_treatment_description: string | null
           status: Database["public"]["Enums"]["consultation_status"]
+          stripe_invoice_id: string | null
+          stripe_payment_intent_id: string | null
           submitted_at: string | null
           symptom_onset: string | null
           symptom_severity: string | null
@@ -115,13 +122,20 @@ export type Database = {
           has_allergies?: boolean | null
           has_changed?: boolean | null
           has_self_treated?: boolean | null
+          honorarnote_number?: string | null
+          honorarnote_storage_path?: string | null
+          icd10_code?: string | null
+          icd10_description?: string | null
           id?: string
           medications_description?: string | null
           patient_id?: string | null
+          payment_status?: string | null
           pricing_plan?: string | null
           responded_at?: string | null
           self_treatment_description?: string | null
           status?: Database["public"]["Enums"]["consultation_status"]
+          stripe_invoice_id?: string | null
+          stripe_payment_intent_id?: string | null
           submitted_at?: string | null
           symptom_onset?: string | null
           symptom_severity?: string | null
@@ -144,13 +158,20 @@ export type Database = {
           has_allergies?: boolean | null
           has_changed?: boolean | null
           has_self_treated?: boolean | null
+          honorarnote_number?: string | null
+          honorarnote_storage_path?: string | null
+          icd10_code?: string | null
+          icd10_description?: string | null
           id?: string
           medications_description?: string | null
           patient_id?: string | null
+          payment_status?: string | null
           pricing_plan?: string | null
           responded_at?: string | null
           self_treatment_description?: string | null
           status?: Database["public"]["Enums"]["consultation_status"]
+          stripe_invoice_id?: string | null
+          stripe_payment_intent_id?: string | null
           submitted_at?: string | null
           symptom_onset?: string | null
           symptom_severity?: string | null
@@ -201,9 +222,25 @@ export type Database = {
         }
         Relationships: []
       }
+      honorarnote_counter: {
+        Row: {
+          last_number: number | null
+          year: number
+        }
+        Insert: {
+          last_number?: number | null
+          year: number
+        }
+        Update: {
+          last_number?: number | null
+          year?: number
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
+          bic: string | null
           biological_sex: string | null
           created_at: string
           date_of_birth: string | null
@@ -211,19 +248,25 @@ export type Database = {
             | Database["public"]["Enums"]["doctor_queue_type"]
             | null
           full_name: string | null
+          iban: string | null
           id: string
           is_active: boolean | null
           phone: string | null
+          practice_address_city: string | null
+          practice_address_street: string | null
+          practice_address_zip: string | null
           practice_name: string | null
           referral_code: string | null
           social_security_number: string | null
           standard_price: number | null
+          uid_number: string | null
           updated_at: string
           urgent_price: number | null
           welcome_message: string | null
         }
         Insert: {
           avatar_url?: string | null
+          bic?: string | null
           biological_sex?: string | null
           created_at?: string
           date_of_birth?: string | null
@@ -231,19 +274,25 @@ export type Database = {
             | Database["public"]["Enums"]["doctor_queue_type"]
             | null
           full_name?: string | null
+          iban?: string | null
           id: string
           is_active?: boolean | null
           phone?: string | null
+          practice_address_city?: string | null
+          practice_address_street?: string | null
+          practice_address_zip?: string | null
           practice_name?: string | null
           referral_code?: string | null
           social_security_number?: string | null
           standard_price?: number | null
+          uid_number?: string | null
           updated_at?: string
           urgent_price?: number | null
           welcome_message?: string | null
         }
         Update: {
           avatar_url?: string | null
+          bic?: string | null
           biological_sex?: string | null
           created_at?: string
           date_of_birth?: string | null
@@ -251,13 +300,18 @@ export type Database = {
             | Database["public"]["Enums"]["doctor_queue_type"]
             | null
           full_name?: string | null
+          iban?: string | null
           id?: string
           is_active?: boolean | null
           phone?: string | null
+          practice_address_city?: string | null
+          practice_address_street?: string | null
+          practice_address_zip?: string | null
           practice_name?: string | null
           referral_code?: string | null
           social_security_number?: string | null
           standard_price?: number | null
+          uid_number?: string | null
           updated_at?: string
           urgent_price?: number | null
           welcome_message?: string | null
