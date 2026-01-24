@@ -8,3 +8,15 @@ verify_jwt = false
 
 [functions.manage-doctor-account]
 verify_jwt = false
+
+[functions.manage-patient-account]
+verify_jwt = false
+
+[functions.create-checkout]
+verify_jwt = false
+
+[functions.verify-payment]
+verify_jwt = false
+
+[functions.generate-honorarnote]
+verify_jwt = false

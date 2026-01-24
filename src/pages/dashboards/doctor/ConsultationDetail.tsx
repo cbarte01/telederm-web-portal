@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { 
@@ -92,11 +93,33 @@ const onsetLabels: Record<string, { en: string; de: string }> = {
   "years": { en: "Years ago", de: "Vor Jahren" },
 };
 
+// Common dermatology ICD-10 codes for autocomplete suggestions
+const COMMON_ICD10_CODES = [
+  { code: "L20.9", description: "Atopische Dermatitis, nicht näher bezeichnet" },
+  { code: "L50.0", description: "Allergische Urticaria" },
+  { code: "L70.0", description: "Acne vulgaris" },
+  { code: "L40.0", description: "Psoriasis vulgaris" },
+  { code: "L82", description: "Seborrhoische Keratose" },
+  { code: "L30.9", description: "Dermatitis, nicht näher bezeichnet" },
+  { code: "B35.0", description: "Tinea barbae und Tinea capitis" },
+  { code: "L23.9", description: "Allergische Kontaktdermatitis" },
+  { code: "L21.0", description: "Seborrhoische Dermatitis des Kopfes" },
+  { code: "C44.9", description: "Bösartige Neubildung der Haut" },
+  { code: "D22.9", description: "Melanozytärer Nävus" },
+  { code: "L57.0", description: "Aktinische Keratose" },
+  { code: "B07", description: "Viruswarzen" },
+  { code: "L60.0", description: "Unguis incarnatus" },
+  { code: "L72.0", description: "Epidermoidzyste" },
+];
+
 const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: ConsultationDetailProps) => {
   const { i18n } = useTranslation();
   const { user } = useAuth();
   const { toast } = useToast();
   const [response, setResponse] = useState(consultation.doctor_response || "");
+  const [icd10Code, setIcd10Code] = useState((consultation as any).icd10_code || "");
+  const [icd10Description, setIcd10Description] = useState((consultation as any).icd10_description || "");
+  const [showIcd10Suggestions, setShowIcd10Suggestions] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [photoUrls, setPhotoUrls] = useState<Record<string, string>>({});
   
@@ -124,15 +147,28 @@ const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: Consulta
   }, [photos]);
 
   const handleSubmitResponse = async (newStatus: "in_review" | "completed") => {
-    if (!response.trim() && newStatus === "completed") {
-      toast({
-        title: lang === "de" ? "Fehler" : "Error",
-        description: lang === "de" 
-          ? "Bitte geben Sie eine Antwort ein, bevor Sie den Fall abschließen." 
-          : "Please enter a response before completing the case.",
-        variant: "destructive",
-      });
-      return;
+    if (newStatus === "completed") {
+      if (!response.trim()) {
+        toast({
+          title: lang === "de" ? "Fehler" : "Error",
+          description: lang === "de" 
+            ? "Bitte geben Sie eine Antwort ein, bevor Sie den Fall abschließen." 
+            : "Please enter a response before completing the case.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (!icd10Code.trim()) {
+        toast({
+          title: lang === "de" ? "Fehler" : "Error",
+          description: lang === "de" 
+            ? "Bitte geben Sie einen ICD-10-Code für die Honorarnote ein." 
+            : "Please enter an ICD-10 code for the medical fee note.",
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     setIsSubmitting(true);
@@ -142,6 +178,8 @@ const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: Consulta
       status: newStatus,
       doctor_response: response.trim() || null,
       responded_at: newStatus === "completed" ? new Date().toISOString() : null,
+      icd10_code: icd10Code.trim() || null,
+      icd10_description: icd10Description.trim() || null,
     };
 
     // Always claim the consultation if doctor_id is not set (ensures accountability)
@@ -416,7 +454,7 @@ const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: Consulta
                   )}
                 </div>
               ) : (
-                <>
+              <>
                   <div className="space-y-2">
                     <Label htmlFor="response">
                       {lang === "de" ? "Ihre Diagnose & Empfehlung" : "Your Diagnosis & Recommendation"}
@@ -431,10 +469,73 @@ const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: Consulta
                       className="min-h-[200px] resize-none"
                     />
                   </div>
-                  <div className="flex flex-col gap-2">
+
+                  {/* ICD-10 Code Section */}
+                  <div className="border-t border-border pt-4 mt-4 space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="icd10Code" className="flex items-center gap-2">
+                        <FileText className="h-4 w-4 text-primary" />
+                        {lang === "de" ? "ICD-10-Code (für Honorarnote)" : "ICD-10 Code (for medical fee note)"}
+                      </Label>
+                      <div className="relative">
+                        <Input
+                          id="icd10Code"
+                          value={icd10Code}
+                          onChange={(e) => {
+                            const value = e.target.value.toUpperCase();
+                            setIcd10Code(value);
+                            setShowIcd10Suggestions(value.length > 0);
+                          }}
+                          onFocus={() => setShowIcd10Suggestions(icd10Code.length > 0 || true)}
+                          onBlur={() => setTimeout(() => setShowIcd10Suggestions(false), 200)}
+                          placeholder={lang === "de" ? "z.B. L50.0" : "e.g. L50.0"}
+                          className="font-mono"
+                        />
+                        {showIcd10Suggestions && (
+                          <div className="absolute z-10 w-full mt-1 bg-popover border border-border rounded-md shadow-lg max-h-48 overflow-y-auto">
+                            {COMMON_ICD10_CODES
+                              .filter(item => 
+                                item.code.includes(icd10Code) || 
+                                item.description.toLowerCase().includes(icd10Code.toLowerCase()) ||
+                                icd10Code.length === 0
+                              )
+                              .slice(0, 8)
+                              .map((item) => (
+                                <button
+                                  key={item.code}
+                                  type="button"
+                                  className="w-full px-3 py-2 text-left text-sm hover:bg-accent focus:bg-accent focus:outline-none"
+                                  onMouseDown={() => {
+                                    setIcd10Code(item.code);
+                                    setIcd10Description(item.description);
+                                    setShowIcd10Suggestions(false);
+                                  }}
+                                >
+                                  <span className="font-mono font-medium text-primary">{item.code}</span>
+                                  <span className="text-muted-foreground ml-2">– {item.description}</span>
+                                </button>
+                              ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="icd10Description">
+                        {lang === "de" ? "Diagnose (optional)" : "Diagnosis (optional)"}
+                      </Label>
+                      <Input
+                        id="icd10Description"
+                        value={icd10Description}
+                        onChange={(e) => setIcd10Description(e.target.value)}
+                        placeholder={lang === "de" ? "z.B. Allergische Urticaria" : "e.g. Allergic Urticaria"}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-2 pt-4">
                     <Button 
                       onClick={() => handleSubmitResponse("completed")}
-                      disabled={isSubmitting || !response.trim()}
+                      disabled={isSubmitting || !response.trim() || !icd10Code.trim()}
                       className="w-full gap-2"
                     >
                       <Send className="h-4 w-4" />

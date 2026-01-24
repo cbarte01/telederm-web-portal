@@ -4,7 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, Check, AlertCircle, User, MapPin, Camera, Clock, Activity, Stethoscope, FileText, CreditCard, ShieldCheck } from "lucide-react";
+import { Loader2, Check, AlertCircle, User, MapPin, Camera, Clock, Activity, Stethoscope, FileText, CreditCard, ShieldCheck, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -48,11 +48,13 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
   const { user, signIn, signUp } = useAuth();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [healthDataConsentChecked, setHealthDataConsentChecked] = useState(false);
   const [termsConsentChecked, setTermsConsentChecked] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [patientProfile, setPatientProfile] = useState<PatientProfile | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+  const [consultationId, setConsultationId] = useState<string | null>(null);
   const lang = i18n.language === "de" ? "de" : "en";
 
   const loginForm = useForm<z.infer<typeof loginSchema>>({
@@ -118,16 +120,16 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
   const handleSubmitConsultation = async () => {
     if (!user || !healthDataConsentChecked || !termsConsentChecked || !patientProfile) return;
     
-    setIsSubmitting(true);
+    setIsProcessingPayment(true);
     
     try {
-      // Create consultation - pre-assign doctor if from referral
+      // Create consultation in draft status first
       const db = supabase as any;
       const { data: consultation, error: consultationError } = await db
         .from("consultations")
         .insert({
           patient_id: patientProfile.id,
-          status: "submitted",
+          status: "draft", // Will be updated to "submitted" after payment
           concern_category: draft.concernCategory,
           body_locations: draft.bodyLocations,
           symptom_onset: draft.symptomOnset,
@@ -141,23 +143,22 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
           medications_description: draft.medicationsDescription,
           has_self_treated: draft.hasSelfTreated,
           self_treatment_description: draft.selfTreatmentDescription,
-          // Personal details now come from profile
           date_of_birth: patientProfile.date_of_birth,
           biological_sex: patientProfile.biological_sex,
           additional_notes: draft.additionalNotes,
-          submitted_at: new Date().toISOString(),
-          // B2B2C: Pre-assign doctor from referral link
           doctor_id: draft.referredDoctorId || null,
-          // Pricing plan selection
-          pricing_plan: draft.pricingPlan || null,
-          consultation_price: draft.consultationPrice || null,
+          pricing_plan: draft.pricingPlan || "standard",
+          consultation_price: draft.consultationPrice || (draft.pricingPlan === "urgent" ? 74 : 49),
+          payment_status: "pending",
         })
         .select()
         .single();
 
       if (consultationError) throw consultationError;
+      
+      setConsultationId(consultation.id);
 
-      // Upload photos to storage and create records
+      // Upload photos to storage
       for (const photo of draft.photos) {
         if (photo.file) {
           const filePath = `${user.id}/${consultation.id}/${photo.type}_${Date.now()}.jpg`;
@@ -183,22 +184,34 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
         }
       }
 
-      // Clear draft and navigate to patient dashboard with success state
-      sessionStorage.removeItem("telederm_consultation_draft");
-      navigate("/patient/dashboard", {
-        replace: true, 
-        state: { consultationSubmitted: true } 
+      // Create Stripe checkout session
+      const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke("create-checkout", {
+        body: {
+          consultation_id: consultation.id,
+          pricing_plan: draft.pricingPlan || "standard",
+          custom_price: draft.consultationPrice,
+        },
       });
+
+      if (checkoutError) throw checkoutError;
+
+      if (checkoutData?.url) {
+        // Redirect to Stripe Checkout
+        window.location.href = checkoutData.url;
+      } else {
+        throw new Error("No checkout URL received");
+      }
       
     } catch (error) {
       console.error("Consultation submission error:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to submit consultation. Please try again.",
+        title: lang === "de" ? "Fehler" : "Error",
+        description: lang === "de" 
+          ? "Die Konsultation konnte nicht erstellt werden. Bitte versuchen Sie es erneut."
+          : "Failed to create consultation. Please try again.",
       });
-    } finally {
-      setIsSubmitting(false);
+      setIsProcessingPayment(false);
     }
   };
 
@@ -623,13 +636,31 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep }: AccountPaymentP
               </div>
               
               <Button
-                className="w-full"
+                className="w-full gap-2"
                 size="lg"
                 onClick={handleSubmitConsultation}
-                disabled={!healthDataConsentChecked || !termsConsentChecked || isSubmitting || !isProfileComplete}
+                disabled={!healthDataConsentChecked || !termsConsentChecked || isProcessingPayment || !isProfileComplete}
               >
-                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {t("step9.submit")}</Button>
+                {isProcessingPayment ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    {lang === "de" ? "Weiter zur Zahlung..." : "Proceeding to payment..."}
+                  </>
+                ) : (
+                  <>
+                    <CreditCard className="h-4 w-4" />
+                    {lang === "de" 
+                      ? `Jetzt bezahlen (€${draft.consultationPrice || (draft.pricingPlan === "urgent" ? 74 : 49)})` 
+                      : `Pay now (€${draft.consultationPrice || (draft.pricingPlan === "urgent" ? 74 : 49)})`}
+                  </>
+                )}
+              </Button>
+              <p className="text-xs text-muted-foreground text-center mt-2 flex items-center justify-center gap-1">
+                <ShieldCheck className="h-3 w-3" />
+                {lang === "de" 
+                  ? "Sichere Zahlung über Stripe" 
+                  : "Secure payment via Stripe"}
+              </p>
             </>
           )}
         </div>

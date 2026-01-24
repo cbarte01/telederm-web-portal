@@ -1,10 +1,14 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CheckCircle, AlertCircle, Calendar, MapPin, FileText, User } from "lucide-react";
+import { CheckCircle, AlertCircle, Calendar, MapPin, FileText, User, Download, Loader2 } from "lucide-react";
 import { BODY_AREA_LABELS, type BodyArea } from "@/types/consultation";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface ConsultationDetail {
   id: string;
@@ -71,9 +75,46 @@ const severityLabels: Record<string, { en: string; de: string }> = {
 
 export const ConsultationDetailDialog = ({ consultation, open, onOpenChange }: ConsultationDetailDialogProps) => {
   const { i18n } = useTranslation();
+  const { toast } = useToast();
+  const [isDownloading, setIsDownloading] = useState(false);
   const lang = i18n.language === "de" ? "de" : "en";
 
   if (!consultation) return null;
+
+  const config = statusConfig[consultation.status] || statusConfig.completed;
+  const hasIcd10 = !!(consultation as any).icd10_code;
+
+  const handleDownloadHonorarnote = async () => {
+    setIsDownloading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-honorarnote", {
+        body: { consultation_id: consultation.id },
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.open(data.url, "_blank");
+        toast({
+          title: lang === "de" ? "Honorarnote erstellt" : "Medical fee note generated",
+          description: lang === "de" 
+            ? `Nummer: ${data.honorarnote_number}` 
+            : `Number: ${data.honorarnote_number}`,
+        });
+      }
+    } catch (err) {
+      console.error("Honorarnote download error:", err);
+      toast({
+        variant: "destructive",
+        title: lang === "de" ? "Fehler" : "Error",
+        description: lang === "de" 
+          ? "Honorarnote konnte nicht erstellt werden." 
+          : "Could not generate medical fee note.",
+      });
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   const config = statusConfig[consultation.status] || statusConfig.completed;
 
@@ -225,6 +266,30 @@ export const ConsultationDetailDialog = ({ consultation, open, onOpenChange }: C
               </div>
             )}
           </div>
+
+          {/* Honorarnote Download - only for completed consultations with ICD-10 */}
+          {consultation.status === "completed" && hasIcd10 && (
+            <div className="mt-4 pt-4 border-t border-border">
+              <Button 
+                variant="outline" 
+                className="w-full gap-2"
+                onClick={handleDownloadHonorarnote}
+                disabled={isDownloading}
+              >
+                {isDownloading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Download className="h-4 w-4" />
+                )}
+                {lang === "de" ? "Honorarnote herunterladen" : "Download Medical Fee Note"}
+              </Button>
+              <p className="text-xs text-muted-foreground mt-2 text-center">
+                {lang === "de"
+                  ? "Zur Einreichung bei Ihrer privaten Krankenversicherung"
+                  : "For submission to your private health insurance"}
+              </p>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
