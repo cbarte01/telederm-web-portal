@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { ArrowLeft, Loader2, Trash2, Copy, Check, Link as LinkIcon } from "lucide-react";
+import { ArrowLeft, Loader2, Trash2, Copy, Check, Link as LinkIcon, Building2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import teledermLogo from "@/assets/logo/telederm-logo.png";
 
@@ -36,9 +36,19 @@ const doctorProfileSchema = z.object({
   urgentPrice: z.number().min(1, "Price must be at least €1").max(999, "Price must be at most €999"),
 });
 
+const doctorBillingSchema = z.object({
+  uidNumber: z.string().optional(),
+  iban: z.string().optional(),
+  bic: z.string().optional(),
+  practiceAddressStreet: z.string().optional(),
+  practiceAddressZip: z.string().optional(),
+  practiceAddressCity: z.string().optional(),
+});
+
 type ProfileFormData = z.infer<typeof profileSchema>;
 type PatientProfileFormData = z.infer<typeof patientProfileSchema>;
 type DoctorProfileFormData = z.infer<typeof doctorProfileSchema>;
+type DoctorBillingFormData = z.infer<typeof doctorBillingSchema>;
 
 const Profile = () => {
   const { t, i18n } = useTranslation("auth");
@@ -52,6 +62,7 @@ const Profile = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmittingPatient, setIsSubmittingPatient] = useState(false);
   const [isSubmittingDoctor, setIsSubmittingDoctor] = useState(false);
+  const [isSubmittingBilling, setIsSubmittingBilling] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -71,6 +82,11 @@ const Profile = () => {
     defaultValues: { referralCode: "", practiceName: "", welcomeMessage: "", standardPrice: 49, urgentPrice: 74 },
   });
 
+  const billingForm = useForm<DoctorBillingFormData>({
+    resolver: zodResolver(doctorBillingSchema),
+    defaultValues: { uidNumber: "", iban: "", bic: "", practiceAddressStreet: "", practiceAddressZip: "", practiceAddressCity: "" },
+  });
+
   useEffect(() => {
     const fetchProfile = async () => {
       if (!user) return;
@@ -78,7 +94,7 @@ const Profile = () => {
       try {
       const { data, error } = await supabase
         .from("profiles")
-        .select("full_name, phone, referral_code, practice_name, welcome_message, standard_price, urgent_price, date_of_birth, social_security_number, biological_sex")
+        .select("full_name, phone, referral_code, practice_name, welcome_message, standard_price, urgent_price, date_of_birth, social_security_number, biological_sex, uid_number, iban, bic, practice_address_street, practice_address_zip, practice_address_city")
         .eq("id", user.id)
         .maybeSingle();
 
@@ -107,6 +123,14 @@ const Profile = () => {
               standardPrice: (data as any).standard_price ?? 49,
               urgentPrice: (data as any).urgent_price ?? 74,
             });
+            billingForm.reset({
+              uidNumber: (data as any).uid_number || "",
+              iban: (data as any).iban || "",
+              bic: (data as any).bic || "",
+              practiceAddressStreet: (data as any).practice_address_street || "",
+              practiceAddressZip: (data as any).practice_address_zip || "",
+              practiceAddressCity: (data as any).practice_address_city || "",
+            });
           }
         }
       } catch (err) {
@@ -117,7 +141,7 @@ const Profile = () => {
     };
 
     fetchProfile();
-  }, [user, form, patientForm, doctorForm, role]);
+  }, [user, form, patientForm, doctorForm, billingForm, role]);
 
   const getDashboardPath = () => {
     switch (role) {
@@ -249,6 +273,41 @@ const Profile = () => {
       });
     } finally {
       setIsSubmittingDoctor(false);
+    }
+  };
+
+  const onSubmitBilling = async (data: DoctorBillingFormData) => {
+    if (!user) return;
+    
+    setIsSubmittingBilling(true);
+    try {
+      const db = supabase as any;
+
+      const { error } = await db
+        .from("profiles")
+        .update({
+          uid_number: data.uidNumber || null,
+          iban: data.iban || null,
+          bic: data.bic || null,
+          practice_address_street: data.practiceAddressStreet || null,
+          practice_address_zip: data.practiceAddressZip || null,
+          practice_address_city: data.practiceAddressCity || null,
+        })
+        .eq("id", user.id);
+
+      if (error) throw error;
+
+      toast({
+        title: lang === "de" ? "Abrechnungsdaten gespeichert" : "Billing information saved",
+      });
+    } catch (err) {
+      console.error("Error updating billing info:", err);
+      toast({
+        variant: "destructive",
+        title: t("errors.generic"),
+      });
+    } finally {
+      setIsSubmittingBilling(false);
     }
   };
 
@@ -656,7 +715,129 @@ const Profile = () => {
           </Card>
         )}
 
-        {/* Danger Zone */}
+        {/* Doctor Billing Information - Only visible to doctors */}
+        {role === "doctor" && (
+          <Card className="shadow-card mb-8">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Building2 className="h-5 w-5 text-primary" />
+                {lang === "de" ? "Abrechnungsdaten" : "Billing Information"}
+              </CardTitle>
+              <CardDescription>
+                {lang === "de" 
+                  ? "Diese Daten werden für die Erstellung von Honorarnoten benötigt."
+                  : "This information is required for generating medical fee notes (Honorarnoten)."}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Form {...billingForm}>
+                <form onSubmit={billingForm.handleSubmit(onSubmitBilling)} className="space-y-6">
+                  <FormField
+                    control={billingForm.control}
+                    name="uidNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{lang === "de" ? "UID-Nummer" : "VAT ID (UID Number)"}</FormLabel>
+                        <FormControl>
+                          <Input placeholder={lang === "de" ? "z.B. ATU12345678" : "e.g. ATU12345678"} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={billingForm.control}
+                      name="iban"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>IBAN</FormLabel>
+                          <FormControl>
+                            <Input placeholder={lang === "de" ? "z.B. AT89 3704 0044 0532 0130 00" : "e.g. AT89 3704 0044 0532 0130 00"} {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={billingForm.control}
+                      name="bic"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>BIC</FormLabel>
+                          <FormControl>
+                            <Input placeholder={lang === "de" ? "z.B. RLNWATWW" : "e.g. RLNWATWW"} {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="border-t border-border pt-6 mt-6">
+                    <h4 className="font-medium text-foreground mb-4">
+                      {lang === "de" ? "Praxisadresse" : "Practice Address"}
+                    </h4>
+                    
+                    <div className="space-y-4">
+                      <FormField
+                        control={billingForm.control}
+                        name="practiceAddressStreet"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{lang === "de" ? "Straße und Hausnummer" : "Street Address"}</FormLabel>
+                            <FormControl>
+                              <Input placeholder={lang === "de" ? "z.B. Musterstraße 123" : "e.g. 123 Main Street"} {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <div className="grid grid-cols-3 gap-4">
+                        <FormField
+                          control={billingForm.control}
+                          name="practiceAddressZip"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{lang === "de" ? "PLZ" : "Postal Code"}</FormLabel>
+                              <FormControl>
+                                <Input placeholder={lang === "de" ? "z.B. 1010" : "e.g. 1010"} {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={billingForm.control}
+                          name="practiceAddressCity"
+                          render={({ field }) => (
+                            <FormItem className="col-span-2">
+                              <FormLabel>{lang === "de" ? "Stadt" : "City"}</FormLabel>
+                              <FormControl>
+                                <Input placeholder={lang === "de" ? "z.B. Wien" : "e.g. Vienna"} {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <Button type="submit" disabled={isSubmittingBilling}>
+                    {isSubmittingBilling && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    {lang === "de" ? "Speichern" : "Save"}
+                  </Button>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+        )}
+
         <Card className="shadow-card border-destructive/50">
           <CardHeader>
             <CardTitle className="text-destructive">{t("profile.deleteAccount")}</CardTitle>
