@@ -22,6 +22,27 @@ export function sanitizeText(input: string): string {
 }
 
 /**
+ * Sanitizes free-text fields intended for live typing in controlled inputs.
+ *
+ * IMPORTANT: Do not trim/collapse whitespace here.
+ * Trimming on every keystroke breaks the ability to type spaces because
+ * the trailing space gets removed immediately in controlled components.
+ */
+export function sanitizeFreeText(input: string): string {
+  if (typeof input !== "string") return "";
+
+  return input
+    // Remove HTML tags
+    .replace(/<[^>]*>/g, "")
+    // Remove script-like patterns
+    .replace(/javascript:/gi, "")
+    .replace(/on\w+\s*=/gi, "")
+    // Normalize whitespace but DO NOT trim.
+    // Keeping trailing spaces is essential for controlled text inputs.
+    .replace(/\s+/g, " ");
+}
+
+/**
  * Sanitizes a name field (more restrictive)
  * Allows letters, spaces, hyphens, apostrophes, and common diacritics
  */
@@ -64,7 +85,7 @@ export function sanitizeDate(input: string): string {
 export function sanitizeDescription(input: string): string {
   if (typeof input !== "string") return "";
 
-  return sanitizeText(input);
+  return sanitizeFreeText(input);
 }
 
 /**
