@@ -22,8 +22,8 @@
     "satisfactionLabel": "average employee satisfaction"
   },
   "benefits": {
-    "title": "Why Telederm for Your Company?",
-    "description": "Healthy employees are happy employees. With Telederm, you invest in your team's wellbeing.",
+    "title": "Why Medena for Your Company?",
+    "description": "Healthy employees are happy employees. With Medena, you invest in your team's wellbeing.",
     "health": {
       "title": "Promote Employee Health",
       "description": "Fast access to specialists means faster diagnosis and treatment. Skin problems are detected and treated early."
@@ -63,7 +63,7 @@
       },
       "step3": {
         "title": "Start Using",
-        "description": "Your employees get access to the Telederm platform and can immediately receive professional skin consultations."
+        "description": "Your employees get access to the Medena platform and can immediately receive professional skin consultations."
       }
     }
   },
@@ -120,29 +120,29 @@
   },
   "partners": {
     "title": "Trusted by Our Partners",
-    "description": "Leading companies rely on Telederm for their employees' skin health"
+    "description": "Leading companies rely on Medena for their employees' skin health"
   },
   "testimonials": {
     "title": "What HR Managers Say",
-    "description": "Learn how other companies benefit from Telederm",
+    "description": "Learn how other companies benefit from Medena",
     "items": {
       "t1": {
         "name": "Sabine K.",
         "role": "HR Director",
         "company": "Tech company, 500+ employees",
-        "quote": "Since introducing Telederm, sick days due to skin problems have dropped by 35%. Employees greatly appreciate the easy access."
+        "quote": "Since introducing Medena, sick days due to skin problems have dropped by 35%. Employees greatly appreciate the easy access."
       },
       "t2": {
         "name": "Michael B.",
         "role": "Managing Director",
         "company": "Manufacturing, 200 employees",
-        "quote": "Occupational skin diseases are a major issue in our industry. With Telederm, we can act preventively and optimally support our employees."
+        "quote": "Occupational skin diseases are a major issue in our industry. With Medena, we can act preventively and optimally support our employees."
       },
       "t3": {
         "name": "Dr. Christina W.",
         "role": "Company Doctor",
         "company": "Insurance corporation",
-        "quote": "As a company doctor, I recommend Telederm without reservation. The quality of diagnoses is excellent and relieves our occupational health team."
+        "quote": "As a company doctor, I recommend Medena without reservation. The quality of diagnoses is excellent and relieves our occupational health team."
       }
     }
   },
@@ -178,7 +178,7 @@
   },
   "contact": {
     "title": "Let's Talk",
-    "description": "Find out how Telederm can improve skin health in your company. Our business consultants look forward to speaking with you.",
+    "description": "Find out how Medena can improve skin health in your company. Our business consultants look forward to speaking with you.",
     "form": {
       "company": "Company",
       "companyPlaceholder": "Your company",

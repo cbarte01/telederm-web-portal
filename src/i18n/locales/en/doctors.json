@@ -17,7 +17,7 @@
     "insurancesLabel": "Partner Insurances"
   },
   "benefits": {
-    "title": "Why Doctors Choose Telederm",
+    "title": "Why Doctors Choose Medena",
     "description": "Join a growing network of dermatologists who are transforming their practice with teledermatology.",
     "income": {
       "title": "Extra-Budgetary Income",
@@ -49,7 +49,7 @@
     "description": "Hear from dermatologists who are already part of our network.",
     "items": {
       "mueller": {
-        "quote": "Telederm has transformed how I manage my practice. The flexibility to work from home while earning extra income is invaluable. The platform is intuitive and the support team is always responsive.",
+        "quote": "Medena has transformed how I manage my practice. The flexibility to work from home while earning extra income is invaluable. The platform is intuitive and the support team is always responsive.",
         "name": "Dr. med. Sarah Müller",
         "specialty": "Dermatologist",
         "location": "Munich",
@@ -113,7 +113,7 @@
       },
       "eprescription": {
         "question": "Can I issue e-prescriptions?",
-        "answer": "Yes, our platform fully supports e-prescriptions (E-Rezept). You can issue digital prescriptions directly through the telederm interface."
+        "answer": "Yes, our platform fully supports e-prescriptions (E-Rezept). You can issue digital prescriptions directly through the Medena interface."
       },
       "liability": {
         "question": "Am I covered for liability?",
@@ -151,7 +151,7 @@
   },
   "cta": {
     "title": "Ready to Transform Your Practice?",
-    "description": "Join 750+ dermatologists already earning with telederm. Registration takes just 10 minutes.",
+    "description": "Join 750+ dermatologists already earning with Medena. Registration takes just 10 minutes.",
     "button": "Register as Doctor",
     "secondary": "Contact Us"
   }
