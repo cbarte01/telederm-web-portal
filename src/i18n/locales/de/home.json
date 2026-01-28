@@ -375,6 +375,62 @@
       "title": "Unsere Mission",
       "quote": "\"Wir glauben, dass jeder Mensch Zugang zu erstklassiger dermatologischer Versorgung verdient – schnell, einfach und von überall aus. Mit Medena machen wir diesen Traum zur Realität.\"",
       "attribution": "— Das Medena Team"
+    },
+    "history": {
+      "title": "Unsere Geschichte",
+      "subtitle": "Über 25 Jahre Erfahrung in Telemedizin und Dermatologie",
+      "milestones": {
+        "2000": {
+          "year": "2000",
+          "title": "Die Vision beginnt",
+          "description": "Prof. H. Peter Soyer MD FACD FAHMS und Kollegen sind Pioniere der Online-Dermatologie und öffnen den Zugang zu fachärztlicher Hautversorgung über die Praxisgrenzen hinaus."
+        },
+        "2003": {
+          "year": "2003",
+          "title": "Von der Forschung zur Realität",
+          "description": "Telederm wird als Spin-off der Medizinischen Universität Graz gegründet und wandelt akademische Innovation in praxisnahe Gesundheitslösungen um."
+        },
+        "2006": {
+          "year": "2006",
+          "title": "Proof of Concept",
+          "description": "Erste erfolgreiche Pilotprojekte beweisen die Wirksamkeit der teledermatologischen Versorgung."
+        },
+        "2010": {
+          "year": "2010",
+          "title": "Internationale Expansion",
+          "description": "Die Plattform gewinnt internationale Anerkennung und erweitert ihre Reichweite über Österreich hinaus."
+        },
+        "2015": {
+          "year": "2015",
+          "title": "Wachstumsphase",
+          "description": "Neue Führung beschleunigt die Plattformentwicklung und erweitert die digitalen Dermatologie-Services."
+        },
+        "2018": {
+          "year": "2018",
+          "title": "Erste Privatärzte bieten Services an",
+          "description": "Telederm ermöglicht effiziente, sichere Online-Kommunikation zwischen Ärzten und Patienten."
+        },
+        "2020": {
+          "year": "2020",
+          "title": "Digitale Gesundheit hebt ab",
+          "description": "Während COVID wird virtuelle Versorgung essentiell: Über 1.700 Online-Konsultationen halten Patienten mit ihren Ärzten verbunden."
+        },
+        "2022": {
+          "year": "2022",
+          "title": "Regionale Netzwerke entstehen",
+          "description": "Teledermatologie Steiermark bringt strukturierte digitale Hautversorgung in ganze Regionen."
+        },
+        "2024": {
+          "year": "2024",
+          "title": "Erweiterter Zugang",
+          "description": "Teledermatologie Tirol startet und erweitert die Facharztversorgung in ganz Österreich."
+        },
+        "today": {
+          "year": "Heute",
+          "title": "Führende medizinische Online-Services in Österreich",
+          "description": "Telederm, TeleUlcus und doctor2patient arbeiten zusammen, um moderne, zugängliche Dermatologie zu liefern — für Patienten, Ärzte und das Gesundheitssystem."
+        }
+      }
     }
   }
 }
