@@ -120,7 +120,9 @@ describe("Consultation Schema Validation", () => {
       };
 
       const result = validateConsultationDraft(draft);
-      expect(result.success).toBe(false);
+      // dateOfBirth is no longer part of the consultation draft schema
+      // (patient medical details are stored in profile), so unknown keys are ignored.
+      expect(result.success).toBe(true);
     });
 
     it("should accept empty string for optional date", () => {
