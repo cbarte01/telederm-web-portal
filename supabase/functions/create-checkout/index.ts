@@ -112,8 +112,8 @@ serve(async (req) => {
           unit_amount: amount,
           product_data: {
             name: pricing_plan === "urgent" 
-              ? "Dringliche Teledermatologie-Konsultation" 
-              : "Standard Teledermatologie-Konsultation",
+              ? "Dringliche Medena Care Konsultation" 
+              : "Standard Medena Care Konsultation",
             description: pricing_plan === "urgent"
               ? "Antwort innerhalb von 12 Stunden"
               : "Antwort innerhalb von 48 Stunden",

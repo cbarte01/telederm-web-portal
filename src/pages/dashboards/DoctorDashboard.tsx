@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { User, LogOut, Clock, CheckCircle, AlertCircle, TrendingUp } from "lucide-react";
-import teledermLogo from "@/assets/logo/telederm-logo.png";
+import medenaLogo from "@/assets/logo/medena-logo.png";
 import ConsultationQueue from "./doctor/ConsultationQueue";
 import ConsultationDetail from "./doctor/ConsultationDetail";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -145,8 +145,8 @@ const DoctorDashboard = () => {
       <header className="border-b border-border bg-card">
         <div className="container flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2.5">
-            <img src={teledermLogo} alt="Telederm" className="w-8 h-8 rounded-lg" />
-            <span className="font-serif font-bold text-xl text-foreground">telederm</span>
+            <img src={medenaLogo} alt="Medena" className="w-8 h-8 rounded-lg" />
+            <span className="font-serif font-bold text-xl text-foreground">medena</span>
           </Link>
           <div className="flex items-center gap-4">
             <LanguageSwitcher />

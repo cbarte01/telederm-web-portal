@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ShieldCheck, Lock, Award, BadgeCheck } from "lucide-react";
-import teledermLogo from "@/assets/logo/telederm-logo.png";
+import medenaLogo from "@/assets/logo/medena-logo.png";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -54,11 +54,11 @@ const Footer = () => {
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4">
               <img 
-                src={teledermLogo} 
-                alt="Telederm" 
+                src={medenaLogo} 
+                alt="Medena" 
                 className="w-8 h-8 rounded-lg"
               />
-              <span className="font-bold text-xl text-background">telederm</span>
+              <span className="font-bold text-xl text-background">medena</span>
             </Link>
             <p className="text-sm text-background/60 max-w-xs">
               {t("footer.tagline")}

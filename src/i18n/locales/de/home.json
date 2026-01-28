@@ -166,23 +166,13 @@
       "phone": "Telefonnummer",
       "phonePlaceholder": "+49 123 456 7890",
       "message": "Nachricht",
-      "messagePlaceholder": "Wie können wir Ihnen helfen?"
+      "messagePlaceholder": "Wie können wir Ihnen helfen?",
+      "sending": "Wird gesendet...",
+      "submit": "Nachricht senden"
     },
     "toast": {
       "title": "Nachricht gesendet!",
       "description": "Wir melden uns innerhalb von 24 Stunden bei Ihnen."
-    },
-    "form": {
-      "name": "Name",
-      "namePlaceholder": "Ihr Name",
-      "email": "E-Mail",
-      "emailPlaceholder": "ihre@email.de",
-      "phone": "Telefonnummer",
-      "phonePlaceholder": "+49 123 456 7890",
-      "message": "Nachricht",
-      "messagePlaceholder": "Wie können wir Ihnen helfen?",
-      "sending": "Wird gesendet...",
-      "submit": "Nachricht senden"
     }
   },
   "cta": {
@@ -192,7 +182,7 @@
   },
   "reviews": {
     "title": "Das sagen unsere Patienten",
-    "description": "Über 10.000 zufriedene Patienten vertrauen Telederm für ihre Hautgesundheit",
+    "description": "Über 10.000 zufriedene Patienten vertrauen Medena für ihre Hautgesundheit",
     "viewAll": "Alle Bewertungen auf Google ansehen",
     "reviews": {
       "r1": {
@@ -208,7 +198,7 @@
       "r3": {
         "name": "Lisa B.",
         "date": "vor 3 Wochen",
-        "text": "Hatte ein hartnäckiges Ekzem und bekam sofort die richtige Behandlung. Nach einer Woche war alles weg. Danke Telederm!"
+        "text": "Hatte ein hartnäckiges Ekzem und bekam sofort die richtige Behandlung. Nach einer Woche war alles weg. Danke Medena!"
       },
       "r4": {
         "name": "Michael R.",
@@ -248,7 +238,7 @@
       "r11": {
         "name": "Nina F.",
         "date": "vor 4 Tagen",
-        "text": "Als berufstätige Mutter habe ich keine Zeit für lange Arztbesuche. Telederm ist die perfekte Lösung für mich."
+        "text": "Als berufstätige Mutter habe ich keine Zeit für lange Arztbesuche. Medena ist die perfekte Lösung für mich."
       },
       "r12": {
         "name": "Henrik S.",
@@ -258,7 +248,7 @@
       "r13": {
         "name": "Elena K.",
         "date": "vor 6 Tagen",
-        "text": "Meine Akne hat sich dank der verschriebenen Behandlung deutlich verbessert. Vielen Dank an das Telederm-Team!"
+        "text": "Meine Akne hat sich dank der verschriebenen Behandlung deutlich verbessert. Vielen Dank an das Medena-Team!"
       },
       "r14": {
         "name": "Felix D.",
@@ -278,7 +268,7 @@
       "r17": {
         "name": "Vanessa P.",
         "date": "vor 5 Tagen",
-        "text": "Die App ist intuitiv und der gesamte Ablauf sehr angenehm. Werde Telederm auf jeden Fall weiterempfehlen."
+        "text": "Die App ist intuitiv und der gesamte Ablauf sehr angenehm. Werde Medena auf jeden Fall weiterempfehlen."
       },
       "r18": {
         "name": "Georg N.",
@@ -351,10 +341,10 @@
     }
   },
   "about": {
-    "label": "Über Telederm",
+    "label": "Über Medena",
     "title": "Wir revolutionieren die dermatologische Versorgung",
     "paragraphs": {
-      "p1": "Telederm wurde 2020 mit einer klaren Vision gegründet: Jedem Menschen in Deutschland schnellen und einfachen Zugang zu qualifizierter dermatologischer Versorgung zu ermöglichen.",
+      "p1": "Medena wurde 2020 mit einer klaren Vision gegründet: Jedem Menschen in Deutschland schnellen und einfachen Zugang zu qualifizierter dermatologischer Versorgung zu ermöglichen.",
       "p2": "Lange Wartezeiten auf Hautarzttermine sind ein Problem, das wir lösen wollten. Mit unserem Team aus erfahrenen Dermatologen und modernster Telemedizin-Technologie bieten wir eine schnelle, sichere und professionelle Alternative.",
       "p3": "Heute vertrauen uns über 50.000 Patienten ihre Hautgesundheit an. Unser Ärzteteam besteht aus mehr als 20 approbierten Fachärzten für Dermatologie, die mit Leidenschaft und Expertise für Sie da sind."
     },
@@ -383,8 +373,8 @@
     },
     "mission": {
       "title": "Unsere Mission",
-      "quote": "\"Wir glauben, dass jeder Mensch Zugang zu erstklassiger dermatologischer Versorgung verdient – schnell, einfach und von überall aus. Mit Telederm machen wir diesen Traum zur Realität.\"",
-      "attribution": "— Das Telederm Team"
+      "quote": "\"Wir glauben, dass jeder Mensch Zugang zu erstklassiger dermatologischer Versorgung verdient – schnell, einfach und von überall aus. Mit Medena machen wir diesen Traum zur Realität.\"",
+      "attribution": "— Das Medena Team"
     }
   }
 }

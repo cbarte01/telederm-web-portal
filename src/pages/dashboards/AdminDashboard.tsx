@@ -61,7 +61,7 @@ import {
   X
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import teledermLogo from "@/assets/logo/telederm-logo.png";
+import medenaLogo from "@/assets/logo/medena-logo.png";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { DoctorAvatarManager } from "@/components/admin/DoctorAvatarManager";
 
@@ -852,8 +852,8 @@ const AdminDashboard = () => {
       <header className="border-b border-border bg-card">
         <div className="container flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2.5">
-            <img src={teledermLogo} alt="Telederm" className="w-8 h-8 rounded-lg" />
-            <span className="font-serif font-bold text-xl text-foreground">telederm</span>
+            <img src={medenaLogo} alt="Medena" className="w-8 h-8 rounded-lg" />
+            <span className="font-serif font-bold text-xl text-foreground">medena</span>
           </Link>
           <div className="flex items-center gap-4">
             <LanguageSwitcher />
