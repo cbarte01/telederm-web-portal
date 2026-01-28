@@ -71,8 +71,8 @@ const ContactForm = () => {
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">{t("contact.info.email")}</p>
-                      <a href="mailto:info@telederm.de" className="text-foreground hover:text-primary transition-colors">
-                        info@telederm.de
+                      <a href="mailto:info@medena.at" className="text-foreground hover:text-primary transition-colors">
+                        info@medena.at
                       </a>
                     </div>
                   </div>

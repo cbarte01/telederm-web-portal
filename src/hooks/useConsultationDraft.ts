@@ -7,7 +7,7 @@ import {
 } from '@/lib/validation/consultation-schema';
 import { sanitizeDraft } from '@/lib/validation/sanitization';
 
-const STORAGE_KEY = 'telederm_consultation_draft';
+const STORAGE_KEY = 'medena_consultation_draft';
 
 // Fields that should NEVER be persisted to storage for security reasons
 // (Note: personal details like SSN are now stored in profiles table, not in draft)

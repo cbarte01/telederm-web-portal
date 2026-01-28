@@ -69,7 +69,7 @@ const TermsOfService = () => {
                 <p>(1) {t("termsOfService.section2.p1")}</p>
                 <p>(2) {t("termsOfService.section2.p2")}</p>
                 <address className="not-italic pl-4 border-l-2 border-primary/20">
-                  TeleDerm GmbH<br />
+                  Medena Care GmbH<br />
                   Testgasse 1<br />
                   1010 {isEnglish ? "Vienna" : "Wien"}<br />
                   {isEnglish ? "Austria" : "Österreich"}
@@ -150,9 +150,9 @@ const TermsOfService = () => {
               </h2>
               <div className="text-muted-foreground leading-relaxed space-y-4">
                 <p>(1) {t("termsOfService.section6.p1")}</p>
-                <p>(2) {t("termsOfService.section6.p2").split("info@telederm.at")[0]}
-                  <a href="mailto:info@telederm.at" className="text-primary hover:underline">info@telederm.at</a>
-                  {t("termsOfService.section6.p2").split("info@telederm.at")[1] || "."}
+                <p>(2) {t("termsOfService.section6.p2").split("info@medena.at")[0]}
+                  <a href="mailto:info@medena.at" className="text-primary hover:underline">info@medena.at</a>
+                  {t("termsOfService.section6.p2").split("info@medena.at")[1] || "."}
                 </p>
                 <p>(3) {t("termsOfService.section6.p3")}</p>
                 <p>(4) {t("termsOfService.section6.p4")}</p>

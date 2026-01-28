@@ -66,7 +66,7 @@ const Impressum = () => {
               </h2>
               <div className="text-muted-foreground leading-relaxed space-y-1">
                 <p>
-                  {t("impressum.section2.email")} <a href="mailto:info@telederm.at" className="text-primary hover:underline">info@telederm.at</a>
+                  {t("impressum.section2.email")} <a href="mailto:info@medena.at" className="text-primary hover:underline">info@medena.at</a>
                 </p>
               </div>
             </section>

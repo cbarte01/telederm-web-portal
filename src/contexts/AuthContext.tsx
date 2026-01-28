@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   // We want "logout on tab close" behavior.
   // supabase-js persists sessions in localStorage by default; sessionStorage is cleared when a tab closes.
   // We use a per-tab marker: if a session is restored but the marker is missing, we sign out.
-  const TAB_SESSION_MARKER_KEY = "telederm_tab_session_marker";
+  const TAB_SESSION_MARKER_KEY = "medena_tab_session_marker";
 
   useEffect(() => {
     // Track whether initial session check is complete to avoid race conditions
@@ -151,7 +151,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const signOut = async () => {
     // Clear any sensitive session data before signing out
     try {
-      sessionStorage.removeItem("telederm_consultation_draft");
+      sessionStorage.removeItem("medena_consultation_draft");
     } catch {
       // Ignore storage errors
     }

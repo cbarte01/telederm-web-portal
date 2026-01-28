@@ -57,11 +57,11 @@ const PrivacyPolicy = () => {
                 {t("privacyPolicy.section1.title")}
               </h2>
               <address className="not-italic text-muted-foreground leading-relaxed whitespace-pre-line">
-                TeleDerm GmbH{"\n"}
+                Medena Care GmbH{"\n"}
                 Testgasse 1{"\n"}
                 1010 {isEnglish ? "Vienna" : "Wien"}{"\n"}
                 {isEnglish ? "Austria" : "Österreich"}{"\n"}
-                E-Mail: <a href="mailto:info@telederm.at" className="text-primary hover:underline">info@telederm.at</a>
+                E-Mail: <a href="mailto:info@medena.at" className="text-primary hover:underline">info@medena.at</a>
               </address>
             </section>
 
