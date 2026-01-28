@@ -1,5 +1,11 @@
 import { useTranslation } from "react-i18next";
-import { Heart, Shield, Zap, Users, Circle } from "lucide-react";
+import { Heart, Shield, Zap, Users } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const valueIcons = [Heart, Shield, Zap, Users];
 const valueKeys = ["patientCentered", "privacy", "innovation", "accessibility"];
@@ -90,34 +96,40 @@ const AboutUs = () => {
           </div>
 
           <div className="relative overflow-x-auto pb-4 -mx-4 px-4">
+          <TooltipProvider delayDuration={100}>
             <div className="flex gap-4 min-w-max">
               {milestoneKeys.map((key, index) => (
-                <div 
-                  key={key}
-                  className="relative flex flex-col items-center w-32 flex-shrink-0"
-                >
-                  {/* Horizontal line */}
-                  {index < milestoneKeys.length - 1 && (
-                    <div className="absolute top-3 left-1/2 w-full h-0.5 bg-border" />
-                  )}
-                  
-                  {/* Timeline dot */}
-                  <div className="w-6 h-6 rounded-full bg-primary/10 border-2 border-primary flex items-center justify-center z-10 mb-3">
-                    <div className="w-2 h-2 rounded-full bg-primary" />
-                  </div>
+                <Tooltip key={key}>
+                  <TooltipTrigger asChild>
+                    <div className="relative flex flex-col items-center w-32 flex-shrink-0 cursor-pointer group">
+                      {/* Horizontal line */}
+                      {index < milestoneKeys.length - 1 && (
+                        <div className="absolute top-3 left-1/2 w-full h-0.5 bg-border" />
+                      )}
+                      
+                      {/* Timeline dot */}
+                      <div className="w-6 h-6 rounded-full bg-primary/10 border-2 border-primary flex items-center justify-center z-10 mb-3 group-hover:bg-primary/20 transition-colors">
+                        <div className="w-2 h-2 rounded-full bg-primary" />
+                      </div>
 
-                  {/* Year */}
-                  <span className="text-xs font-semibold text-primary mb-1">
-                    {t(`about.history.milestones.${key}.year`)}
-                  </span>
-                  
-                  {/* Title */}
-                  <p className="text-xs text-center text-muted-foreground leading-tight px-1">
-                    {t(`about.history.milestones.${key}.title`)}
-                  </p>
-                </div>
+                      {/* Year */}
+                      <span className="text-xs font-semibold text-primary mb-1">
+                        {t(`about.history.milestones.${key}.year`)}
+                      </span>
+                      
+                      {/* Title */}
+                      <p className="text-xs text-center text-muted-foreground leading-tight px-1 group-hover:text-foreground transition-colors">
+                        {t(`about.history.milestones.${key}.title`)}
+                      </p>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="max-w-xs text-center">
+                    <p className="text-sm">{t(`about.history.milestones.${key}.description`)}</p>
+                  </TooltipContent>
+                </Tooltip>
               ))}
             </div>
+          </TooltipProvider>
           </div>
         </div>
       </div>
