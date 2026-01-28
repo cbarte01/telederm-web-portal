@@ -241,6 +241,9 @@ export type Database = {
         Row: {
           avatar_url: string | null
           bic: string | null
+          billing_email: string | null
+          billing_name: string | null
+          billing_phone: string | null
           biological_sex: string | null
           created_at: string
           date_of_birth: string | null
@@ -261,6 +264,7 @@ export type Database = {
           practice_address_zip: string | null
           practice_name: string | null
           referral_code: string | null
+          signature_url: string | null
           social_security_number: string | null
           standard_price: number | null
           uid_number: string | null
@@ -271,6 +275,9 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           bic?: string | null
+          billing_email?: string | null
+          billing_name?: string | null
+          billing_phone?: string | null
           biological_sex?: string | null
           created_at?: string
           date_of_birth?: string | null
@@ -291,6 +298,7 @@ export type Database = {
           practice_address_zip?: string | null
           practice_name?: string | null
           referral_code?: string | null
+          signature_url?: string | null
           social_security_number?: string | null
           standard_price?: number | null
           uid_number?: string | null
@@ -301,6 +309,9 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           bic?: string | null
+          billing_email?: string | null
+          billing_name?: string | null
+          billing_phone?: string | null
           biological_sex?: string | null
           created_at?: string
           date_of_birth?: string | null
@@ -321,6 +332,7 @@ export type Database = {
           practice_address_zip?: string | null
           practice_name?: string | null
           referral_code?: string | null
+          signature_url?: string | null
           social_security_number?: string | null
           standard_price?: number | null
           uid_number?: string | null
