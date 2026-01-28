@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Loader2, ArrowLeft, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import teledermLogo from "@/assets/logo/telederm-logo.png";
+import medenaLogo from "@/assets/logo/medena-logo.png";
 
 const resetSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters"),
@@ -94,8 +94,8 @@ const ResetPassword = () => {
 
       {/* Logo */}
       <Link to="/" className="flex items-center gap-2.5 mb-8">
-        <img src={teledermLogo} alt="Telederm" className="w-10 h-10 rounded-lg" />
-        <span className="font-serif font-bold text-3xl text-foreground">telederm</span>
+        <img src={medenaLogo} alt="Medena" className="w-10 h-10 rounded-lg" />
+        <span className="font-serif font-bold text-3xl text-foreground">medena</span>
       </Link>
 
       <Card className="w-full max-w-md shadow-card">

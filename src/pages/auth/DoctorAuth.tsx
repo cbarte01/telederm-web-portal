@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Label } from "@/components/ui/label";
 import { Loader2, ArrowLeft, Stethoscope } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import teledermLogo from "@/assets/logo/telederm-logo.png";
+import medenaLogo from "@/assets/logo/medena-logo.png";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -123,8 +123,8 @@ const DoctorAuth = () => {
 
       {/* Logo */}
       <Link to="/" className="flex items-center gap-2.5 mb-8">
-        <img src={teledermLogo} alt="Telederm" className="w-10 h-10 rounded-lg" />
-        <span className="font-serif font-bold text-3xl text-foreground">telederm</span>
+        <img src={medenaLogo} alt="Medena" className="w-10 h-10 rounded-lg" />
+        <span className="font-serif font-bold text-3xl text-foreground">medena</span>
       </Link>
 
       <Card className="w-full max-w-md shadow-card">

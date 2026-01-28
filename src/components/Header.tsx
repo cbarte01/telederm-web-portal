@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Menu, X, LogIn, Stethoscope } from "lucide-react";
 import LanguageSwitcher from "./LanguageSwitcher";
-import teledermLogo from "@/assets/logo/telederm-logo.png";
+import medenaLogo from "@/assets/logo/medena-logo.png";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -60,13 +60,13 @@ const Header = () => {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5">
           <img 
-            src={teledermLogo} 
-            alt="Telederm" 
+            src={medenaLogo} 
+            alt="Medena" 
             className="w-9 h-9 rounded-lg"
           />
           <span className={`font-serif font-bold text-2xl transition-colors duration-300 ${
             showTransparent ? 'text-card' : 'text-foreground'
-          }`}>telederm</span>
+          }`}>medena</span>
         </Link>
 
         {/* Desktop Navigation */}

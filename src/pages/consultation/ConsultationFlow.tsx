@@ -12,7 +12,7 @@ import { useRole } from "@/hooks/useRole";
 import { INITIAL_DRAFT } from "@/types/consultation";
 import ReferralBanner from "@/components/consultation/ReferralBanner";
 import SharedComputerWarning from "@/components/consultation/SharedComputerWarning";
-import teledermLogo from "@/assets/logo/telederm-logo.png";
+import medenaLogo from "@/assets/logo/medena-logo.png";
 
 // Step components
 import ConcernSelection from "./steps/ConcernSelection";
@@ -207,8 +207,8 @@ const ConsultationFlow = () => {
               </Button>
             )}
             <Link to="/" className="flex items-center gap-2">
-              <img src={teledermLogo} alt="Telederm" className="w-7 h-7 rounded-lg" />
-              <span className="font-serif font-bold text-lg text-foreground hidden sm:inline">telederm</span>
+              <img src={medenaLogo} alt="Medena" className="w-7 h-7 rounded-lg" />
+              <span className="font-serif font-bold text-lg text-foreground hidden sm:inline">medena</span>
             </Link>
           </div>
           

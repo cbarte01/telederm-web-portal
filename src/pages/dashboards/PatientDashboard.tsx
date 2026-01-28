@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, LogOut, Calendar, FileText, Plus, Clock, CheckCircle, AlertCircle, ChevronRight } from "lucide-react";
-import teledermLogo from "@/assets/logo/telederm-logo.png";
+import medenaLogo from "@/assets/logo/medena-logo.png";
 import { ConsultationDetailDialog } from "@/components/patient/ConsultationDetailDialog";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
@@ -149,8 +149,8 @@ const PatientDashboard = () => {
       <header className="border-b border-border bg-card">
         <div className="container flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2.5">
-            <img src={teledermLogo} alt="Telederm" className="w-8 h-8 rounded-lg" />
-            <span className="font-serif font-bold text-xl text-foreground">telederm</span>
+            <img src={medenaLogo} alt="Medena" className="w-8 h-8 rounded-lg" />
+            <span className="font-serif font-bold text-xl text-foreground">medena</span>
           </Link>
           <div className="flex items-center gap-4">
             <LanguageSwitcher />

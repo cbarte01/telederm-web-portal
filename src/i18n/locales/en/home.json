@@ -166,23 +166,13 @@
       "phone": "Phone Number",
       "phonePlaceholder": "+49 123 456 7890",
       "message": "Message",
-      "messagePlaceholder": "How can we help you?"
+      "messagePlaceholder": "How can we help you?",
+      "sending": "Sending...",
+      "submit": "Send Message"
     },
     "toast": {
       "title": "Message sent!",
       "description": "We'll get back to you within 24 hours."
-    },
-    "form": {
-      "name": "Name",
-      "namePlaceholder": "Your name",
-      "email": "Email",
-      "emailPlaceholder": "your@email.com",
-      "phone": "Phone Number",
-      "phonePlaceholder": "+49 123 456 7890",
-      "message": "Message",
-      "messagePlaceholder": "How can we help you?",
-      "sending": "Sending...",
-      "submit": "Send Message"
     }
   },
   "cta": {
@@ -192,7 +182,7 @@
   },
   "reviews": {
     "title": "What Our Patients Say",
-    "description": "Over 10,000 satisfied patients trust Telederm for their skin health",
+    "description": "Over 10,000 satisfied patients trust Medena for their skin health",
     "viewAll": "View all reviews on Google",
     "reviews": {
       "r1": {
@@ -208,7 +198,7 @@
       "r3": {
         "name": "Lisa B.",
         "date": "3 weeks ago",
-        "text": "Had a stubborn eczema and immediately got the right treatment. After a week everything was gone. Thanks Telederm!"
+        "text": "Had a stubborn eczema and immediately got the right treatment. After a week everything was gone. Thanks Medena!"
       },
       "r4": {
         "name": "Michael R.",
@@ -248,7 +238,7 @@
       "r11": {
         "name": "Nina F.",
         "date": "4 days ago",
-        "text": "As a working mother, I don't have time for long doctor visits. Telederm is the perfect solution for me."
+        "text": "As a working mother, I don't have time for long doctor visits. Medena is the perfect solution for me."
       },
       "r12": {
         "name": "Henrik S.",
@@ -258,7 +248,7 @@
       "r13": {
         "name": "Elena K.",
         "date": "6 days ago",
-        "text": "My acne has significantly improved thanks to the prescribed treatment. Many thanks to the Telederm team!"
+        "text": "My acne has significantly improved thanks to the prescribed treatment. Many thanks to the Medena team!"
       },
       "r14": {
         "name": "Felix D.",
@@ -278,7 +268,7 @@
       "r17": {
         "name": "Vanessa P.",
         "date": "5 days ago",
-        "text": "The app is intuitive and the whole process is very pleasant. Will definitely recommend Telederm."
+        "text": "The app is intuitive and the whole process is very pleasant. Will definitely recommend Medena."
       },
       "r18": {
         "name": "Georg N.",
@@ -351,10 +341,10 @@
     }
   },
   "about": {
-    "label": "About Telederm",
+    "label": "About Medena",
     "title": "We're Revolutionizing Dermatological Care",
     "paragraphs": {
-      "p1": "Telederm was founded in 2020 with a clear vision: To provide everyone with quick and easy access to qualified dermatological care.",
+      "p1": "Medena was founded in 2020 with a clear vision: To provide everyone with quick and easy access to qualified dermatological care.",
       "p2": "Long waiting times for dermatologist appointments are a problem we wanted to solve. With our team of experienced dermatologists and state-of-the-art telemedicine technology, we offer a fast, secure, and professional alternative.",
       "p3": "Today, over 50,000 patients trust us with their skin health. Our medical team consists of more than 20 licensed dermatology specialists who are here for you with passion and expertise."
     },
@@ -383,8 +373,8 @@
     },
     "mission": {
       "title": "Our Mission",
-      "quote": "\"We believe that everyone deserves access to first-class dermatological care — fast, easy, and from anywhere. With Telederm, we're making this dream a reality.\"",
-      "attribution": "— The Telederm Team"
+      "quote": "\"We believe that everyone deserves access to first-class dermatological care — fast, easy, and from anywhere. With Medena, we're making this dream a reality.\"",
+      "attribution": "— The Medena Team"
     }
   }
 }
