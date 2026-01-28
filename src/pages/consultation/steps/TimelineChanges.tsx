@@ -43,7 +43,10 @@ const TimelineChanges = ({ draft, updateDraft, onNext }: TimelineChangesProps) =
           <button
             key={onset}
             type="button"
-            onClick={() => updateDraft({ symptomOnset: onset })}
+            onClick={(e) => {
+              (e.currentTarget as HTMLButtonElement).blur();
+              updateDraft({ symptomOnset: onset });
+            }}
             className={cn(
               "p-4 rounded-xl border-2 transition-all text-center",
               "hover:border-primary hover:bg-primary/5",
@@ -68,7 +71,10 @@ const TimelineChanges = ({ draft, updateDraft, onNext }: TimelineChangesProps) =
         <div className="flex gap-3">
           <button
             type="button"
-            onClick={() => updateDraft({ hasChanged: true })}
+            onClick={(e) => {
+              (e.currentTarget as HTMLButtonElement).blur();
+              updateDraft({ hasChanged: true });
+            }}
             className={cn(
               "flex-1 p-4 rounded-xl border-2 transition-all",
               "hover:border-primary hover:bg-primary/5",
@@ -84,7 +90,10 @@ const TimelineChanges = ({ draft, updateDraft, onNext }: TimelineChangesProps) =
           </button>
           <button
             type="button"
-            onClick={() => updateDraft({ hasChanged: false, changeDescription: undefined })}
+            onClick={(e) => {
+              (e.currentTarget as HTMLButtonElement).blur();
+              updateDraft({ hasChanged: false, changeDescription: undefined });
+            }}
             className={cn(
               "flex-1 p-4 rounded-xl border-2 transition-all",
               "hover:border-primary hover:bg-primary/5",
