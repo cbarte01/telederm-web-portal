@@ -375,6 +375,62 @@
       "title": "Our Mission",
       "quote": "\"We believe that everyone deserves access to first-class dermatological care — fast, easy, and from anywhere. With Medena, we're making this dream a reality.\"",
       "attribution": "— The Medena Team"
+    },
+    "history": {
+      "title": "Our History",
+      "subtitle": "Over 25 years of experience in telemedicine and dermatology",
+      "milestones": {
+        "2000": {
+          "year": "2000",
+          "title": "The Vision Begins",
+          "description": "Prof. H. Peter Soyer MD FACD FAHMS and colleagues are pioneering online dermatology, opening access to expert dermatological care beyond clinic walls."
+        },
+        "2003": {
+          "year": "2003",
+          "title": "From Research to Reality",
+          "description": "Telederm is founded as a spin-off from the Medical University of Graz, transforming academic innovation into real-world healthcare solutions."
+        },
+        "2006": {
+          "year": "2006",
+          "title": "Proof of Concept",
+          "description": "First successful pilot projects prove the effectiveness of teledermatological care."
+        },
+        "2010": {
+          "year": "2010",
+          "title": "International Expansion",
+          "description": "The platform gains international recognition and expands its reach beyond Austria."
+        },
+        "2015": {
+          "year": "2015",
+          "title": "Growth Phase",
+          "description": "New leadership accelerates platform development and expands digital dermatology services."
+        },
+        "2018": {
+          "year": "2018",
+          "title": "First Private Doctors Offer Services",
+          "description": "Telederm enables efficient, secure online communication between doctors and patients."
+        },
+        "2020": {
+          "year": "2020",
+          "title": "Digital Healthcare Takes Off",
+          "description": "During COVID, virtual care becomes essential: more than 1,700 online consultations help keep patients connected to their doctors."
+        },
+        "2022": {
+          "year": "2022",
+          "title": "Regional Networks Come to Life",
+          "description": "Teledermatology Steiermark brings structured digital skin care to entire regions."
+        },
+        "2024": {
+          "year": "2024",
+          "title": "Expanding Access",
+          "description": "Teledermatology Tirol launches, further extending specialist care across Austria."
+        },
+        "today": {
+          "year": "Today",
+          "title": "Leading Medical Online Services in Austria",
+          "description": "Telederm, TeleUlcus, and doctor2patient work together to deliver modern, accessible dermatology—supporting patients, doctors, and healthcare systems every day."
+        }
+      }
     }
   }
 }

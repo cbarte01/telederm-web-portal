@@ -1,8 +1,9 @@
 import { useTranslation } from "react-i18next";
-import { Heart, Shield, Zap, Users } from "lucide-react";
+import { Heart, Shield, Zap, Users, Circle } from "lucide-react";
 
 const valueIcons = [Heart, Shield, Zap, Users];
 const valueKeys = ["patientCentered", "privacy", "innovation", "accessibility"];
+const milestoneKeys = ["2000", "2003", "2006", "2010", "2015", "2018", "2020", "2022", "2024", "today"];
 
 const AboutUs = () => {
   const { t } = useTranslation("home");
@@ -75,6 +76,61 @@ const AboutUs = () => {
             {t("about.mission.quote")}
           </p>
           <p className="text-primary-foreground/65 mt-6 font-medium">{t("about.mission.attribution")}</p>
+        </div>
+
+        {/* History Timeline */}
+        <div className="mt-24">
+          <div className="text-center mb-16">
+            <h3 className="text-3xl md:text-4xl lg:text-5xl text-foreground mb-4">
+              {t("about.history.title")}
+            </h3>
+            <p className="text-lg text-muted-foreground font-light">
+              {t("about.history.subtitle")}
+            </p>
+          </div>
+
+          <div className="relative">
+            {/* Timeline line */}
+            <div className="absolute left-4 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-0.5 bg-border" />
+
+            <div className="space-y-8 md:space-y-12">
+              {milestoneKeys.map((key, index) => (
+                <div 
+                  key={key}
+                  className={`relative flex items-start gap-6 md:gap-0 ${
+                    index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
+                  }`}
+                >
+                  {/* Timeline dot */}
+                  <div className="absolute left-4 md:left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-primary border-4 border-background shadow-sm z-10" />
+
+                  {/* Content card */}
+                  <div className={`ml-12 md:ml-0 md:w-[calc(50%-2rem)] ${
+                    index % 2 === 0 ? "md:pr-8 md:text-right" : "md:pl-8 md:text-left"
+                  }`}>
+                    <div className="bg-card rounded-2xl p-6 shadow-soft border border-border/40 hover:shadow-card transition-all duration-400">
+                      <div className={`flex items-center gap-3 mb-3 ${
+                        index % 2 === 0 ? "md:justify-end" : "md:justify-start"
+                      }`}>
+                        <span className="text-sm font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full">
+                          {t(`about.history.milestones.${key}.year`)}
+                        </span>
+                      </div>
+                      <h4 className="text-xl text-foreground mb-2">
+                        {t(`about.history.milestones.${key}.title`)}
+                      </h4>
+                      <p className="text-sm text-muted-foreground leading-relaxed font-light">
+                        {t(`about.history.milestones.${key}.description`)}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Spacer for alternating layout */}
+                  <div className="hidden md:block md:w-[calc(50%-2rem)]" />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
