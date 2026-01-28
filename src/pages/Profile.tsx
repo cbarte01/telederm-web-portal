@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { ArrowLeft, Loader2, Trash2, Copy, Check, Link as LinkIcon, Building2 } from "lucide-react";
+import { ArrowLeft, Loader2, Trash2, Copy, Check, Link as LinkIcon, Building2, Upload, X, FileSignature } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import teledermLogo from "@/assets/logo/telederm-logo.png";
 
@@ -44,6 +44,9 @@ const doctorProfileSchema = z.object({
 });
 
 const doctorBillingSchema = z.object({
+  billingName: z.string().optional(),
+  billingEmail: z.string().email().optional().or(z.literal("")),
+  billingPhone: z.string().optional(),
   uidNumber: z.string().optional(),
   iban: z.string().optional(),
   bic: z.string().optional(),
@@ -57,6 +60,42 @@ type PatientAddressFormData = z.infer<typeof patientAddressSchema>;
 type PatientProfileFormData = z.infer<typeof patientProfileSchema>;
 type DoctorProfileFormData = z.infer<typeof doctorProfileSchema>;
 type DoctorBillingFormData = z.infer<typeof doctorBillingSchema>;
+// Component to display signature with signed URL
+const SignaturePreview = ({ signatureUrl, userId }: { signatureUrl: string; userId: string }) => {
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadSignature = async () => {
+      // If it's a full URL (signed URL), use it directly
+      if (signatureUrl.startsWith('http')) {
+        setPreviewUrl(signatureUrl);
+        return;
+      }
+      // Otherwise generate a signed URL from the storage path
+      const { data } = await supabase.storage
+        .from('doctor-signatures')
+        .createSignedUrl(signatureUrl, 60 * 60); // 1 hour
+      
+      if (data?.signedUrl) {
+        setPreviewUrl(data.signedUrl);
+      }
+    };
+
+    loadSignature();
+  }, [signatureUrl]);
+
+  if (!previewUrl) {
+    return <div className="w-32 h-16 bg-muted animate-pulse rounded" />;
+  }
+
+  return (
+    <img 
+      src={previewUrl} 
+      alt="Signature" 
+      className="max-w-[200px] max-h-[80px] object-contain" 
+    />
+  );
+};
 
 const Profile = () => {
   const { t, i18n } = useTranslation("auth");
@@ -98,8 +137,11 @@ const Profile = () => {
 
   const billingForm = useForm<DoctorBillingFormData>({
     resolver: zodResolver(doctorBillingSchema),
-    defaultValues: { uidNumber: "", iban: "", bic: "", practiceAddressStreet: "", practiceAddressZip: "", practiceAddressCity: "" },
+    defaultValues: { billingName: "", billingEmail: "", billingPhone: "", uidNumber: "", iban: "", bic: "", practiceAddressStreet: "", practiceAddressZip: "", practiceAddressCity: "" },
   });
+
+  const [signatureUrl, setSignatureUrl] = useState<string | null>(null);
+  const [isUploadingSignature, setIsUploadingSignature] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -108,7 +150,7 @@ const Profile = () => {
       try {
       const { data, error } = await supabase
         .from("profiles")
-        .select("full_name, phone, referral_code, practice_name, welcome_message, standard_price, urgent_price, date_of_birth, social_security_number, biological_sex, uid_number, iban, bic, practice_address_street, practice_address_zip, practice_address_city, patient_address_street, patient_address_zip, patient_address_city, insurance_provider")
+        .select("full_name, phone, referral_code, practice_name, welcome_message, standard_price, urgent_price, date_of_birth, social_security_number, biological_sex, uid_number, iban, bic, practice_address_street, practice_address_zip, practice_address_city, patient_address_street, patient_address_zip, patient_address_city, insurance_provider, billing_name, billing_email, billing_phone, signature_url")
         .eq("id", user.id)
         .maybeSingle();
 
@@ -144,6 +186,9 @@ const Profile = () => {
               urgentPrice: (data as any).urgent_price ?? 74,
             });
             billingForm.reset({
+              billingName: (data as any).billing_name || "",
+              billingEmail: (data as any).billing_email || "",
+              billingPhone: (data as any).billing_phone || "",
               uidNumber: (data as any).uid_number || "",
               iban: (data as any).iban || "",
               bic: (data as any).bic || "",
@@ -151,6 +196,7 @@ const Profile = () => {
               practiceAddressZip: (data as any).practice_address_zip || "",
               practiceAddressCity: (data as any).practice_address_city || "",
             });
+            setSignatureUrl((data as any).signature_url || null);
           }
         }
       } catch (err) {
@@ -338,6 +384,9 @@ const Profile = () => {
       const { error } = await db
         .from("profiles")
         .update({
+          billing_name: data.billingName || null,
+          billing_email: data.billingEmail || null,
+          billing_phone: data.billingPhone || null,
           uid_number: data.uidNumber || null,
           iban: data.iban || null,
           bic: data.bic || null,
@@ -360,6 +409,106 @@ const Profile = () => {
       });
     } finally {
       setIsSubmittingBilling(false);
+    }
+  };
+
+  const handleSignatureUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!user || !e.target.files || e.target.files.length === 0) return;
+    
+    const file = e.target.files[0];
+    if (!file.type.startsWith('image/')) {
+      toast({
+        variant: "destructive",
+        title: lang === "de" ? "Ungültiger Dateityp" : "Invalid file type",
+        description: lang === "de" ? "Bitte laden Sie ein Bild hoch." : "Please upload an image file.",
+      });
+      return;
+    }
+
+    setIsUploadingSignature(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${user.id}/signature.${fileExt}`;
+
+      // Delete existing signature if exists
+      await supabase.storage.from('doctor-signatures').remove([filePath]);
+
+      const { error: uploadError } = await supabase.storage
+        .from('doctor-signatures')
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage
+        .from('doctor-signatures')
+        .getPublicUrl(filePath);
+
+      // Since bucket is private, we need to create a signed URL or store the path
+      const { data: signedUrlData } = await supabase.storage
+        .from('doctor-signatures')
+        .createSignedUrl(filePath, 60 * 60 * 24 * 365); // 1 year
+
+      const newSignatureUrl = signedUrlData?.signedUrl || filePath;
+
+      const db = supabase as any;
+      const { error: updateError } = await db
+        .from('profiles')
+        .update({ signature_url: filePath })
+        .eq('id', user.id);
+
+      if (updateError) throw updateError;
+
+      setSignatureUrl(newSignatureUrl);
+      toast({
+        title: lang === "de" ? "Unterschrift hochgeladen" : "Signature uploaded",
+      });
+    } catch (err) {
+      console.error("Error uploading signature:", err);
+      toast({
+        variant: "destructive",
+        title: t("errors.generic"),
+      });
+    } finally {
+      setIsUploadingSignature(false);
+    }
+  };
+
+  const handleRemoveSignature = async () => {
+    if (!user) return;
+    
+    setIsUploadingSignature(true);
+    try {
+      // Remove from storage
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('signature_url')
+        .eq('id', user.id)
+        .single();
+      
+      if ((profile as any)?.signature_url) {
+        await supabase.storage.from('doctor-signatures').remove([(profile as any).signature_url]);
+      }
+
+      const db = supabase as any;
+      const { error } = await db
+        .from('profiles')
+        .update({ signature_url: null })
+        .eq('id', user.id);
+
+      if (error) throw error;
+
+      setSignatureUrl(null);
+      toast({
+        title: lang === "de" ? "Unterschrift entfernt" : "Signature removed",
+      });
+    } catch (err) {
+      console.error("Error removing signature:", err);
+      toast({
+        variant: "destructive",
+        title: t("errors.generic"),
+      });
+    } finally {
+      setIsUploadingSignature(false);
     }
   };
 
@@ -874,19 +1023,77 @@ const Profile = () => {
             <CardContent>
               <Form {...billingForm}>
                 <form onSubmit={billingForm.handleSubmit(onSubmitBilling)} className="space-y-6">
-                  <FormField
-                    control={billingForm.control}
-                    name="uidNumber"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{lang === "de" ? "UID-Nummer" : "VAT ID (UID Number)"}</FormLabel>
-                        <FormControl>
-                          <Input placeholder={lang === "de" ? "z.B. ATU12345678" : "e.g. ATU12345678"} {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  {/* Billing Contact Info */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium text-foreground">
+                      {lang === "de" ? "Kontaktdaten für Rechnung" : "Billing Contact Details"}
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      {lang === "de" 
+                        ? "Falls abweichend von Ihren Account-Daten."
+                        : "If different from your account information."}
+                    </p>
+                    
+                    <FormField
+                      control={billingForm.control}
+                      name="billingName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{lang === "de" ? "Name" : "Name"}</FormLabel>
+                          <FormControl>
+                            <Input placeholder={lang === "de" ? "z.B. Dr. med. Max Mustermann" : "e.g. Dr. John Doe"} {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={billingForm.control}
+                        name="billingEmail"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{lang === "de" ? "E-Mail" : "Email"}</FormLabel>
+                            <FormControl>
+                              <Input type="email" placeholder={lang === "de" ? "rechnung@praxis.at" : "billing@practice.com"} {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={billingForm.control}
+                        name="billingPhone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{lang === "de" ? "Telefon" : "Phone"}</FormLabel>
+                            <FormControl>
+                              <Input placeholder="+43 1 234 5678" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="border-t border-border pt-6">
+                    <FormField
+                      control={billingForm.control}
+                      name="uidNumber"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{lang === "de" ? "UID-Nummer" : "VAT ID (UID Number)"}</FormLabel>
+                          <FormControl>
+                            <Input placeholder={lang === "de" ? "z.B. ATU12345678" : "e.g. ATU12345678"} {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <FormField
@@ -968,6 +1175,70 @@ const Profile = () => {
                         />
                       </div>
                     </div>
+                  </div>
+
+                  {/* Signature Upload */}
+                  <div className="border-t border-border pt-6 mt-6">
+                    <h4 className="font-medium text-foreground mb-2 flex items-center gap-2">
+                      <FileSignature className="h-4 w-4" />
+                      {lang === "de" ? "Unterschrift" : "Signature"}
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      {lang === "de" 
+                        ? "Laden Sie ein Bild Ihrer Unterschrift hoch, das auf Honorarnoten angezeigt wird."
+                        : "Upload an image of your signature to be displayed on medical fee notes."}
+                    </p>
+                    
+                    {signatureUrl ? (
+                      <div className="flex items-center gap-4">
+                        <div className="border border-border rounded-lg p-3 bg-muted/30">
+                          <SignaturePreview signatureUrl={signatureUrl} userId={user?.id || ""} />
+                        </div>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={handleRemoveSignature}
+                          disabled={isUploadingSignature}
+                          className="gap-2"
+                        >
+                          {isUploadingSignature ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <X className="h-4 w-4" />
+                          )}
+                          {lang === "de" ? "Entfernen" : "Remove"}
+                        </Button>
+                      </div>
+                    ) : (
+                      <div>
+                        <label htmlFor="signature-upload" className="cursor-pointer">
+                          <div className="border-2 border-dashed border-border rounded-lg p-6 hover:border-primary/50 transition-colors text-center">
+                            {isUploadingSignature ? (
+                              <Loader2 className="h-8 w-8 animate-spin mx-auto text-muted-foreground" />
+                            ) : (
+                              <>
+                                <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
+                                <p className="text-sm text-muted-foreground">
+                                  {lang === "de" ? "Klicken Sie zum Hochladen" : "Click to upload"}
+                                </p>
+                                <p className="text-xs text-muted-foreground mt-1">
+                                  PNG, JPG, WEBP
+                                </p>
+                              </>
+                            )}
+                          </div>
+                        </label>
+                        <input
+                          id="signature-upload"
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleSignatureUpload}
+                          disabled={isUploadingSignature}
+                        />
+                      </div>
+                    )}
                   </div>
 
                   <Button type="submit" disabled={isSubmittingBilling}>
