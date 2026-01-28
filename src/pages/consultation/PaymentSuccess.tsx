@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Loader2, CheckCircle, XCircle, Home } from "lucide-react";
-import teledermLogo from "@/assets/logo/telederm-logo.png";
+import medenaLogo from "@/assets/logo/medena-logo.png";
 
 const PaymentSuccess = () => {
   const { i18n } = useTranslation();
@@ -98,8 +98,8 @@ const PaymentSuccess = () => {
       {/* Header */}
       <div className="absolute top-4 left-4">
         <Link to="/" className="flex items-center gap-2.5">
-          <img src={teledermLogo} alt="Telederm" className="w-8 h-8 rounded-lg" />
-          <span className="font-serif font-bold text-xl text-foreground">telederm</span>
+          <img src={medenaLogo} alt="Medena" className="w-8 h-8 rounded-lg" />
+          <span className="font-serif font-bold text-xl text-foreground">medena</span>
         </Link>
       </div>
 
