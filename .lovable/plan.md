@@ -1,46 +1,34 @@
 
-# Fix Remaining TeleDerm References
 
-## Overview
-This plan updates the remaining hard-coded TeleDerm references to use Medena Care branding, including emails, company names, and storage keys.
+# Fix Favicon and Social Media Branding
 
-## Files to Modify
+## Problem
+The Lovable favicon is still appearing because:
+1. `public/favicon.ico` exists and wasn't updated - browsers may prefer this legacy format
+2. The `index.html` references both favicon formats potentially causing conflicts
 
-### 1. src/components/ContactForm.tsx
-**Lines 74-75**: Update email from `info@telederm.de` to `info@medena.at`
+## Solution
 
-### 2. src/pages/Impressum.tsx
-**Line 69**: Update email from `info@telederm.at` to `info@medena.at`
+### 1. Replace favicon.ico with new Medena logo
+Copy the new Medena logo to replace the old `favicon.ico` file:
+```
+public/favicon.ico → Replace with new Medena logo
+```
 
-### 3. src/pages/PrivacyPolicy.tsx
-**Lines 60-64**: Update company name from `TeleDerm GmbH` to `Medena Care GmbH` and email from `info@telederm.at` to `info@medena.at`
+### 2. Update index.html social media references
+Update the remaining outdated references:
 
-### 4. src/pages/TermsOfService.tsx
-**Lines 72 and 153-155**: Update:
-- Company name from `TeleDerm GmbH` to `Medena Care GmbH`
-- Email from `info@telederm.at` to `info@medena.at` (both href and display text)
+| Line | Current | Updated |
+|------|---------|---------|
+| 15 | `og:image` pointing to lovable.dev | Point to `/favicon.png` or a proper OG image |
+| 18 | `@telederm` | `@medenacare` (or remove if no Twitter) |
+| 19 | `twitter:image` pointing to lovable.dev | Point to `/favicon.png` or a proper OG image |
 
-### 5. src/hooks/useConsultationDraft.ts
-**Line 10**: Update storage key from `telederm_consultation_draft` to `medena_consultation_draft`
+### Files to Modify
 
-### 6. src/contexts/AuthContext.tsx
-**Lines 38 and 154**: Update:
-- Tab session marker key from `telederm_tab_session_marker` to `medena_tab_session_marker`
-- Consultation draft key reference from `telederm_consultation_draft` to `medena_consultation_draft`
+1. **public/favicon.ico** - Replace with new Medena logo
+2. **index.html** - Update Twitter handle and social images
 
-## Summary of Changes
+## After Changes
+You may need to do a hard refresh (Ctrl+Shift+R / Cmd+Shift+R) to clear the browser cache and see the new favicon.
 
-| File | Old Value | New Value |
-|------|-----------|-----------|
-| ContactForm.tsx | info@telederm.de | info@medena.at |
-| Impressum.tsx | info@telederm.at | info@medena.at |
-| PrivacyPolicy.tsx | TeleDerm GmbH, info@telederm.at | Medena Care GmbH, info@medena.at |
-| TermsOfService.tsx | TeleDerm GmbH, info@telederm.at | Medena Care GmbH, info@medena.at |
-| useConsultationDraft.ts | telederm_consultation_draft | medena_consultation_draft |
-| AuthContext.tsx | telederm_tab_session_marker, telederm_consultation_draft | medena_tab_session_marker, medena_consultation_draft |
-
-## Technical Notes
-
-- The storage key changes are internal identifiers and won't affect the user experience
-- Users with existing drafts stored under the old key will start fresh (which is expected behavior given the rebrand)
-- All email addresses are updated to use the `.at` domain (Austrian) consistently
