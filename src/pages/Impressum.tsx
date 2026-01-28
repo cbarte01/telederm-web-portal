@@ -12,7 +12,7 @@ const Impressum = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-b from-secondary/30 to-background">
         <div className="container">
@@ -24,10 +24,8 @@ const Impressum = () => {
             <ChevronRight className="w-4 h-4" />
             <span className="text-foreground">{t("impressum.breadcrumb")}</span>
           </nav>
-          
-          <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground">
-            {t("impressum.title")}
-          </h1>
+
+          <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground">{t("impressum.title")}</h1>
         </div>
       </section>
 
@@ -35,7 +33,6 @@ const Impressum = () => {
       <section className="py-16">
         <div className="container max-w-4xl">
           <div className="prose prose-lg max-w-none">
-            
             {/* Translation Disclaimer for English */}
             {isEnglish && (
               <Alert className="mb-8 border-amber-500/50 bg-amber-50 dark:bg-amber-950/20">
@@ -52,9 +49,11 @@ const Impressum = () => {
                 {t("impressum.section1.title")}
               </h2>
               <address className="not-italic text-muted-foreground leading-relaxed">
-                <strong className="text-foreground">{t("impressum.section1.companyName")}</strong><br />
+                <strong className="text-foreground">{t("impressum.section1.companyName")}</strong>
+                <br />
                 Testgasse 1<br />
-                1010 {isEnglish ? "Vienna" : "Wien"}<br />
+                1010 {isEnglish ? "Vienna" : "Wien"}
+                <br />
                 {isEnglish ? "Austria" : "Österreich"}
               </address>
             </section>
@@ -66,7 +65,10 @@ const Impressum = () => {
               </h2>
               <div className="text-muted-foreground leading-relaxed space-y-1">
                 <p>
-                  {t("impressum.section2.email")} <a href="mailto:info@medena.at" className="text-primary hover:underline">info@medena.at</a>
+                  {t("impressum.section2.email")}{" "}
+                  <a href="mailto:info@medenacare.at" className="text-primary hover:underline">
+                    info@medena.at
+                  </a>
                 </p>
               </div>
             </section>
@@ -77,9 +79,16 @@ const Impressum = () => {
                 {t("impressum.section3.title")}
               </h2>
               <div className="text-muted-foreground leading-relaxed space-y-1">
-                <p><strong>{t("impressum.section3.registerNumber")}</strong> {t("impressum.section3.registerNumberValue")}</p>
-                <p><strong>{t("impressum.section3.court")}</strong> {t("impressum.section3.courtValue")}</p>
-                <p><strong>{t("impressum.section3.vatId")}</strong> {t("impressum.section3.vatIdValue")}</p>
+                <p>
+                  <strong>{t("impressum.section3.registerNumber")}</strong>{" "}
+                  {t("impressum.section3.registerNumberValue")}
+                </p>
+                <p>
+                  <strong>{t("impressum.section3.court")}</strong> {t("impressum.section3.courtValue")}
+                </p>
+                <p>
+                  <strong>{t("impressum.section3.vatId")}</strong> {t("impressum.section3.vatIdValue")}
+                </p>
               </div>
             </section>
 
@@ -88,9 +97,7 @@ const Impressum = () => {
               <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
                 {t("impressum.section4.title")}
               </h2>
-              <p className="text-muted-foreground leading-relaxed">
-                {t("impressum.section4.content")}
-              </p>
+              <p className="text-muted-foreground leading-relaxed">{t("impressum.section4.content")}</p>
             </section>
 
             {/* Section 5: Regulatory Authority */}
@@ -98,9 +105,7 @@ const Impressum = () => {
               <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
                 {t("impressum.section5.title")}
               </h2>
-              <p className="text-muted-foreground leading-relaxed">
-                {t("impressum.section5.content")}
-              </p>
+              <p className="text-muted-foreground leading-relaxed">{t("impressum.section5.content")}</p>
             </section>
 
             {/* Section 6: Business Purpose */}
@@ -108,9 +113,7 @@ const Impressum = () => {
               <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
                 {t("impressum.section6.title")}
               </h2>
-              <p className="text-muted-foreground leading-relaxed">
-                {t("impressum.section6.content")}
-              </p>
+              <p className="text-muted-foreground leading-relaxed">{t("impressum.section6.content")}</p>
             </section>
 
             {/* Section 7: Professional Regulations */}
@@ -134,33 +137,27 @@ const Impressum = () => {
               <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
                 {t("impressum.section8.title")}
               </h2>
-              
+
               <div className="space-y-6">
                 <div>
                   <h3 className="font-display text-xl font-medium text-foreground mb-3">
                     {t("impressum.section8.content.title")}
                   </h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {t("impressum.section8.content.text")}
-                  </p>
+                  <p className="text-muted-foreground leading-relaxed">{t("impressum.section8.content.text")}</p>
                 </div>
 
                 <div>
                   <h3 className="font-display text-xl font-medium text-foreground mb-3">
                     {t("impressum.section8.links.title")}
                   </h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {t("impressum.section8.links.text")}
-                  </p>
+                  <p className="text-muted-foreground leading-relaxed">{t("impressum.section8.links.text")}</p>
                 </div>
 
                 <div>
                   <h3 className="font-display text-xl font-medium text-foreground mb-3">
                     {t("impressum.section8.medical.title")}
                   </h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {t("impressum.section8.medical.text")}
-                  </p>
+                  <p className="text-muted-foreground leading-relaxed">{t("impressum.section8.medical.text")}</p>
                 </div>
               </div>
             </section>
@@ -170,9 +167,7 @@ const Impressum = () => {
               <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
                 {t("impressum.section9.title")}
               </h2>
-              <p className="text-muted-foreground leading-relaxed">
-                {t("impressum.section9.content")}
-              </p>
+              <p className="text-muted-foreground leading-relaxed">{t("impressum.section9.content")}</p>
             </section>
 
             {/* Section 10: Dispute Resolution */}
@@ -180,28 +175,22 @@ const Impressum = () => {
               <h2 className="font-display text-2xl font-semibold text-foreground mb-4">
                 {t("impressum.section10.title")}
               </h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">{t("impressum.section10.intro")}</p>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                {t("impressum.section10.intro")}
-              </p>
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                <a 
-                  href="https://ec.europa.eu/consumers/odr" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
+                <a
+                  href="https://ec.europa.eu/consumers/odr"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-primary hover:underline"
                 >
                   https://ec.europa.eu/consumers/odr
                 </a>
               </p>
-              <p className="text-muted-foreground leading-relaxed">
-                {t("impressum.section10.conclusion")}
-              </p>
+              <p className="text-muted-foreground leading-relaxed">{t("impressum.section10.conclusion")}</p>
             </section>
 
             {/* Date */}
-            <p className="text-sm text-muted-foreground mt-12 pt-8 border-t border-border">
-              {t("lastUpdated")}
-            </p>
+            <p className="text-sm text-muted-foreground mt-12 pt-8 border-t border-border">{t("lastUpdated")}</p>
           </div>
         </div>
       </section>
