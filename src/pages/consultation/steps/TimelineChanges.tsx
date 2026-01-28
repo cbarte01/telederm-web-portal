@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
@@ -14,8 +15,16 @@ const ONSET_OPTIONS: SymptomOnset[] = ["today", "thisWeek", "thisMonth", "longer
 
 const TimelineChanges = ({ draft, updateDraft, onNext }: TimelineChangesProps) => {
   const { t } = useTranslation("consultation");
+  const changeDescriptionRef = useRef<HTMLTextAreaElement>(null);
 
   const canContinue = draft.symptomOnset && draft.hasChanged !== undefined;
+
+  // Auto-focus textarea when "Yes" is selected
+  useEffect(() => {
+    if (draft.hasChanged && changeDescriptionRef.current) {
+      changeDescriptionRef.current.focus();
+    }
+  }, [draft.hasChanged]);
 
   return (
     <div className="space-y-8">
@@ -33,6 +42,7 @@ const TimelineChanges = ({ draft, updateDraft, onNext }: TimelineChangesProps) =
         {ONSET_OPTIONS.map(onset => (
           <button
             key={onset}
+            type="button"
             onClick={() => updateDraft({ symptomOnset: onset })}
             className={cn(
               "p-4 rounded-xl border-2 transition-all text-center",
@@ -57,6 +67,7 @@ const TimelineChanges = ({ draft, updateDraft, onNext }: TimelineChangesProps) =
         </p>
         <div className="flex gap-3">
           <button
+            type="button"
             onClick={() => updateDraft({ hasChanged: true })}
             className={cn(
               "flex-1 p-4 rounded-xl border-2 transition-all",
@@ -72,6 +83,7 @@ const TimelineChanges = ({ draft, updateDraft, onNext }: TimelineChangesProps) =
             </span>
           </button>
           <button
+            type="button"
             onClick={() => updateDraft({ hasChanged: false, changeDescription: undefined })}
             className={cn(
               "flex-1 p-4 rounded-xl border-2 transition-all",
@@ -96,6 +108,7 @@ const TimelineChanges = ({ draft, updateDraft, onNext }: TimelineChangesProps) =
             {t("step5.changeDescription")}
           </label>
           <Textarea
+            ref={changeDescriptionRef}
             value={draft.changeDescription || ""}
             onChange={(e) => updateDraft({ changeDescription: e.target.value })}
             placeholder=""
