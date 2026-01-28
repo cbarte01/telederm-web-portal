@@ -61,7 +61,10 @@ const MedicalHistory = ({ draft, updateDraft, onNext }: MedicalHistoryProps) => 
         <div className="flex gap-3">
           <button
             type="button"
-            onClick={() => updateDraft({ hasAllergies: true })}
+            onClick={(e) => {
+              (e.currentTarget as HTMLButtonElement).blur();
+              updateDraft({ hasAllergies: true });
+            }}
             className={cn(
               "flex-1 py-2 px-4 rounded-lg border-2 transition-all",
               "hover:border-primary hover:bg-primary/5",
@@ -74,7 +77,10 @@ const MedicalHistory = ({ draft, updateDraft, onNext }: MedicalHistoryProps) => 
           </button>
           <button
             type="button"
-            onClick={() => updateDraft({ hasAllergies: false, allergiesDescription: undefined })}
+            onClick={(e) => {
+              (e.currentTarget as HTMLButtonElement).blur();
+              updateDraft({ hasAllergies: false, allergiesDescription: undefined });
+            }}
             className={cn(
               "flex-1 py-2 px-4 rounded-lg border-2 transition-all",
               "hover:border-primary hover:bg-primary/5",
@@ -105,7 +111,10 @@ const MedicalHistory = ({ draft, updateDraft, onNext }: MedicalHistoryProps) => 
         <div className="flex gap-3">
           <button
             type="button"
-            onClick={() => updateDraft({ takesMedications: true })}
+            onClick={(e) => {
+              (e.currentTarget as HTMLButtonElement).blur();
+              updateDraft({ takesMedications: true });
+            }}
             className={cn(
               "flex-1 py-2 px-4 rounded-lg border-2 transition-all",
               "hover:border-primary hover:bg-primary/5",
@@ -118,7 +127,10 @@ const MedicalHistory = ({ draft, updateDraft, onNext }: MedicalHistoryProps) => 
           </button>
           <button
             type="button"
-            onClick={() => updateDraft({ takesMedications: false, medicationsDescription: undefined })}
+            onClick={(e) => {
+              (e.currentTarget as HTMLButtonElement).blur();
+              updateDraft({ takesMedications: false, medicationsDescription: undefined });
+            }}
             className={cn(
               "flex-1 py-2 px-4 rounded-lg border-2 transition-all",
               "hover:border-primary hover:bg-primary/5",
@@ -149,7 +161,10 @@ const MedicalHistory = ({ draft, updateDraft, onNext }: MedicalHistoryProps) => 
         <div className="flex gap-3">
           <button
             type="button"
-            onClick={() => updateDraft({ hasSelfTreated: true })}
+            onClick={(e) => {
+              (e.currentTarget as HTMLButtonElement).blur();
+              updateDraft({ hasSelfTreated: true });
+            }}
             className={cn(
               "flex-1 py-2 px-4 rounded-lg border-2 transition-all",
               "hover:border-primary hover:bg-primary/5",
@@ -162,7 +177,10 @@ const MedicalHistory = ({ draft, updateDraft, onNext }: MedicalHistoryProps) => 
           </button>
           <button
             type="button"
-            onClick={() => updateDraft({ hasSelfTreated: false, selfTreatmentDescription: undefined })}
+            onClick={(e) => {
+              (e.currentTarget as HTMLButtonElement).blur();
+              updateDraft({ hasSelfTreated: false, selfTreatmentDescription: undefined });
+            }}
             className={cn(
               "flex-1 py-2 px-4 rounded-lg border-2 transition-all",
               "hover:border-primary hover:bg-primary/5",
