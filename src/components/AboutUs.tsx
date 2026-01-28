@@ -78,55 +78,43 @@ const AboutUs = () => {
           <p className="text-primary-foreground/65 mt-6 font-medium">{t("about.mission.attribution")}</p>
         </div>
 
-        {/* History Timeline */}
+        {/* History Timeline - Compact Horizontal */}
         <div className="mt-24">
-          <div className="text-center mb-16">
-            <h3 className="text-3xl md:text-4xl lg:text-5xl text-foreground mb-4">
+          <div className="text-center mb-8">
+            <h3 className="text-2xl md:text-3xl text-foreground mb-2">
               {t("about.history.title")}
             </h3>
-            <p className="text-lg text-muted-foreground font-light">
+            <p className="text-sm text-muted-foreground font-light">
               {t("about.history.subtitle")}
             </p>
           </div>
 
-          <div className="relative">
-            {/* Timeline line */}
-            <div className="absolute left-4 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-0.5 bg-border" />
-
-            <div className="space-y-8 md:space-y-12">
+          <div className="relative overflow-x-auto pb-4 -mx-4 px-4">
+            <div className="flex gap-4 min-w-max">
               {milestoneKeys.map((key, index) => (
                 <div 
                   key={key}
-                  className={`relative flex items-start gap-6 md:gap-0 ${
-                    index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
-                  }`}
+                  className="relative flex flex-col items-center w-32 flex-shrink-0"
                 >
+                  {/* Horizontal line */}
+                  {index < milestoneKeys.length - 1 && (
+                    <div className="absolute top-3 left-1/2 w-full h-0.5 bg-border" />
+                  )}
+                  
                   {/* Timeline dot */}
-                  <div className="absolute left-4 md:left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-primary border-4 border-background shadow-sm z-10" />
-
-                  {/* Content card */}
-                  <div className={`ml-12 md:ml-0 md:w-[calc(50%-2rem)] ${
-                    index % 2 === 0 ? "md:pr-8 md:text-right" : "md:pl-8 md:text-left"
-                  }`}>
-                    <div className="bg-card rounded-2xl p-6 shadow-soft border border-border/40 hover:shadow-card transition-all duration-400">
-                      <div className={`flex items-center gap-3 mb-3 ${
-                        index % 2 === 0 ? "md:justify-end" : "md:justify-start"
-                      }`}>
-                        <span className="text-sm font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full">
-                          {t(`about.history.milestones.${key}.year`)}
-                        </span>
-                      </div>
-                      <h4 className="text-xl text-foreground mb-2">
-                        {t(`about.history.milestones.${key}.title`)}
-                      </h4>
-                      <p className="text-sm text-muted-foreground leading-relaxed font-light">
-                        {t(`about.history.milestones.${key}.description`)}
-                      </p>
-                    </div>
+                  <div className="w-6 h-6 rounded-full bg-primary/10 border-2 border-primary flex items-center justify-center z-10 mb-3">
+                    <div className="w-2 h-2 rounded-full bg-primary" />
                   </div>
 
-                  {/* Spacer for alternating layout */}
-                  <div className="hidden md:block md:w-[calc(50%-2rem)]" />
+                  {/* Year */}
+                  <span className="text-xs font-semibold text-primary mb-1">
+                    {t(`about.history.milestones.${key}.year`)}
+                  </span>
+                  
+                  {/* Title */}
+                  <p className="text-xs text-center text-muted-foreground leading-tight px-1">
+                    {t(`about.history.milestones.${key}.title`)}
+                  </p>
                 </div>
               ))}
             </div>
