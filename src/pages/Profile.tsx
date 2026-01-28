@@ -22,10 +22,17 @@ const profileSchema = z.object({
   phone: z.string().optional(),
 });
 
+const patientAddressSchema = z.object({
+  patientAddressStreet: z.string().optional(),
+  patientAddressZip: z.string().optional(),
+  patientAddressCity: z.string().optional(),
+});
+
 const patientProfileSchema = z.object({
   dateOfBirth: z.string().optional(),
   socialSecurityNumber: z.string().optional(),
   biologicalSex: z.enum(["male", "female", "diverse"]).optional(),
+  insuranceProvider: z.string().optional(),
 });
 
 const doctorProfileSchema = z.object({
@@ -46,6 +53,7 @@ const doctorBillingSchema = z.object({
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
+type PatientAddressFormData = z.infer<typeof patientAddressSchema>;
 type PatientProfileFormData = z.infer<typeof patientProfileSchema>;
 type DoctorProfileFormData = z.infer<typeof doctorProfileSchema>;
 type DoctorBillingFormData = z.infer<typeof doctorBillingSchema>;
@@ -60,6 +68,7 @@ const Profile = () => {
   const returnTo = searchParams.get("returnTo");
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmittingAddress, setIsSubmittingAddress] = useState(false);
   const [isSubmittingPatient, setIsSubmittingPatient] = useState(false);
   const [isSubmittingDoctor, setIsSubmittingDoctor] = useState(false);
   const [isSubmittingBilling, setIsSubmittingBilling] = useState(false);
@@ -72,9 +81,14 @@ const Profile = () => {
     defaultValues: { fullName: "", phone: "" },
   });
 
+  const patientAddressForm = useForm<PatientAddressFormData>({
+    resolver: zodResolver(patientAddressSchema),
+    defaultValues: { patientAddressStreet: "", patientAddressZip: "", patientAddressCity: "" },
+  });
+
   const patientForm = useForm<PatientProfileFormData>({
     resolver: zodResolver(patientProfileSchema),
-    defaultValues: { dateOfBirth: "", socialSecurityNumber: "", biologicalSex: undefined },
+    defaultValues: { dateOfBirth: "", socialSecurityNumber: "", biologicalSex: undefined, insuranceProvider: "" },
   });
 
   const doctorForm = useForm<DoctorProfileFormData>({
@@ -94,7 +108,7 @@ const Profile = () => {
       try {
       const { data, error } = await supabase
         .from("profiles")
-        .select("full_name, phone, referral_code, practice_name, welcome_message, standard_price, urgent_price, date_of_birth, social_security_number, biological_sex, uid_number, iban, bic, practice_address_street, practice_address_zip, practice_address_city")
+        .select("full_name, phone, referral_code, practice_name, welcome_message, standard_price, urgent_price, date_of_birth, social_security_number, biological_sex, uid_number, iban, bic, practice_address_street, practice_address_zip, practice_address_city, patient_address_street, patient_address_zip, patient_address_city, insurance_provider")
         .eq("id", user.id)
         .maybeSingle();
 
@@ -108,10 +122,16 @@ const Profile = () => {
           
           // Patient-specific fields
           if (role === "patient") {
+            patientAddressForm.reset({
+              patientAddressStreet: (data as any).patient_address_street || "",
+              patientAddressZip: (data as any).patient_address_zip || "",
+              patientAddressCity: (data as any).patient_address_city || "",
+            });
             patientForm.reset({
               dateOfBirth: (data as any).date_of_birth || "",
               socialSecurityNumber: (data as any).social_security_number || "",
               biologicalSex: (data as any).biological_sex || undefined,
+              insuranceProvider: (data as any).insurance_provider || "",
             });
           }
           
@@ -141,7 +161,7 @@ const Profile = () => {
     };
 
     fetchProfile();
-  }, [user, form, patientForm, doctorForm, billingForm, role]);
+  }, [user, form, patientAddressForm, patientForm, doctorForm, billingForm, role]);
 
   const getDashboardPath = () => {
     switch (role) {
@@ -183,6 +203,37 @@ const Profile = () => {
     }
   };
 
+  const onSubmitPatientAddress = async (data: PatientAddressFormData) => {
+    if (!user) return;
+    
+    setIsSubmittingAddress(true);
+    try {
+      const db = supabase as any;
+      const { error } = await db
+        .from("profiles")
+        .update({
+          patient_address_street: data.patientAddressStreet || null,
+          patient_address_zip: data.patientAddressZip || null,
+          patient_address_city: data.patientAddressCity || null,
+        })
+        .eq("id", user.id);
+
+      if (error) throw error;
+
+      toast({
+        title: lang === "de" ? "Adresse gespeichert" : "Address saved",
+      });
+    } catch (err) {
+      console.error("Error updating patient address:", err);
+      toast({
+        variant: "destructive",
+        title: t("errors.generic"),
+      });
+    } finally {
+      setIsSubmittingAddress(false);
+    }
+  };
+
   const onSubmitPatient = async (data: PatientProfileFormData) => {
     if (!user) return;
     
@@ -195,6 +246,7 @@ const Profile = () => {
           date_of_birth: data.dateOfBirth || null,
           social_security_number: data.socialSecurityNumber || null,
           biological_sex: data.biologicalSex || null,
+          insurance_provider: data.insuranceProvider || null,
         })
         .eq("id", user.id);
 
@@ -449,6 +501,79 @@ const Profile = () => {
           </CardContent>
         </Card>
 
+        {/* Patient Address - Only visible to patients */}
+        {role === "patient" && (
+          <Card className="shadow-card mb-8">
+            <CardHeader>
+              <CardTitle>{lang === "de" ? "Adresse" : "Address"}</CardTitle>
+              <CardDescription>
+                {lang === "de" 
+                  ? "Ihre Adresse wird für Rechnungen und Honorarnoten benötigt."
+                  : "Your address is required for invoices and medical fee notes."}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Form {...patientAddressForm}>
+                <form onSubmit={patientAddressForm.handleSubmit(onSubmitPatientAddress)} className="space-y-6">
+                  <div className="space-y-4">
+                    <FormField
+                      control={patientAddressForm.control}
+                      name="patientAddressStreet"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{lang === "de" ? "Straße & Hausnummer" : "Street & Number"}</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder={lang === "de" ? "z.B. Musterstraße 123" : "e.g. Main Street 123"} 
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="grid grid-cols-3 gap-4">
+                      <FormField
+                        control={patientAddressForm.control}
+                        name="patientAddressZip"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{lang === "de" ? "PLZ" : "Postal Code"}</FormLabel>
+                            <FormControl>
+                              <Input placeholder="1010" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={patientAddressForm.control}
+                        name="patientAddressCity"
+                        render={({ field }) => (
+                          <FormItem className="col-span-2">
+                            <FormLabel>{lang === "de" ? "Stadt" : "City"}</FormLabel>
+                            <FormControl>
+                              <Input placeholder={lang === "de" ? "Wien" : "Vienna"} {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+
+                  <Button type="submit" disabled={isSubmittingAddress}>
+                    {isSubmittingAddress && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    {t("profile.save")}
+                  </Button>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Patient Medical Details - Only visible to patients */}
         {role === "patient" && (
           <Card className="shadow-card mb-8">
@@ -527,6 +652,23 @@ const Profile = () => {
                               </button>
                             ))}
                           </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={patientForm.control}
+                      name="insuranceProvider"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{lang === "de" ? "Krankenversicherung" : "Health Insurance"}</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder={lang === "de" ? "z.B. ÖGK, SVS, BVAEB" : "e.g. ÖGK, SVS, BVAEB"} 
+                              {...field} 
+                            />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}

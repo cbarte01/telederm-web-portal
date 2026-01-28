@@ -250,7 +250,11 @@ export type Database = {
           full_name: string | null
           iban: string | null
           id: string
+          insurance_provider: string | null
           is_active: boolean | null
+          patient_address_city: string | null
+          patient_address_street: string | null
+          patient_address_zip: string | null
           phone: string | null
           practice_address_city: string | null
           practice_address_street: string | null
@@ -276,7 +280,11 @@ export type Database = {
           full_name?: string | null
           iban?: string | null
           id: string
+          insurance_provider?: string | null
           is_active?: boolean | null
+          patient_address_city?: string | null
+          patient_address_street?: string | null
+          patient_address_zip?: string | null
           phone?: string | null
           practice_address_city?: string | null
           practice_address_street?: string | null
@@ -302,7 +310,11 @@ export type Database = {
           full_name?: string | null
           iban?: string | null
           id?: string
+          insurance_provider?: string | null
           is_active?: boolean | null
+          patient_address_city?: string | null
+          patient_address_street?: string | null
+          patient_address_zip?: string | null
           phone?: string | null
           practice_address_city?: string | null
           practice_address_street?: string | null
