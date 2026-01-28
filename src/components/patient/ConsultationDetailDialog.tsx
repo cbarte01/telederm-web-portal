@@ -96,14 +96,22 @@ export const ConsultationDetailDialog = ({ consultation, open, onOpenChange }: C
       if (error) throw error;
 
       if (data?.url) {
-        // Use anchor tag with download to bypass ad blocker issues with window.open
+        // Fetch the PDF as a blob to ensure download works cross-origin
+        const response = await fetch(data.url);
+        if (!response.ok) throw new Error("Failed to fetch PDF");
+        
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        
         const link = document.createElement('a');
-        link.href = data.url;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
+        link.href = blobUrl;
+        link.download = `Honorarnote_${data.honorarnote_number}.pdf`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        
+        // Clean up the blob URL
+        URL.revokeObjectURL(blobUrl);
         
         toast({
           title: lang === "de" ? "Honorarnote erstellt" : "Medical fee note generated",
