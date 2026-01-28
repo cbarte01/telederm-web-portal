@@ -36,6 +36,10 @@ interface Consultation {
   submitted_at: string | null;
   doctor_response: string | null;
   responded_at: string | null;
+  icd10_code: string | null;
+  icd10_description: string | null;
+  honorarnote_number: string | null;
+  honorarnote_storage_path: string | null;
   profiles?: { full_name: string | null } | null;
 }
 
@@ -85,6 +89,10 @@ const DoctorDashboard = () => {
         submitted_at,
         doctor_response,
         responded_at,
+        icd10_code,
+        icd10_description,
+        honorarnote_number,
+        honorarnote_storage_path,
         profiles:patient_id (full_name)
       `)
       .neq("status", "draft")

@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
@@ -12,11 +13,34 @@ interface MedicalHistoryProps {
 
 const MedicalHistory = ({ draft, updateDraft, onNext }: MedicalHistoryProps) => {
   const { t } = useTranslation("consultation");
+  
+  const allergiesRef = useRef<HTMLTextAreaElement>(null);
+  const medicationsRef = useRef<HTMLTextAreaElement>(null);
+  const selfTreatmentRef = useRef<HTMLTextAreaElement>(null);
 
   const canContinue = 
     draft.hasAllergies !== undefined && 
     draft.takesMedications !== undefined && 
     draft.hasSelfTreated !== undefined;
+
+  // Auto-focus textareas when "Yes" is selected
+  useEffect(() => {
+    if (draft.hasAllergies && allergiesRef.current) {
+      allergiesRef.current.focus();
+    }
+  }, [draft.hasAllergies]);
+
+  useEffect(() => {
+    if (draft.takesMedications && medicationsRef.current) {
+      medicationsRef.current.focus();
+    }
+  }, [draft.takesMedications]);
+
+  useEffect(() => {
+    if (draft.hasSelfTreated && selfTreatmentRef.current) {
+      selfTreatmentRef.current.focus();
+    }
+  }, [draft.hasSelfTreated]);
 
   return (
     <div className="space-y-6">
@@ -36,6 +60,7 @@ const MedicalHistory = ({ draft, updateDraft, onNext }: MedicalHistoryProps) => 
         </p>
         <div className="flex gap-3">
           <button
+            type="button"
             onClick={() => updateDraft({ hasAllergies: true })}
             className={cn(
               "flex-1 py-2 px-4 rounded-lg border-2 transition-all",
@@ -48,6 +73,7 @@ const MedicalHistory = ({ draft, updateDraft, onNext }: MedicalHistoryProps) => 
             {t("step7.allergies.yes")}
           </button>
           <button
+            type="button"
             onClick={() => updateDraft({ hasAllergies: false, allergiesDescription: undefined })}
             className={cn(
               "flex-1 py-2 px-4 rounded-lg border-2 transition-all",
@@ -62,6 +88,7 @@ const MedicalHistory = ({ draft, updateDraft, onNext }: MedicalHistoryProps) => 
         </div>
         {draft.hasAllergies && (
           <Textarea
+            ref={allergiesRef}
             value={draft.allergiesDescription || ""}
             onChange={(e) => updateDraft({ allergiesDescription: e.target.value })}
             placeholder={t("step7.allergies.placeholder")}
@@ -77,6 +104,7 @@ const MedicalHistory = ({ draft, updateDraft, onNext }: MedicalHistoryProps) => 
         </p>
         <div className="flex gap-3">
           <button
+            type="button"
             onClick={() => updateDraft({ takesMedications: true })}
             className={cn(
               "flex-1 py-2 px-4 rounded-lg border-2 transition-all",
@@ -89,6 +117,7 @@ const MedicalHistory = ({ draft, updateDraft, onNext }: MedicalHistoryProps) => 
             {t("step7.medications.yes")}
           </button>
           <button
+            type="button"
             onClick={() => updateDraft({ takesMedications: false, medicationsDescription: undefined })}
             className={cn(
               "flex-1 py-2 px-4 rounded-lg border-2 transition-all",
@@ -103,6 +132,7 @@ const MedicalHistory = ({ draft, updateDraft, onNext }: MedicalHistoryProps) => 
         </div>
         {draft.takesMedications && (
           <Textarea
+            ref={medicationsRef}
             value={draft.medicationsDescription || ""}
             onChange={(e) => updateDraft({ medicationsDescription: e.target.value })}
             placeholder={t("step7.medications.placeholder")}
@@ -118,6 +148,7 @@ const MedicalHistory = ({ draft, updateDraft, onNext }: MedicalHistoryProps) => 
         </p>
         <div className="flex gap-3">
           <button
+            type="button"
             onClick={() => updateDraft({ hasSelfTreated: true })}
             className={cn(
               "flex-1 py-2 px-4 rounded-lg border-2 transition-all",
@@ -130,6 +161,7 @@ const MedicalHistory = ({ draft, updateDraft, onNext }: MedicalHistoryProps) => 
             {t("step7.selfTreated.yes")}
           </button>
           <button
+            type="button"
             onClick={() => updateDraft({ hasSelfTreated: false, selfTreatmentDescription: undefined })}
             className={cn(
               "flex-1 py-2 px-4 rounded-lg border-2 transition-all",
@@ -144,6 +176,7 @@ const MedicalHistory = ({ draft, updateDraft, onNext }: MedicalHistoryProps) => 
         </div>
         {draft.hasSelfTreated && (
           <Textarea
+            ref={selfTreatmentRef}
             value={draft.selfTreatmentDescription || ""}
             onChange={(e) => updateDraft({ selfTreatmentDescription: e.target.value })}
             placeholder={t("step7.selfTreated.placeholder")}
