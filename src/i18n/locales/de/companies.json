@@ -22,8 +22,8 @@
     "satisfactionLabel": "durchschnittliche Mitarbeiterzufriedenheit"
   },
   "benefits": {
-    "title": "Warum Telederm für Ihr Unternehmen?",
-    "description": "Gesunde Mitarbeiter sind zufriedene Mitarbeiter. Mit Telederm investieren Sie in das Wohlbefinden Ihres Teams.",
+    "title": "Warum Medena für Ihr Unternehmen?",
+    "description": "Gesunde Mitarbeiter sind zufriedene Mitarbeiter. Mit Medena investieren Sie in das Wohlbefinden Ihres Teams.",
     "health": {
       "title": "Mitarbeitergesundheit fördern",
       "description": "Schneller Zugang zu Fachärzten bedeutet schnellere Diagnose und Behandlung. Hautprobleme werden frühzeitig erkannt und behandelt."
@@ -63,7 +63,7 @@
       },
       "step3": {
         "title": "Sofort nutzen",
-        "description": "Ihre Mitarbeiter erhalten Zugang zur Telederm-Plattform und können sofort professionelle Hautberatung in Anspruch nehmen."
+        "description": "Ihre Mitarbeiter erhalten Zugang zur Medena-Plattform und können sofort professionelle Hautberatung in Anspruch nehmen."
       }
     }
   },
@@ -120,29 +120,29 @@
   },
   "partners": {
     "title": "Unsere Partner vertrauen uns",
-    "description": "Führende Unternehmen setzen auf Telederm für die Hautgesundheit ihrer Mitarbeiter"
+    "description": "Führende Unternehmen setzen auf Medena für die Hautgesundheit ihrer Mitarbeiter"
   },
   "testimonials": {
     "title": "Das sagen HR-Manager",
-    "description": "Erfahren Sie, wie andere Unternehmen von Telederm profitieren",
+    "description": "Erfahren Sie, wie andere Unternehmen von Medena profitieren",
     "items": {
       "t1": {
         "name": "Sabine K.",
         "role": "HR-Direktorin",
         "company": "Tech-Unternehmen, 500+ Mitarbeiter",
-        "quote": "Seit wir Telederm eingeführt haben, sind die krankheitsbedingten Fehltage durch Hautprobleme um 35% gesunken. Die Mitarbeiter schätzen den einfachen Zugang enorm."
+        "quote": "Seit wir Medena eingeführt haben, sind die krankheitsbedingten Fehltage durch Hautprobleme um 35% gesunken. Die Mitarbeiter schätzen den einfachen Zugang enorm."
       },
       "t2": {
         "name": "Michael B.",
         "role": "Geschäftsführer",
         "company": "Produktionsbetrieb, 200 Mitarbeiter",
-        "quote": "Berufsbedingte Hauterkrankungen sind in unserer Branche ein großes Thema. Mit Telederm können wir präventiv handeln und unsere Mitarbeiter optimal unterstützen."
+        "quote": "Berufsbedingte Hauterkrankungen sind in unserer Branche ein großes Thema. Mit Medena können wir präventiv handeln und unsere Mitarbeiter optimal unterstützen."
       },
       "t3": {
         "name": "Dr. Christina W.",
         "role": "Betriebsärztin",
         "company": "Versicherungskonzern",
-        "quote": "Als Betriebsärztin empfehle ich Telederm ohne Einschränkung. Die Qualität der Diagnosen ist exzellent und entlastet unser betriebsärztliches Team."
+        "quote": "Als Betriebsärztin empfehle ich Medena ohne Einschränkung. Die Qualität der Diagnosen ist exzellent und entlastet unser betriebsärztliches Team."
       }
     }
   },
@@ -178,7 +178,7 @@
   },
   "contact": {
     "title": "Lassen Sie uns sprechen",
-    "description": "Erfahren Sie, wie Telederm die Hautgesundheit in Ihrem Unternehmen verbessern kann. Unsere Unternehmensberater freuen sich auf Ihr Gespräch.",
+    "description": "Erfahren Sie, wie Medena die Hautgesundheit in Ihrem Unternehmen verbessern kann. Unsere Unternehmensberater freuen sich auf Ihr Gespräch.",
     "form": {
       "company": "Unternehmen",
       "companyPlaceholder": "Ihr Unternehmen",

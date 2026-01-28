@@ -17,7 +17,7 @@
     "insurancesLabel": "Partner-Versicherungen"
   },
   "benefits": {
-    "title": "Warum Ärzte Telederm wählen",
+    "title": "Warum Ärzte Medena wählen",
     "description": "Schließen Sie sich einem wachsenden Netzwerk von Dermatologen an, die ihre Praxis mit Teledermatologie transformieren.",
     "income": {
       "title": "Extrabudgetäres Einkommen",
@@ -49,7 +49,7 @@
     "description": "Erfahren Sie von Dermatologen, die bereits Teil unseres Netzwerks sind.",
     "items": {
       "mueller": {
-        "quote": "Telederm hat die Führung meiner Praxis verändert. Die Flexibilität, von zu Hause aus zu arbeiten und dabei zusätzliches Einkommen zu erzielen, ist unbezahlbar. Die Plattform ist intuitiv und das Support-Team reagiert immer schnell.",
+        "quote": "Medena hat die Führung meiner Praxis verändert. Die Flexibilität, von zu Hause aus zu arbeiten und dabei zusätzliches Einkommen zu erzielen, ist unbezahlbar. Die Plattform ist intuitiv und das Support-Team reagiert immer schnell.",
         "name": "Dr. med. Sarah Müller",
         "specialty": "Dermatologin",
         "location": "München",
@@ -113,7 +113,7 @@
       },
       "eprescription": {
         "question": "Kann ich E-Rezepte ausstellen?",
-        "answer": "Ja, unsere Plattform unterstützt E-Rezepte vollständig. Sie können digitale Rezepte direkt über die Telederm-Oberfläche ausstellen."
+        "answer": "Ja, unsere Plattform unterstützt E-Rezepte vollständig. Sie können digitale Rezepte direkt über die Medena-Oberfläche ausstellen."
       },
       "liability": {
         "question": "Bin ich haftpflichtversichert?",
@@ -151,7 +151,7 @@
   },
   "cta": {
     "title": "Bereit, Ihre Praxis zu transformieren?",
-    "description": "Schließen Sie sich 750+ Dermatologen an, die bereits mit Telederm verdienen. Die Registrierung dauert nur 10 Minuten.",
+    "description": "Schließen Sie sich 750+ Dermatologen an, die bereits mit Medena verdienen. Die Registrierung dauert nur 10 Minuten.",
     "button": "Als Arzt registrieren",
     "secondary": "Kontaktiere Uns"
   }

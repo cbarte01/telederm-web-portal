@@ -10,15 +10,15 @@
     "intro": "Der Schutz Ihrer persönlichen Daten ist uns ein besonderes Anliegen. Wir verarbeiten Ihre Daten daher ausschließlich auf Grundlage der geltenden gesetzlichen Bestimmungen (DSGVO, DSG, GTelG). In dieser Datenschutzerklärung informieren wir Sie über die wichtigsten Aspekte der Datenverarbeitung im Rahmen unserer Website und Plattform.",
     "section1": {
       "title": "1. Verantwortlicher",
-      "content": "TeleDerm GmbH\nTestgasse 1\n1010 Wien\nÖsterreich\nE-Mail: info@telederm.at"
+      "content": "Medena Care GmbH\nTestgasse 1\n1010 Wien\nÖsterreich\nE-Mail: info@medena.at"
     },
     "section2": {
       "title": "2. Datenschutzbeauftragter",
       "content": "Ein Datenschutzbeauftragter ist gemäß Art. 37 DSGVO nicht bestellt."
     },
     "section3": {
-      "title": "3. Rolle von TeleDerm GmbH",
-      "content": "TeleDerm GmbH ist kein Gesundheitsdienstleister und erbringt keine medizinischen Leistungen. Wir betreiben eine technische Plattform zur Vermittlung zwischen Patienten und in Österreich zugelassenen Ärzten. Die medizinische Verantwortung liegt ausschließlich beim behandelnden Arzt."
+      "title": "3. Rolle von Medena Care GmbH",
+      "content": "Medena Care GmbH ist kein Gesundheitsdienstleister und erbringt keine medizinischen Leistungen. Wir betreiben eine technische Plattform zur Vermittlung zwischen Patienten und in Österreich zugelassenen Ärzten. Die medizinische Verantwortung liegt ausschließlich beim behandelnden Arzt."
     },
     "section4": {
       "title": "4. Verarbeitung personenbezogener Daten",
@@ -90,7 +90,7 @@
     "breadcrumb": "Impressum",
     "section1": {
       "title": "Angaben gemäß § 5 ECG",
-      "companyName": "TeleDerm GmbH",
+      "companyName": "Medena Care GmbH",
       "address": "Testgasse 1\n1010 Wien\nÖsterreich"
     },
     "section2": {
@@ -116,7 +116,7 @@
     },
     "section6": {
       "title": "Unternehmensgegenstand",
-      "content": "Betrieb einer technischen Plattform zur Vermittlung von telemedizinischen Konsultationen zwischen Patienten und in Österreich zugelassenen Ärzten. TeleDerm GmbH erbringt selbst keine medizinischen Leistungen."
+      "content": "Betrieb einer technischen Plattform zur Vermittlung von telemedizinischen Konsultationen zwischen Patienten und in Österreich zugelassenen Ärzten. Medena Care GmbH erbringt selbst keine medizinischen Leistungen."
     },
     "section7": {
       "title": "Berufsrechtliche Vorschriften",
@@ -138,7 +138,7 @@
       },
       "medical": {
         "title": "Medizinischer Haftungsausschluss",
-        "text": "TeleDerm GmbH stellt ausschließlich eine technische Plattform zur Verfügung und übernimmt keine Verantwortung für medizinische Diagnosen, Behandlungen oder Empfehlungen. Die medizinische Verantwortung liegt ausschließlich bei den behandelnden Ärzten. Bei akuten oder lebensbedrohlichen Beschwerden wenden Sie sich bitte umgehend an den Notruf (144) oder die nächste Notaufnahme."
+        "text": "Medena Care GmbH stellt ausschließlich eine technische Plattform zur Verfügung und übernimmt keine Verantwortung für medizinische Diagnosen, Behandlungen oder Empfehlungen. Die medizinische Verantwortung liegt ausschließlich bei den behandelnden Ärzten. Bei akuten oder lebensbedrohlichen Beschwerden wenden Sie sich bitte umgehend an den Notruf (144) oder die nächste Notaufnahme."
       }
     },
     "section9": {
@@ -156,7 +156,7 @@
     "breadcrumb": "AGB",
     "section1": {
       "title": "§1 Geltung, Begriffsdefinition",
-      "p1": "Die TeleDerm GmbH (in weiterer Folge «TeleDerm») betreibt unter der Webseite www.telederm.at eine Plattform zur Kommunikation zwischen Nutzern und Experten. Die nachfolgenden allgemeinen Geschäftsbedingungen gelten für sämtliche von uns gegenüber unseren Nutzern («Patienten») erbrachten Leistungen.",
+      "p1": "Die Medena Care GmbH (in weiterer Folge «Medena») betreibt unter der Webseite www.medena.at eine Plattform zur Kommunikation zwischen Nutzern und Experten. Die nachfolgenden allgemeinen Geschäftsbedingungen gelten für sämtliche von uns gegenüber unseren Nutzern («Patienten») erbrachten Leistungen.",
       "p2": "Nutzer im Sinne dieser AGB ist jeder Anwender, der auf dieser Plattform registriert ist.",
       "p3": "Soweit nicht ausdrücklich Gegenteiliges vereinbart wurde, gelten unsere, dem Vertragspartner bekannt gegebenen AGB.",
       "p4": "Unser Vertragspartner stimmt zu, dass im Falle der Verwendung von AGB durch ihn im Zweifel von unseren Bedingungen auszugehen ist, auch wenn Bedingungen des Vertragspartners unwidersprochen bleiben.",
@@ -178,7 +178,7 @@
     },
     "section4": {
       "title": "§4 Vergütung",
-      "p1": "Je erfolgter Anfrage an den Experten ist über die Bezahlfunktion der jeweils in der Anwendung angegebene Betrag (inkl. USt) an TeleDerm zu überweisen.",
+      "p1": "Je erfolgter Anfrage an den Experten ist über die Bezahlfunktion der jeweils in der Anwendung angegebene Betrag (inkl. USt) an Medena zu überweisen.",
       "p2": "Der Nutzer ist damit einverstanden, dass Rechnungen an ihn auch elektronisch erstellt und übermittelt werden."
     },
     "section5": {
@@ -197,25 +197,25 @@
       "liability": {
         "title": "c) Haftungsfreistellung",
         "p1": "Der Nutzer haftet bei der von ihm zu vertretenden Verletzung von Rechten Dritter gegenüber diesen selbst und unmittelbar.",
-        "p2": "Der Nutzer verpflichtet sich, TeleDerm alle Schäden zu ersetzen, die wegen der schuldhaften Nichtbeachtung der sich aus diesem Nutzungsvertrag ergebenden Pflichten entstehen."
+        "p2": "Der Nutzer verpflichtet sich, Medena alle Schäden zu ersetzen, die wegen der schuldhaften Nichtbeachtung der sich aus diesem Nutzungsvertrag ergebenden Pflichten entstehen."
       }
     },
     "section6": {
       "title": "§6 Kündigung",
       "p1": "Der Nutzungsvertrag wird auf unbestimmte Zeit geschlossen.",
-      "p2": "Der Nutzungsvertrag kann vom Nutzer jederzeit gekündigt werden. Dabei reicht eine E-Mail an info@telederm.at.",
+      "p2": "Der Nutzungsvertrag kann vom Nutzer jederzeit gekündigt werden. Dabei reicht eine E-Mail an info@medena.at.",
       "p3": "Das Recht zur außerordentlichen Kündigung aus wichtigem Grund bleibt unberührt. Ein wichtiger Grund liegt insbesondere vor, wenn der Nutzer gegen diese AGB oder geltendes Recht verstößt.",
-      "p4": "TeleDerm kann den Nutzungsvertrag unter Einhaltung einer Frist von zwei Wochen ohne Angabe von Gründen kündigen."
+      "p4": "Medena kann den Nutzungsvertrag unter Einhaltung einer Frist von zwei Wochen ohne Angabe von Gründen kündigen."
     },
     "section7": {
       "title": "§7 Datenschutz, Vertraulichkeit",
       "p1": "Für die Verarbeitung personenbezogener Daten gilt unsere Datenschutzerklärung.",
-      "p2": "TeleDerm und alle beteiligten Experten sind zur Verschwiegenheit über alle ihnen im Rahmen der Nutzung der Plattform bekannt gewordenen Informationen verpflichtet."
+      "p2": "Medena und alle beteiligten Experten sind zur Verschwiegenheit über alle ihnen im Rahmen der Nutzung der Plattform bekannt gewordenen Informationen verpflichtet."
     },
     "section8": {
       "title": "§8 Haftung",
-      "p1": "TeleDerm stellt ausschließlich eine technische Plattform zur Verfügung und übernimmt keine Verantwortung für medizinische Diagnosen, Behandlungen oder Empfehlungen. Die medizinische Verantwortung liegt ausschließlich bei den behandelnden Ärzten.",
-      "p2": "Die Haftung von TeleDerm für leichte Fahrlässigkeit ist ausgeschlossen, sofern keine wesentlichen Vertragspflichten, Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit betroffen sind.",
+      "p1": "Medena stellt ausschließlich eine technische Plattform zur Verfügung und übernimmt keine Verantwortung für medizinische Diagnosen, Behandlungen oder Empfehlungen. Die medizinische Verantwortung liegt ausschließlich bei den behandelnden Ärzten.",
+      "p2": "Die Haftung von Medena für leichte Fahrlässigkeit ist ausgeschlossen, sofern keine wesentlichen Vertragspflichten, Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit betroffen sind.",
       "p3": "Bei akuten oder lebensbedrohlichen Beschwerden ist unverzüglich der Notruf (144) oder die nächste Notaufnahme zu kontaktieren. Die Plattform ersetzt keinen ärztlichen Notdienst."
     },
     "section9": {
@@ -227,7 +227,7 @@
     "section10": {
       "title": "§10 Schlussbestimmungen",
       "p1": "Sollten einzelne Bestimmungen dieser AGB unwirksam sein oder werden, bleibt die Wirksamkeit der übrigen Bestimmungen unberührt.",
-      "p2": "TeleDerm behält sich vor, diese AGB jederzeit zu ändern. Änderungen werden dem Nutzer per E-Mail mitgeteilt und gelten als genehmigt, wenn der Nutzer nicht innerhalb von 14 Tagen nach Zugang der Mitteilung widerspricht."
+      "p2": "Medena behält sich vor, diese AGB jederzeit zu ändern. Änderungen werden dem Nutzer per E-Mail mitgeteilt und gelten als genehmigt, wenn der Nutzer nicht innerhalb von 14 Tagen nach Zugang der Mitteilung widerspricht."
     }
   }
 }

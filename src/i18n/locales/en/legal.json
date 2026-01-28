@@ -10,15 +10,15 @@
     "intro": "The protection of your personal data is of particular concern to us. We therefore process your data exclusively on the basis of applicable legal provisions (GDPR, DSG, GTelG). In this privacy policy, we inform you about the most important aspects of data processing within the scope of our website and platform.",
     "section1": {
       "title": "1. Data Controller",
-      "content": "TeleDerm GmbH\nTestgasse 1\n1010 Vienna\nAustria\nEmail: info@telederm.at"
+      "content": "Medena Care GmbH\nTestgasse 1\n1010 Vienna\nAustria\nEmail: info@medena.at"
     },
     "section2": {
       "title": "2. Data Protection Officer",
       "content": "A Data Protection Officer has not been appointed in accordance with Art. 37 GDPR."
     },
     "section3": {
-      "title": "3. Role of TeleDerm GmbH",
-      "content": "TeleDerm GmbH is not a healthcare provider and does not provide medical services. We operate a technical platform for connecting patients with physicians licensed in Austria. Medical responsibility lies exclusively with the treating physician."
+      "title": "3. Role of Medena Care GmbH",
+      "content": "Medena Care GmbH is not a healthcare provider and does not provide medical services. We operate a technical platform for connecting patients with physicians licensed in Austria. Medical responsibility lies exclusively with the treating physician."
     },
     "section4": {
       "title": "4. Processing of Personal Data",
@@ -90,7 +90,7 @@
     "breadcrumb": "Legal Notice",
     "section1": {
       "title": "Information according to § 5 ECG",
-      "companyName": "TeleDerm GmbH",
+      "companyName": "Medena Care GmbH",
       "address": "Testgasse 1\n1010 Vienna\nAustria"
     },
     "section2": {
@@ -116,7 +116,7 @@
     },
     "section6": {
       "title": "Business Purpose",
-      "content": "Operation of a technical platform for facilitating telemedicine consultations between patients and physicians licensed in Austria. TeleDerm GmbH does not provide medical services itself."
+      "content": "Operation of a technical platform for facilitating telemedicine consultations between patients and physicians licensed in Austria. Medena Care GmbH does not provide medical services itself."
     },
     "section7": {
       "title": "Professional Regulations",
@@ -138,7 +138,7 @@
       },
       "medical": {
         "title": "Medical Disclaimer",
-        "text": "TeleDerm GmbH exclusively provides a technical platform and assumes no responsibility for medical diagnoses, treatments, or recommendations. Medical responsibility lies exclusively with the treating physicians. In case of acute or life-threatening symptoms, please contact emergency services (144) or the nearest emergency room immediately."
+        "text": "Medena Care GmbH exclusively provides a technical platform and assumes no responsibility for medical diagnoses, treatments, or recommendations. Medical responsibility lies exclusively with the treating physicians. In case of acute or life-threatening symptoms, please contact emergency services (144) or the nearest emergency room immediately."
       }
     },
     "section9": {
@@ -156,7 +156,7 @@
     "breadcrumb": "Terms",
     "section1": {
       "title": "§1 Scope, Definitions",
-      "p1": "TeleDerm GmbH (hereinafter referred to as \"TeleDerm\") operates a platform for communication between users and experts at www.telederm.at. The following general terms and conditions apply to all services provided by us to our users (\"Patients\").",
+      "p1": "Medena Care GmbH (hereinafter referred to as \"Medena\") operates a platform for communication between users and experts at www.medena.at. The following general terms and conditions apply to all services provided by us to our users (\"Patients\").",
       "p2": "A user within the meaning of these terms is any user who is registered on this platform.",
       "p3": "Unless expressly agreed otherwise, our terms and conditions communicated to the contractual partner shall apply.",
       "p4": "Our contractual partner agrees that in case of doubt when using their own terms and conditions, our conditions shall prevail, even if the contractual partner's conditions remain unchallenged.",
@@ -178,7 +178,7 @@
     },
     "section4": {
       "title": "§4 Remuneration",
-      "p1": "For each request made to the expert, the amount specified in the application (incl. VAT) must be transferred to TeleDerm via the payment function.",
+      "p1": "For each request made to the expert, the amount specified in the application (incl. VAT) must be transferred to Medena via the payment function.",
       "p2": "The user agrees that invoices may also be created and transmitted to them electronically."
     },
     "section5": {
@@ -197,25 +197,25 @@
       "liability": {
         "title": "c) Indemnification",
         "p1": "The user is liable for any violation of third-party rights attributable to them directly and personally.",
-        "p2": "The user undertakes to compensate TeleDerm for all damages arising from culpable non-compliance with the obligations arising from this usage agreement."
+        "p2": "The user undertakes to compensate Medena for all damages arising from culpable non-compliance with the obligations arising from this usage agreement."
       }
     },
     "section6": {
       "title": "§6 Termination",
       "p1": "The usage agreement is concluded for an indefinite period.",
-      "p2": "The usage agreement can be terminated by the user at any time. An email to info@telederm.at is sufficient.",
+      "p2": "The usage agreement can be terminated by the user at any time. An email to info@medena.at is sufficient.",
       "p3": "The right to extraordinary termination for good cause remains unaffected. A good cause exists in particular if the user violates these terms and conditions or applicable law.",
-      "p4": "TeleDerm can terminate the usage agreement with two weeks' notice without giving reasons."
+      "p4": "Medena can terminate the usage agreement with two weeks' notice without giving reasons."
     },
     "section7": {
       "title": "§7 Data Protection, Confidentiality",
       "p1": "Our Privacy Policy applies to the processing of personal data.",
-      "p2": "TeleDerm and all participating experts are obliged to maintain confidentiality regarding all information that has become known to them in the course of using the platform."
+      "p2": "Medena and all participating experts are obliged to maintain confidentiality regarding all information that has become known to them in the course of using the platform."
     },
     "section8": {
       "title": "§8 Liability",
-      "p1": "TeleDerm exclusively provides a technical platform and assumes no responsibility for medical diagnoses, treatments, or recommendations. Medical responsibility lies exclusively with the treating physicians.",
-      "p2": "TeleDerm's liability for slight negligence is excluded unless essential contractual obligations, damages from injury to life, body, or health are affected.",
+      "p1": "Medena exclusively provides a technical platform and assumes no responsibility for medical diagnoses, treatments, or recommendations. Medical responsibility lies exclusively with the treating physicians.",
+      "p2": "Medena's liability for slight negligence is excluded unless essential contractual obligations, damages from injury to life, body, or health are affected.",
       "p3": "In case of acute or life-threatening symptoms, emergency services (144) or the nearest emergency room must be contacted immediately. The platform does not replace emergency medical services."
     },
     "section9": {
@@ -227,7 +227,7 @@
     "section10": {
       "title": "§10 Final Provisions",
       "p1": "Should individual provisions of these terms and conditions be or become invalid, the validity of the remaining provisions shall remain unaffected.",
-      "p2": "TeleDerm reserves the right to change these terms and conditions at any time. Changes will be communicated to the user by email and are deemed approved if the user does not object within 14 days of receipt of the notification."
+      "p2": "Medena reserves the right to change these terms and conditions at any time. Changes will be communicated to the user by email and are deemed approved if the user does not object within 14 days of receipt of the notification."
     }
   }
 }
