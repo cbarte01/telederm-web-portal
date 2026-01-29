@@ -17,8 +17,8 @@
   "buttons": {
     "login": "Patienten-Login",
     "doctorLogin": "Arzt-Login",
-    "startTreatment": "Behandlung starten",
-    "startConsultation": "Behandlung starten",
+    "startTreatment": "Beratung starten",
+    "startConsultation": "Beratung starten",
     "startNow": "Jetzt starten",
     "selectPlan": "Plan wählen",
     "learnMore": "Mehr erfahren",
