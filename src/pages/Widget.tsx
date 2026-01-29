@@ -1,32 +1,28 @@
-import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import medenaLogo from "@/assets/logo/medena-logo.png";
-
-interface DoctorPublicProfile {
-  display_name: string | null;
-  practice_name: string | null;
-  welcome_message: string | null;
-  referral_code: string | null;
-}
 
 const translations = {
   de: {
-    title: "Online Hautarzt-Beratung",
-    subtitle: "mit",
     cta: "Beratung starten",
-    poweredBy: "Powered by Medena Care",
-    notFound: "Arzt nicht gefunden",
-    loading: "Laden...",
+    poweredBy: "Powered by",
+    brandName: "Medena Care",
   },
   en: {
-    title: "Online Dermatology Consultation",
-    subtitle: "with",
     cta: "Start Consultation",
-    poweredBy: "Powered by Medena Care",
-    notFound: "Doctor not found",
-    loading: "Loading...",
+    poweredBy: "Powered by",
+    brandName: "Medena Care",
   },
+};
+
+// Predefined color options
+const colorPresets: Record<string, string> = {
+  primary: "#16a34a", // Green (default)
+  blue: "#2563eb",
+  purple: "#7c3aed",
+  teal: "#0d9488",
+  orange: "#ea580c",
+  red: "#dc2626",
+  slate: "#475569",
+  black: "#18181b",
 };
 
 const Widget = () => {
@@ -35,39 +31,9 @@ const Widget = () => {
   const lang = searchParams.get("lang") === "en" ? "en" : "de";
   const t = translations[lang];
 
-  const [doctor, setDoctor] = useState<DoctorPublicProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    const fetchDoctor = async () => {
-      if (!referralCode) {
-        setError(true);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const { data, error: fetchError } = await supabase
-          .from("doctor_public_profiles")
-          .select("display_name, practice_name, welcome_message, referral_code")
-          .eq("referral_code", referralCode.toUpperCase())
-          .maybeSingle();
-
-        if (fetchError || !data) {
-          setError(true);
-        } else {
-          setDoctor(data);
-        }
-      } catch {
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDoctor();
-  }, [referralCode]);
+  // Get color from URL param - can be preset name or hex code
+  const colorParam = searchParams.get("color") || "primary";
+  const buttonColor = colorPresets[colorParam] || (colorParam.startsWith("#") ? colorParam : colorPresets.primary);
 
   const handleStartConsultation = () => {
     const baseUrl = window.location.origin;
@@ -75,59 +41,30 @@ const Widget = () => {
     window.open(consultationUrl, "_blank");
   };
 
-  if (loading) {
-    return (
-      <div className="w-full h-full min-h-[180px] flex items-center justify-center bg-gradient-to-br from-primary/5 to-secondary/10">
-        <p className="text-muted-foreground text-sm">{t.loading}</p>
-      </div>
-    );
-  }
-
-  if (error || !doctor) {
-    return (
-      <div className="w-full h-full min-h-[180px] flex items-center justify-center bg-gradient-to-br from-primary/5 to-secondary/10">
-        <p className="text-muted-foreground text-sm">{t.notFound}</p>
-      </div>
-    );
-  }
+  const mainSiteUrl = "https://www.medena.at";
 
   return (
-    <div className="w-full h-full min-h-[180px] bg-gradient-to-br from-primary/5 via-background to-secondary/10 p-5 flex flex-col justify-between font-sans">
-      {/* Header with logo */}
-      <div className="flex items-center gap-2 mb-3">
-        <img src={medenaLogo} alt="Medena Care" className="h-6 w-auto" />
-        <span className="text-sm font-medium text-foreground">Medena Care</span>
-      </div>
-
-      {/* Main content */}
-      <div className="flex-1 flex flex-col justify-center">
-        <h2 className="text-base font-semibold text-foreground leading-tight mb-1">
-          {t.title}
-        </h2>
-        <p className="text-sm text-muted-foreground">
-          {t.subtitle}{" "}
-          <span className="font-medium text-foreground">
-            {doctor.display_name}
-          </span>
-        </p>
-        {doctor.practice_name && (
-          <p className="text-xs text-muted-foreground mt-0.5">
-            {doctor.practice_name}
-          </p>
-        )}
-      </div>
-
+    <div className="w-full h-full min-h-[80px] flex flex-col items-center justify-center gap-2 p-3 font-sans bg-transparent">
       {/* CTA Button */}
       <button
         onClick={handleStartConsultation}
-        className="w-full mt-3 py-2.5 px-4 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        style={{ backgroundColor: buttonColor }}
+        className="w-full max-w-[280px] py-2.5 px-5 text-white text-sm font-medium rounded-lg hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2"
       >
         {t.cta} →
       </button>
 
-      {/* Footer */}
-      <p className="text-[10px] text-muted-foreground text-center mt-2">
-        {t.poweredBy}
+      {/* Powered by link */}
+      <p className="text-[11px] text-gray-500 italic">
+        {t.poweredBy}{" "}
+        <a
+          href={mainSiteUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-gray-600 hover:text-gray-800 underline underline-offset-2"
+        >
+          {t.brandName}
+        </a>
       </p>
     </div>
   );
