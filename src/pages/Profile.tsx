@@ -15,8 +15,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { ArrowLeft, Loader2, Trash2, Copy, Check, Link as LinkIcon, Building2, Upload, X, FileSignature } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { EmbedCodeGenerator } from "@/components/profile/EmbedCodeGenerator";
-import { QRCodeGenerator } from "@/components/profile/QRCodeGenerator";
 import medenaLogo from "@/assets/logo/medena-logo.png";
 
 const profileSchema = z.object({
@@ -1009,12 +1007,6 @@ const Profile = () => {
         )}
 
         {/* Website Integration - Only visible to doctors with a referral code */}
-        {role === "doctor" && doctorForm.watch("referralCode") && (
-          <div className="grid gap-6 md:grid-cols-2 mb-8">
-            <EmbedCodeGenerator referralCode={doctorForm.watch("referralCode")} />
-            <QRCodeGenerator referralCode={doctorForm.watch("referralCode")} />
-          </div>
-        )}
 
         {/* Doctor Billing Information - Only visible to doctors */}
         {role === "doctor" && (
