@@ -22,21 +22,15 @@ interface DoctorWidgetDialogProps {
   referralCode: string;
 }
 
-type ButtonColor = {
-  name: string;
-  value: string;
-  label: { de: string; en: string };
-};
-
-const colorOptions: ButtonColor[] = [
-  { name: "primary", value: "#16a34a", label: { de: "Grün (Standard)", en: "Green (Default)" } },
-  { name: "blue", value: "#2563eb", label: { de: "Blau", en: "Blue" } },
-  { name: "purple", value: "#7c3aed", label: { de: "Lila", en: "Purple" } },
-  { name: "teal", value: "#0d9488", label: { de: "Türkis", en: "Teal" } },
-  { name: "orange", value: "#ea580c", label: { de: "Orange", en: "Orange" } },
-  { name: "red", value: "#dc2626", label: { de: "Rot", en: "Red" } },
-  { name: "slate", value: "#475569", label: { de: "Grau", en: "Slate" } },
-  { name: "black", value: "#18181b", label: { de: "Schwarz", en: "Black" } },
+const colorPresets = [
+  { hex: "#16a34a", label: { de: "Grün", en: "Green" } },
+  { hex: "#2563eb", label: { de: "Blau", en: "Blue" } },
+  { hex: "#7c3aed", label: { de: "Lila", en: "Purple" } },
+  { hex: "#0d9488", label: { de: "Türkis", en: "Teal" } },
+  { hex: "#ea580c", label: { de: "Orange", en: "Orange" } },
+  { hex: "#dc2626", label: { de: "Rot", en: "Red" } },
+  { hex: "#475569", label: { de: "Grau", en: "Slate" } },
+  { hex: "#18181b", label: { de: "Schwarz", en: "Black" } },
 ];
 
 export const DoctorWidgetDialog = ({
@@ -49,18 +43,18 @@ export const DoctorWidgetDialog = ({
   const lang = i18n.language === "de" ? "de" : "en";
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
-  const [selectedColor, setSelectedColor] = useState<string>("primary");
+  const [selectedColor, setSelectedColor] = useState<string>("#16a34a");
   const [previewOpen, setPreviewOpen] = useState(false);
   const canvasRef = useRef<HTMLDivElement>(null);
 
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
-  const widgetUrl = `${baseUrl}/widget/${referralCode}?lang=${lang}&color=${selectedColor}`;
+  const widgetUrl = `${baseUrl}/widget/${referralCode}?lang=${lang}&color=${encodeURIComponent(selectedColor)}`;
   const referralUrl = `${baseUrl}/consultation?ref=${referralCode}`;
 
   const embedCode = `<iframe 
   src="${widgetUrl}"
-  width="300"
-  height="80"
+  width="240"
+  height="60"
   frameborder="0"
   style="background: transparent;">
 </iframe>`;
@@ -182,7 +176,7 @@ export const DoctorWidgetDialog = ({
     }
   }, [referralCode, lang, toast]);
 
-  const selectedColorObj = colorOptions.find(c => c.name === selectedColor) || colorOptions[0];
+  const selectedColorLabel = colorPresets.find(c => c.hex === selectedColor)?.label[lang] || selectedColor;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -219,23 +213,23 @@ export const DoctorWidgetDialog = ({
                 {lang === "de" ? "Button-Farbe" : "Button Color"}
               </label>
               <div className="flex flex-wrap gap-2">
-                {colorOptions.map((color) => (
+                {colorPresets.map((color) => (
                   <button
-                    key={color.name}
+                    key={color.hex}
                     type="button"
-                    onClick={() => setSelectedColor(color.name)}
+                    onClick={() => setSelectedColor(color.hex)}
                     className={`w-8 h-8 rounded-full border-2 transition-all ${
-                      selectedColor === color.name
+                      selectedColor === color.hex
                         ? "border-foreground scale-110 ring-2 ring-offset-2 ring-foreground/20"
                         : "border-transparent hover:scale-105"
                     }`}
-                    style={{ backgroundColor: color.value }}
+                    style={{ backgroundColor: color.hex }}
                     title={color.label[lang]}
                   />
                 ))}
               </div>
               <p className="text-xs text-muted-foreground mt-1">
-                {selectedColorObj.label[lang]}
+                {selectedColorLabel}
               </p>
             </div>
 
@@ -244,15 +238,15 @@ export const DoctorWidgetDialog = ({
               <label className="text-sm font-medium mb-2 block">
                 {lang === "de" ? "Vorschau" : "Preview"}
               </label>
-              <div className="bg-muted/30 rounded-lg p-4 flex justify-center">
-                <div className="flex flex-col items-center gap-2">
+              <div className="bg-muted/30 rounded-lg p-3 flex justify-center">
+                <div className="flex flex-col items-center gap-1">
                   <button
-                    style={{ backgroundColor: selectedColorObj.value }}
-                    className="py-2.5 px-5 text-white text-sm font-medium rounded-lg min-w-[200px]"
+                    style={{ backgroundColor: selectedColor }}
+                    className="py-2 px-4 text-white text-xs font-medium rounded-md min-w-[180px]"
                   >
                     {lang === "de" ? "Beratung starten" : "Start Consultation"} →
                   </button>
-                  <p className="text-[11px] text-gray-500 italic">
+                  <p className="text-[10px] text-muted-foreground italic">
                     Powered by{" "}
                     <span className="underline underline-offset-2">Medena Care</span>
                   </p>
@@ -299,11 +293,11 @@ export const DoctorWidgetDialog = ({
                       {lang === "de" ? "Widget-Vorschau" : "Widget Preview"}
                     </DialogTitle>
                   </DialogHeader>
-                  <div className="flex justify-center p-4 bg-muted/50 rounded-lg min-h-[120px]">
+                  <div className="flex justify-center p-4 bg-muted/50 rounded-lg min-h-[80px]">
                     <iframe
                       src={widgetUrl}
-                      width={300}
-                      height={80}
+                      width={240}
+                      height={60}
                       frameBorder="0"
                       style={{ background: "transparent" }}
                       title="Widget Preview"
