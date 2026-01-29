@@ -180,7 +180,10 @@ serve(async (req) => {
 
     // Get authenticated user
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("No authorization header provided");
+    if (!authHeader) {
+      logStep("Missing authorization header");
+      throw new Error("Unauthorized");
+    }
 
     const anonClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -189,22 +192,30 @@ serve(async (req) => {
     
     const token = authHeader.replace("Bearer ", "");
     const { data: userData, error: userError } = await anonClient.auth.getUser(token);
-    if (userError) throw new Error(`Authentication error: ${userError.message}`);
+    if (userError) {
+      logStep("Authentication error", { error: userError.message });
+      throw new Error("Unauthorized");
+    }
     
     const user = userData.user;
-    if (!user) throw new Error("User not authenticated");
+    if (!user) {
+      logStep("No user found");
+      throw new Error("Unauthorized");
+    }
     logStep("User authenticated", { userId: user.id });
 
     // Parse request body
     const { consultation_id, language = "de" } = await req.json();
     if (!consultation_id) {
-      throw new Error("consultation_id is required");
+      logStep("Missing consultation_id");
+      throw new Error("Invalid request");
     }
 
     // Validate consultation_id is a valid UUID
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(consultation_id)) {
-      throw new Error("Invalid consultation_id format");
+      logStep("Invalid consultation_id format", { consultation_id });
+      throw new Error("Invalid request");
     }
 
     // Validate and sanitize language - only allow 'en' or 'de'
@@ -228,7 +239,8 @@ serve(async (req) => {
       .single();
 
     if (consultationError || !consultation) {
-      throw new Error(`Consultation not found: ${consultationError?.message}`);
+      logStep("Consultation not found", { error: consultationError?.message });
+      throw new Error("Resource not found");
     }
 
     // Verify user is either the patient OR the assigned doctor
@@ -236,12 +248,14 @@ serve(async (req) => {
     const isAssignedDoctor = consultation.doctor_id === user.id;
     
     if (!isPatient && !isAssignedDoctor) {
-      throw new Error("Not authorized to access this consultation");
+      logStep("Unauthorized access attempt", { user_id: user.id, patient_id: consultation.patient_id, doctor_id: consultation.doctor_id });
+      throw new Error("Access denied");
     }
 
     // Verify consultation is completed
     if (consultation.status !== "completed") {
-      throw new Error("Consultation must be completed to generate report");
+      logStep("Consultation not completed", { status: consultation.status });
+      throw new Error("Report not available");
     }
 
     logStep("Consultation fetched", { 
@@ -744,11 +758,18 @@ serve(async (req) => {
 
   } catch (error) {
     logStep("Error", { error: String(error) });
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    // Return safe error messages to client
+    const safeErrors = ["Unauthorized", "Invalid request", "Resource not found", "Access denied", "Report not available"];
+    const clientMessage = safeErrors.includes(errorMessage) ? errorMessage : "Failed to generate report";
+    const statusCode = errorMessage === "Unauthorized" ? 401 : 
+                       errorMessage === "Access denied" ? 403 :
+                       errorMessage === "Resource not found" || errorMessage === "Report not available" ? 404 : 500;
     return new Response(
-      JSON.stringify({ error: (error as Error).message }),
+      JSON.stringify({ error: clientMessage }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 400,
+        status: statusCode,
       }
     );
   }

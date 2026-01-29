@@ -38,11 +38,17 @@ serve(async (req) => {
 
     // Get authenticated user
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("No authorization header provided");
+    if (!authHeader) {
+      logStep("Missing authorization header");
+      throw new Error("Unauthorized");
+    }
     
     const token = authHeader.replace("Bearer ", "");
     const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
-    if (userError) throw new Error(`Authentication error: ${userError.message}`);
+    if (userError) {
+      logStep("Authentication error", { error: userError.message });
+      throw new Error("Unauthorized");
+    }
     
     const user = userData.user;
     if (!user?.email) throw new Error("User not authenticated or email not available");
@@ -186,9 +192,24 @@ serve(async (req) => {
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     logStep("ERROR", { message: errorMessage });
-    return new Response(JSON.stringify({ error: errorMessage }), {
+    // Return safe error messages to client
+    const safeErrors = [
+      "Unauthorized",
+      "consultation_id and pricing_plan are required",
+      "Invalid consultation_id format",
+      "Invalid pricing_plan. Must be 'standard' or 'urgent'",
+      "custom_price must be a valid number",
+      "custom_price must be between €10 and €1000",
+      "Consultation not found",
+      "Not authorized to checkout this consultation",
+      "Consultation has already been submitted"
+    ];
+    const clientMessage = safeErrors.includes(errorMessage) ? errorMessage : "Checkout failed";
+    const statusCode = errorMessage === "Unauthorized" ? 401 : 
+                       errorMessage.includes("Not authorized") ? 403 : 500;
+    return new Response(JSON.stringify({ error: clientMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
+      status: statusCode,
     });
   }
 });
