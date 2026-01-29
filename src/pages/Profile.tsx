@@ -36,9 +36,6 @@ const patientProfileSchema = z.object({
 });
 
 const doctorProfileSchema = z.object({
-  referralCode: z.string().min(3, "Code must be at least 3 characters").max(20, "Code must be at most 20 characters").regex(/^[A-Z0-9_]+$/, "Only uppercase letters, numbers, and underscores allowed"),
-  practiceName: z.string().optional(),
-  welcomeMessage: z.string().max(200, "Message must be at most 200 characters").optional(),
   standardPrice: z.number().min(1, "Price must be at least €1").max(999, "Price must be at most €999"),
   urgentPrice: z.number().min(1, "Price must be at least €1").max(999, "Price must be at most €999"),
 });
@@ -132,8 +129,11 @@ const Profile = () => {
 
   const doctorForm = useForm<DoctorProfileFormData>({
     resolver: zodResolver(doctorProfileSchema),
-    defaultValues: { referralCode: "", practiceName: "", welcomeMessage: "", standardPrice: 49, urgentPrice: 74 },
+    defaultValues: { standardPrice: 49, urgentPrice: 74 },
   });
+  
+  // Auto-generated referral code from full name
+  const [generatedReferralCode, setGeneratedReferralCode] = useState<string>("");
 
   const billingForm = useForm<DoctorBillingFormData>({
     resolver: zodResolver(doctorBillingSchema),
@@ -178,10 +178,14 @@ const Profile = () => {
           }
           
           if (role === "doctor") {
+            // Generate referral code from name: DR + last name (uppercase, no spaces)
+            const fullName = data.full_name || "";
+            const nameParts = fullName.trim().split(/\s+/);
+            const lastName = nameParts[nameParts.length - 1] || "";
+            const autoCode = `DR${lastName.toUpperCase().replace(/[^A-Z]/g, "")}`;
+            setGeneratedReferralCode(data.referral_code || autoCode);
+            
             doctorForm.reset({
-              referralCode: data.referral_code || "",
-              practiceName: data.practice_name || "",
-              welcomeMessage: data.welcome_message || "",
               standardPrice: (data as any).standard_price ?? 49,
               urgentPrice: (data as any).urgent_price ?? 74,
             });
@@ -320,12 +324,16 @@ const Profile = () => {
       // Avoid tight coupling to generated DB types for newly-added columns.
       const db = supabase as any;
 
+      // Generate referral code from full name if not already set
+      const fullName = form.getValues("fullName") || user.user_metadata?.full_name || "Doctor";
+      const nameParts = fullName.trim().split(/\s+/);
+      const lastName = nameParts[nameParts.length - 1] || "";
+      const autoCode = `DR${lastName.toUpperCase().replace(/[^A-Z]/g, "")}`;
+
       const { error } = await db
         .from("profiles")
         .update({
-          referral_code: data.referralCode || null,
-          practice_name: data.practiceName || null,
-          welcome_message: data.welcomeMessage || null,
+          referral_code: generatedReferralCode || autoCode,
           standard_price: data.standardPrice,
           urgent_price: data.urgentPrice,
         })
@@ -344,24 +352,24 @@ const Profile = () => {
       }
 
       // Keep public referral/branding fields in sync (safe subset used for referral lookups)
-      const fullName = form.getValues("fullName") || user.user_metadata?.full_name || "Doctor";
       const { error: publicError } = await db
         .from("doctor_public_profiles")
         .upsert(
           {
             doctor_id: user.id,
             display_name: fullName,
-            referral_code: data.referralCode || null,
-            practice_name: data.practiceName || null,
-            welcome_message: data.welcomeMessage || null,
+            referral_code: generatedReferralCode || autoCode,
           },
           { onConflict: "doctor_id" }
         );
 
       if (publicError) throw publicError;
 
+      // Update local state
+      setGeneratedReferralCode(generatedReferralCode || autoCode);
+
       toast({
-        title: lang === "de" ? "Empfehlungscode gespeichert" : "Referral settings saved",
+        title: lang === "de" ? "Einstellungen gespeichert" : "Settings saved",
       });
     } catch (err) {
       console.error("Error updating doctor profile:", err);
@@ -513,9 +521,8 @@ const Profile = () => {
   };
 
   const getReferralLink = () => {
-    const code = doctorForm.watch("referralCode");
-    if (!code) return "";
-    return `${window.location.origin}/consultation?ref=${code}`;
+    if (!generatedReferralCode) return "";
+    return `${window.location.origin}/consultation?ref=${generatedReferralCode}`;
   };
 
   const copyReferralLink = async () => {
@@ -851,30 +858,25 @@ const Profile = () => {
             <CardContent>
               <Form {...doctorForm}>
                 <form onSubmit={doctorForm.handleSubmit(onSubmitDoctor)} className="space-y-6">
-                  <FormField
-                    control={doctorForm.control}
-                    name="referralCode"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{lang === "de" ? "Ihr Empfehlungscode" : "Your Referral Code"}</FormLabel>
-                        <FormControl>
-                          <Input 
-                            placeholder="z.B. DRMUELLER" 
-                            {...field} 
-                            onChange={(e) => field.onChange(e.target.value.toUpperCase().replace(/[^A-Z0-9_]/g, ""))}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                        <p className="text-xs text-muted-foreground">
-                          {lang === "de" 
-                            ? "Nur Großbuchstaben, Zahlen und Unterstriche erlaubt."
-                            : "Only uppercase letters, numbers, and underscores allowed."}
-                        </p>
-                      </FormItem>
-                    )}
-                  />
+                  {/* Auto-generated Referral Code (read-only) */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                      {lang === "de" ? "Ihr Empfehlungscode" : "Your Referral Code"}
+                    </label>
+                    <Input 
+                      value={generatedReferralCode || (lang === "de" ? "Wird aus Ihrem Namen generiert" : "Generated from your name")}
+                      readOnly 
+                      disabled
+                      className="bg-muted"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      {lang === "de" 
+                        ? "Automatisch generiert aus Ihrem Namen (nicht änderbar)."
+                        : "Automatically generated from your name (not editable)."}
+                    </p>
+                  </div>
 
-                  {doctorForm.watch("referralCode") && (
+                  {generatedReferralCode && (
                     <div className="space-y-2">
                       <label className="text-sm font-medium">
                         {lang === "de" ? "Ihr Empfehlungslink" : "Your Referral Link"}
@@ -896,43 +898,6 @@ const Profile = () => {
                       </div>
                     </div>
                   )}
-
-                  <FormField
-                    control={doctorForm.control}
-                    name="practiceName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{lang === "de" ? "Praxisname (optional)" : "Practice Name (optional)"}</FormLabel>
-                        <FormControl>
-                          <Input placeholder={lang === "de" ? "z.B. Hautarztpraxis Dr. Müller" : "e.g. Dr. Mueller Dermatology"} {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={doctorForm.control}
-                    name="welcomeMessage"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{lang === "de" ? "Begrüßungsnachricht (optional)" : "Welcome Message (optional)"}</FormLabel>
-                        <FormControl>
-                          <Textarea 
-                            placeholder={lang === "de" 
-                              ? "z.B. Willkommen in meiner Online-Sprechstunde! Ich freue mich, Ihnen zu helfen."
-                              : "e.g. Welcome to my online consultation! I look forward to helping you."}
-                            className="resize-none"
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                        <p className="text-xs text-muted-foreground">
-                          {lang === "de" ? "Max. 200 Zeichen" : "Max. 200 characters"}
-                        </p>
-                      </FormItem>
-                    )}
-                  />
 
                   {/* Pricing Section */}
                   <div className="border-t border-border pt-6 mt-6">
