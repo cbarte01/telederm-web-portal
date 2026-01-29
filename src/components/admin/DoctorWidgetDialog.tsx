@@ -10,7 +10,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Code, Copy, Check, ExternalLink, Monitor, Smartphone, QrCode, Download, Image, FileCode } from "lucide-react";
+import { Code, Copy, Check, ExternalLink, QrCode, Image, FileCode } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { QRCodeSVG, QRCodeCanvas } from "qrcode.react";
 import { useRef, useCallback } from "react";
@@ -22,12 +22,22 @@ interface DoctorWidgetDialogProps {
   referralCode: string;
 }
 
-type WidgetSize = "compact" | "standard";
-
-const sizeConfigs: Record<WidgetSize, { width: number; height: number }> = {
-  compact: { width: 300, height: 180 },
-  standard: { width: 350, height: 200 },
+type ButtonColor = {
+  name: string;
+  value: string;
+  label: { de: string; en: string };
 };
+
+const colorOptions: ButtonColor[] = [
+  { name: "primary", value: "#16a34a", label: { de: "Grün (Standard)", en: "Green (Default)" } },
+  { name: "blue", value: "#2563eb", label: { de: "Blau", en: "Blue" } },
+  { name: "purple", value: "#7c3aed", label: { de: "Lila", en: "Purple" } },
+  { name: "teal", value: "#0d9488", label: { de: "Türkis", en: "Teal" } },
+  { name: "orange", value: "#ea580c", label: { de: "Orange", en: "Orange" } },
+  { name: "red", value: "#dc2626", label: { de: "Rot", en: "Red" } },
+  { name: "slate", value: "#475569", label: { de: "Grau", en: "Slate" } },
+  { name: "black", value: "#18181b", label: { de: "Schwarz", en: "Black" } },
+];
 
 export const DoctorWidgetDialog = ({
   open,
@@ -39,21 +49,20 @@ export const DoctorWidgetDialog = ({
   const lang = i18n.language === "de" ? "de" : "en";
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
-  const [selectedSize, setSelectedSize] = useState<WidgetSize>("standard");
+  const [selectedColor, setSelectedColor] = useState<string>("primary");
   const [previewOpen, setPreviewOpen] = useState(false);
   const canvasRef = useRef<HTMLDivElement>(null);
 
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
-  const widgetUrl = `${baseUrl}/widget/${referralCode}?lang=${lang}`;
+  const widgetUrl = `${baseUrl}/widget/${referralCode}?lang=${lang}&color=${selectedColor}`;
   const referralUrl = `${baseUrl}/consultation?ref=${referralCode}`;
-  const { width, height } = sizeConfigs[selectedSize];
 
   const embedCode = `<iframe 
   src="${widgetUrl}"
-  width="${width}"
-  height="${height}"
+  width="300"
+  height="80"
   frameborder="0"
-  style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+  style="background: transparent;">
 </iframe>`;
 
   const handleCopy = async () => {
@@ -173,6 +182,8 @@ export const DoctorWidgetDialog = ({
     }
   }, [referralCode, lang, toast]);
 
+  const selectedColorObj = colorOptions.find(c => c.name === selectedColor) || colorOptions[0];
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -202,32 +213,50 @@ export const DoctorWidgetDialog = ({
 
           {/* Website Widget Tab */}
           <TabsContent value="widget" className="space-y-4 mt-4">
-            {/* Size Selection */}
+            {/* Color Selection */}
             <div>
               <label className="text-sm font-medium mb-2 block">
-                {lang === "de" ? "Widget-Größe" : "Widget Size"}
+                {lang === "de" ? "Button-Farbe" : "Button Color"}
               </label>
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  variant={selectedSize === "compact" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedSize("compact")}
-                  className="flex items-center gap-2"
-                >
-                  <Smartphone className="h-4 w-4" />
-                  {lang === "de" ? "Kompakt" : "Compact"} (300×180)
-                </Button>
-                <Button
-                  type="button"
-                  variant={selectedSize === "standard" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedSize("standard")}
-                  className="flex items-center gap-2"
-                >
-                  <Monitor className="h-4 w-4" />
-                  Standard (350×200)
-                </Button>
+              <div className="flex flex-wrap gap-2">
+                {colorOptions.map((color) => (
+                  <button
+                    key={color.name}
+                    type="button"
+                    onClick={() => setSelectedColor(color.name)}
+                    className={`w-8 h-8 rounded-full border-2 transition-all ${
+                      selectedColor === color.name
+                        ? "border-foreground scale-110 ring-2 ring-offset-2 ring-foreground/20"
+                        : "border-transparent hover:scale-105"
+                    }`}
+                    style={{ backgroundColor: color.value }}
+                    title={color.label[lang]}
+                  />
+                ))}
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                {selectedColorObj.label[lang]}
+              </p>
+            </div>
+
+            {/* Live Preview */}
+            <div>
+              <label className="text-sm font-medium mb-2 block">
+                {lang === "de" ? "Vorschau" : "Preview"}
+              </label>
+              <div className="bg-muted/30 rounded-lg p-4 flex justify-center">
+                <div className="flex flex-col items-center gap-2">
+                  <button
+                    style={{ backgroundColor: selectedColorObj.value }}
+                    className="py-2.5 px-5 text-white text-sm font-medium rounded-lg min-w-[200px]"
+                  >
+                    {lang === "de" ? "Beratung starten" : "Start Consultation"} →
+                  </button>
+                  <p className="text-[11px] text-gray-500 italic">
+                    Powered by{" "}
+                    <span className="underline underline-offset-2">Medena Care</span>
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -239,7 +268,7 @@ export const DoctorWidgetDialog = ({
               <Textarea
                 value={embedCode}
                 readOnly
-                className="font-mono text-xs bg-muted min-h-[120px]"
+                className="font-mono text-xs bg-muted min-h-[100px]"
               />
             </div>
 
@@ -262,7 +291,7 @@ export const DoctorWidgetDialog = ({
               <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
                 <Button variant="outline" onClick={() => setPreviewOpen(true)}>
                   <ExternalLink className="h-4 w-4 mr-2" />
-                  {lang === "de" ? "Vorschau" : "Preview"}
+                  {lang === "de" ? "Live-Test" : "Live Test"}
                 </Button>
                 <DialogContent className="max-w-md">
                   <DialogHeader>
@@ -270,19 +299,13 @@ export const DoctorWidgetDialog = ({
                       {lang === "de" ? "Widget-Vorschau" : "Widget Preview"}
                     </DialogTitle>
                   </DialogHeader>
-                  <div
-                    className="flex justify-center p-4 bg-muted/50 rounded-lg"
-                    style={{ minHeight: height + 40 }}
-                  >
+                  <div className="flex justify-center p-4 bg-muted/50 rounded-lg min-h-[120px]">
                     <iframe
                       src={widgetUrl}
-                      width={width}
-                      height={height}
+                      width={300}
+                      height={80}
                       frameBorder="0"
-                      style={{
-                        borderRadius: "12px",
-                        boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-                      }}
+                      style={{ background: "transparent" }}
                       title="Widget Preview"
                     />
                   </div>
@@ -303,6 +326,11 @@ export const DoctorWidgetDialog = ({
               <ol className="list-decimal list-inside space-y-1 text-xs">
                 <li>
                   {lang === "de"
+                    ? "Wählen Sie die gewünschte Button-Farbe"
+                    : "Select the desired button color"}
+                </li>
+                <li>
+                  {lang === "de"
                     ? "Kopieren Sie den Code oben"
                     : "Copy the code above"}
                 </li>
@@ -310,11 +338,6 @@ export const DoctorWidgetDialog = ({
                   {lang === "de"
                     ? "Fügen Sie ihn in den HTML-Code der Praxis-Website ein"
                     : "Paste it into the practice website's HTML"}
-                </li>
-                <li>
-                  {lang === "de"
-                    ? "Das Widget erscheint automatisch mit dem Arztprofil"
-                    : "The widget will automatically display with the doctor's profile"}
                 </li>
               </ol>
             </div>
