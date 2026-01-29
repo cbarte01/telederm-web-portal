@@ -266,83 +266,72 @@ serve(async (req) => {
     // ============= HEADER SECTION =============
     let y = height - 50;
 
-    // Practice Logo (left) and Doctor Info (right)
-    const doctorInfoX = 300;
-    let doctorInfoY = y;
+    // Patient Info (left side)
+    let patientInfoY = y;
+    const patientName = consultation.patient?.full_name || "N/A";
+    
+    page.drawText(patientName, {
+      x: leftMargin,
+      y: patientInfoY,
+      size: 10,
+      font: helveticaBold,
+      color: black,
+    });
+    patientInfoY -= 14;
 
-    // Embed logo if available
-    if (logoImageBytes) {
-      try {
-        let logoImage;
-        if (logoImageBytes[0] === 0x89 && logoImageBytes[1] === 0x50) {
-          logoImage = await pdfDoc.embedPng(logoImageBytes);
-        } else {
-          logoImage = await pdfDoc.embedJpg(logoImageBytes);
-        }
-        
-        // Scale logo to fit
-        const maxLogoWidth = 150;
-        const maxLogoHeight = 60;
-        let logoWidth = logoImage.width;
-        let logoHeight = logoImage.height;
-        
-        if (logoWidth > maxLogoWidth) {
-          const scale = maxLogoWidth / logoWidth;
-          logoWidth = maxLogoWidth;
-          logoHeight = logoHeight * scale;
-        }
-        if (logoHeight > maxLogoHeight) {
-          const scale = maxLogoHeight / logoHeight;
-          logoHeight = maxLogoHeight;
-          logoWidth = logoWidth * scale;
-        }
-
-        page.drawImage(logoImage, {
-          x: leftMargin,
-          y: y - logoHeight + 10,
-          width: logoWidth,
-          height: logoHeight,
-        });
-        
-        logStep("Logo embedded in PDF");
-      } catch (embedError) {
-        logStep("Logo embed warning", { error: String(embedError) });
-      }
+    // Patient street
+    if (consultation.patient?.patient_address_street) {
+      page.drawText(consultation.patient.patient_address_street, {
+        x: leftMargin,
+        y: patientInfoY,
+        size: 10,
+        font: helvetica,
+        color: black,
+      });
+      patientInfoY -= 14;
     }
 
-    // Doctor info (right side)
+    // Patient zip + city
+    const patientCityLine = [
+      consultation.patient?.patient_address_zip,
+      consultation.patient?.patient_address_city
+    ].filter(Boolean).join(" ");
+    
+    if (patientCityLine) {
+      page.drawText(patientCityLine, {
+        x: leftMargin,
+        y: patientInfoY,
+        size: 10,
+        font: helvetica,
+        color: black,
+      });
+      patientInfoY -= 14;
+    }
+
+    // Country (Austria)
+    page.drawText("Österreich", {
+      x: leftMargin,
+      y: patientInfoY,
+      size: 10,
+      font: helvetica,
+      color: black,
+    });
+
+    // Doctor Info (right side)
+    const doctorInfoX = 350;
+    let doctorInfoY = y;
+
     const doctorDisplayName = doctorProfile.billing_name || doctorProfile.full_name || "Dr.";
     page.drawText(doctorDisplayName, {
       x: doctorInfoX,
       y: doctorInfoY,
-      size: 11,
+      size: 10,
       font: helveticaBold,
       color: black,
     });
     doctorInfoY -= 14;
 
-    // Specialty / Practice Name
-    if (doctorProfile.practice_name) {
-      page.drawText(doctorProfile.practice_name, {
-        x: doctorInfoX,
-        y: doctorInfoY,
-        size: 10,
-        font: helvetica,
-        color: black,
-      });
-      doctorInfoY -= 14;
-    } else {
-      page.drawText("Facharzt für Dermatologie", {
-        x: doctorInfoX,
-        y: doctorInfoY,
-        size: 10,
-        font: helvetica,
-        color: black,
-      });
-      doctorInfoY -= 14;
-    }
-
-    // Practice address
+    // Practice address street
     if (doctorProfile.practice_address_street) {
       page.drawText(doctorProfile.practice_address_street, {
         x: doctorInfoX,
@@ -354,13 +343,14 @@ serve(async (req) => {
       doctorInfoY -= 14;
     }
 
-    const cityLine = [
+    // Practice zip + city
+    const doctorCityLine = [
       doctorProfile.practice_address_zip,
       doctorProfile.practice_address_city
     ].filter(Boolean).join(" ");
     
-    if (cityLine) {
-      page.drawText(cityLine, {
+    if (doctorCityLine) {
+      page.drawText(doctorCityLine, {
         x: doctorInfoX,
         y: doctorInfoY,
         size: 10,
@@ -370,42 +360,14 @@ serve(async (req) => {
       doctorInfoY -= 14;
     }
 
-    // Phone
-    const doctorPhone = doctorProfile.billing_phone || doctorProfile.phone;
-    if (doctorPhone) {
-      page.drawText(`Tel: ${doctorPhone}`, {
-        x: doctorInfoX,
-        y: doctorInfoY,
-        size: 10,
-        font: helvetica,
-        color: black,
-      });
-      doctorInfoY -= 14;
-    }
-
-    // Email
-    if (doctorProfile.billing_email) {
-      page.drawText(`E-Mail: ${doctorProfile.billing_email}`, {
-        x: doctorInfoX,
-        y: doctorInfoY,
-        size: 10,
-        font: helvetica,
-        color: black,
-      });
-      doctorInfoY -= 14;
-    }
-
-    // UID Number
-    if (doctorProfile.uid_number) {
-      page.drawText(`UID: ${doctorProfile.uid_number}`, {
-        x: doctorInfoX,
-        y: doctorInfoY,
-        size: 10,
-        font: helveticaBold,
-        color: black,
-      });
-      doctorInfoY -= 14;
-    }
+    // Country (Austria)
+    page.drawText("Österreich", {
+      x: doctorInfoX,
+      y: doctorInfoY,
+      size: 10,
+      font: helvetica,
+      color: black,
+    });
 
     // ============= TITLE SECTION =============
     y = height - 140;
@@ -420,13 +382,13 @@ serve(async (req) => {
     
     y -= 30;
 
-    // Title: "HONORARNOTE BEI PRIVATORDINATION"
-    const titleText = "HONORARNOTE BEI PRIVATORDINATION";
-    const titleWidth = helveticaBold.widthOfTextAtSize(titleText, 14);
+    // Title: "HONORARNOTE"
+    const titleText = "HONORARNOTE";
+    const titleWidth = helveticaBold.widthOfTextAtSize(titleText, 16);
     page.drawText(titleText, {
       x: (width - titleWidth) / 2,
       y: y,
-      size: 14,
+      size: 16,
       font: helveticaBold,
       color: black,
     });
@@ -535,8 +497,7 @@ serve(async (req) => {
 
     y -= 18;
 
-    // Patient Name
-    const patientName = consultation.patient?.full_name || "N/A";
+    // Patient Name (use patientName from header)
     page.drawText("Name:", {
       x: leftMargin,
       y: y,
@@ -877,10 +838,57 @@ serve(async (req) => {
       }
     }
 
-    // ============= FOOTER: Signature =============
-    const footerY = 100;
+    // ============= FOOTER: Doctor Info + Signature (right side) =============
+    const footerY = 150;
+    const footerX = rightMargin - 200;
 
-    // Signature (right-aligned)
+    // Doctor info on right side of footer
+    let footerInfoY = footerY;
+    
+    page.drawText(doctorDisplayName, {
+      x: footerX,
+      y: footerInfoY,
+      size: 10,
+      font: helveticaBold,
+      color: black,
+    });
+    footerInfoY -= 14;
+
+    // Practice street
+    if (doctorProfile.practice_address_street) {
+      page.drawText(doctorProfile.practice_address_street, {
+        x: footerX,
+        y: footerInfoY,
+        size: 9,
+        font: helvetica,
+        color: black,
+      });
+      footerInfoY -= 12;
+    }
+
+    // Practice zip + city
+    if (doctorCityLine) {
+      page.drawText(doctorCityLine, {
+        x: footerX,
+        y: footerInfoY,
+        size: 9,
+        font: helvetica,
+        color: black,
+      });
+      footerInfoY -= 12;
+    }
+
+    // Country
+    page.drawText("Österreich", {
+      x: footerX,
+      y: footerInfoY,
+      size: 9,
+      font: helvetica,
+      color: black,
+    });
+    footerInfoY -= 20;
+
+    // Signature (right-aligned, below doctor info)
     if (signatureImageBytes) {
       try {
         let signatureImage;
@@ -893,7 +901,7 @@ serve(async (req) => {
         // Scale signature to fit
         const sigDims = signatureImage.scale(0.5);
         const maxSigWidth = 150;
-        const maxSigHeight = 70;
+        const maxSigHeight = 60;
         let sigWidth = sigDims.width;
         let sigHeight = sigDims.height;
         
@@ -908,10 +916,10 @@ serve(async (req) => {
           sigWidth = sigWidth * scale;
         }
 
-        // Position signature on right side
+        // Position signature on right side below doctor info
         page.drawImage(signatureImage, {
-          x: rightMargin - sigWidth - 20,
-          y: footerY,
+          x: footerX,
+          y: footerInfoY - sigHeight,
           width: sigWidth,
           height: sigHeight,
         });
@@ -921,24 +929,6 @@ serve(async (req) => {
         logStep("Signature embed warning", { error: String(embedError) });
       }
     }
-
-    // Doctor name and specialty below signature
-    page.drawText(doctorDisplayName, {
-      x: rightMargin - 170,
-      y: footerY - 20,
-      size: 10,
-      font: helveticaBold,
-      color: black,
-    });
-
-    const specialty = doctorProfile.practice_name || "Facharzt für Dermatologie";
-    page.drawText(specialty, {
-      x: rightMargin - 170,
-      y: footerY - 34,
-      size: 9,
-      font: helvetica,
-      color: gray,
-    });
 
     // Save PDF
     const pdfBytes = await pdfDoc.save();
