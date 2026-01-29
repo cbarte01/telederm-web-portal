@@ -58,12 +58,14 @@ import {
   Euro,
   Pencil,
   Save,
-  X
+  X,
+  Code
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import medenaLogo from "@/assets/logo/medena-logo.png";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { DoctorAvatarManager } from "@/components/admin/DoctorAvatarManager";
+import { DoctorWidgetDialog } from "@/components/admin/DoctorWidgetDialog";
 
 const createDoctorSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -150,6 +152,9 @@ const AdminDashboard = () => {
   // Doctor pricing edit state
   const [editingDoctorPricing, setEditingDoctorPricing] = useState<string | null>(null);
   const [doctorPriceInputs, setDoctorPriceInputs] = useState<{ standard: number; urgent: number }>({ standard: 49, urgent: 74 });
+
+  // Widget dialog state
+  const [widgetDialogDoctor, setWidgetDialogDoctor] = useState<Doctor | null>(null);
 
   const lang = i18n.language === "de" ? "de" : "en";
   const dateLocale = lang === "de" ? de : enUS;
@@ -1428,6 +1433,15 @@ const AdminDashboard = () => {
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
+                                {doctor.referral_code && (
+                                  <DropdownMenuItem 
+                                    onClick={() => setWidgetDialogDoctor(doctor)}
+                                    className="gap-2"
+                                  >
+                                    <Code className="h-4 w-4" />
+                                    {lang === "de" ? "Widgets & QR-Code" : "Widgets & QR Code"}
+                                  </DropdownMenuItem>
+                                )}
                                 {doctor.is_active ? (
                                   <DropdownMenuItem 
                                     onClick={() => openConfirmDialog('deactivate', doctor, 'doctor')}
@@ -1665,6 +1679,14 @@ const AdminDashboard = () => {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Doctor Widget Dialog */}
+        <DoctorWidgetDialog
+          open={!!widgetDialogDoctor}
+          onOpenChange={(open) => !open && setWidgetDialogDoctor(null)}
+          doctorName={widgetDialogDoctor?.full_name ?? null}
+          referralCode={widgetDialogDoctor?.referral_code ?? ""}
+        />
       </main>
     </div>
   );
