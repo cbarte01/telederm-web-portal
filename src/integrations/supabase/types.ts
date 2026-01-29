@@ -95,6 +95,7 @@ export type Database = {
           patient_id: string | null
           payment_status: string | null
           pricing_plan: string | null
+          report_storage_path: string | null
           responded_at: string | null
           self_treatment_description: string | null
           status: Database["public"]["Enums"]["consultation_status"]
@@ -131,6 +132,7 @@ export type Database = {
           patient_id?: string | null
           payment_status?: string | null
           pricing_plan?: string | null
+          report_storage_path?: string | null
           responded_at?: string | null
           self_treatment_description?: string | null
           status?: Database["public"]["Enums"]["consultation_status"]
@@ -167,6 +169,7 @@ export type Database = {
           patient_id?: string | null
           payment_status?: string | null
           pricing_plan?: string | null
+          report_storage_path?: string | null
           responded_at?: string | null
           self_treatment_description?: string | null
           status?: Database["public"]["Enums"]["consultation_status"]
