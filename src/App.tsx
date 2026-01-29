@@ -28,6 +28,7 @@ import DoctorDashboard from "./pages/dashboards/DoctorDashboard";
 import AdminDashboard from "./pages/dashboards/AdminDashboard";
 import ConsultationFlow from "./pages/consultation/ConsultationFlow";
 import PaymentSuccess from "./pages/consultation/PaymentSuccess";
+import Widget from "./pages/Widget";
 
 // Profile page
 import Profile from "./pages/Profile";
@@ -54,6 +55,7 @@ const App = () => (
             <Route path="/agb" element={<TermsOfService />} />
             <Route path="/consultation" element={<ConsultationFlow />} />
             <Route path="/consultation/success" element={<PaymentSuccess />} />
+            <Route path="/widget/:referralCode" element={<Widget />} />
             
             {/* Auth pages */}
             <Route path="/auth" element={<PatientAuth />} />
