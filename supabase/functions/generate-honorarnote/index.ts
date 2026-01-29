@@ -892,10 +892,31 @@ serve(async (req) => {
     if (signatureImageBytes) {
       try {
         let signatureImage;
-        if (signatureImageBytes[0] === 0x89 && signatureImageBytes[1] === 0x50) {
+        
+        // Check PNG magic bytes (89 50 4E 47)
+        const isPng = signatureImageBytes[0] === 0x89 && signatureImageBytes[1] === 0x50;
+        // Check JPEG magic bytes (FF D8)
+        const isJpeg = signatureImageBytes[0] === 0xFF && signatureImageBytes[1] === 0xD8;
+        
+        logStep("Signature format detection", { 
+          isPng, 
+          isJpeg, 
+          firstBytes: `${signatureImageBytes[0]?.toString(16)} ${signatureImageBytes[1]?.toString(16)}` 
+        });
+        
+        if (isPng) {
           signatureImage = await pdfDoc.embedPng(signatureImageBytes);
-        } else {
+        } else if (isJpeg) {
           signatureImage = await pdfDoc.embedJpg(signatureImageBytes);
+        } else {
+          // Unknown format - try PNG first as fallback (many images are PNG with wrong extension)
+          logStep("Unknown signature format, trying PNG first");
+          try {
+            signatureImage = await pdfDoc.embedPng(signatureImageBytes);
+          } catch (pngError) {
+            logStep("PNG embed failed, trying JPEG", { error: String(pngError) });
+            signatureImage = await pdfDoc.embedJpg(signatureImageBytes);
+          }
         }
         
         // Scale signature to fit
@@ -926,7 +947,7 @@ serve(async (req) => {
         
         logStep("Signature embedded in PDF");
       } catch (embedError) {
-        logStep("Signature embed warning", { error: String(embedError) });
+        logStep("Signature embed failed - file may not be a valid PNG or JPEG image", { error: String(embedError) });
       }
     }
 
