@@ -118,7 +118,7 @@ serve(async (req) => {
       doctor_id: consultation.doctor_id 
     });
 
-    // Fetch doctor profile with billing info and signature
+    // Fetch doctor profile with billing info, signature, and logo
     const { data: doctorProfile, error: doctorError } = await supabaseClient
       .from("profiles")
       .select(`
@@ -134,6 +134,7 @@ serve(async (req) => {
         billing_email,
         billing_phone,
         signature_url,
+        practice_logo_url,
         phone
       `)
       .eq("id", consultation.doctor_id)
@@ -147,7 +148,8 @@ serve(async (req) => {
     logStep("Doctor profile fetched", { 
       name: doctorProfile.full_name,
       hasUID: !!doctorProfile.uid_number,
-      hasSignature: !!doctorProfile.signature_url
+      hasSignature: !!doctorProfile.signature_url,
+      hasLogo: !!doctorProfile.practice_logo_url
     });
 
     // Generate or retrieve sequential honorarnote number
@@ -214,6 +216,23 @@ serve(async (req) => {
       }
     }
 
+    // Fetch practice logo if exists
+    let logoImageBytes: Uint8Array | null = null;
+    if (doctorProfile.practice_logo_url) {
+      try {
+        const { data: logoData, error: logoError } = await supabaseClient.storage
+          .from("practice-logos")
+          .download(doctorProfile.practice_logo_url);
+        
+        if (!logoError && logoData) {
+          logoImageBytes = new Uint8Array(await logoData.arrayBuffer());
+          logStep("Logo loaded", { size: logoImageBytes.length });
+        }
+      } catch (logoErr) {
+        logStep("Logo load warning", { error: String(logoErr) });
+      }
+    }
+
     // Create PDF - A4 size
     const pdfDoc = await PDFDocument.create();
     const page = pdfDoc.addPage([595.28, 841.89]); // A4
@@ -224,15 +243,19 @@ serve(async (req) => {
 
     const black = rgb(0, 0, 0);
     const gray = rgb(0.4, 0.4, 0.4);
+    const lightGray = rgb(0.85, 0.85, 0.85);
 
     const leftMargin = 50;
     const rightMargin = width - 50;
 
     // Current date for the document
-    const currentDate = new Date();
     const billDate = consultation.responded_at 
       ? new Date(consultation.responded_at)
-      : currentDate;
+      : new Date();
+    
+    const serviceDate = consultation.submitted_at
+      ? new Date(consultation.submitted_at)
+      : billDate;
     
     const formatDate = (date: Date) => date.toLocaleDateString("de-AT", {
       day: "2-digit",
@@ -240,123 +263,528 @@ serve(async (req) => {
       year: "numeric"
     });
 
-    // ============= HEADER: Title =============
-    let y = height - 60;
+    // ============= HEADER SECTION =============
+    let y = height - 50;
 
-    // Title: "Honorarnote bei Privatordination"
-    const titleText = "Honorarnote bei Privatordination";
-    const titleWidth = helveticaBold.widthOfTextAtSize(titleText, 16);
+    // Practice Logo (left) and Doctor Info (right)
+    const doctorInfoX = 300;
+    let doctorInfoY = y;
+
+    // Embed logo if available
+    if (logoImageBytes) {
+      try {
+        let logoImage;
+        if (logoImageBytes[0] === 0x89 && logoImageBytes[1] === 0x50) {
+          logoImage = await pdfDoc.embedPng(logoImageBytes);
+        } else {
+          logoImage = await pdfDoc.embedJpg(logoImageBytes);
+        }
+        
+        // Scale logo to fit
+        const maxLogoWidth = 150;
+        const maxLogoHeight = 60;
+        let logoWidth = logoImage.width;
+        let logoHeight = logoImage.height;
+        
+        if (logoWidth > maxLogoWidth) {
+          const scale = maxLogoWidth / logoWidth;
+          logoWidth = maxLogoWidth;
+          logoHeight = logoHeight * scale;
+        }
+        if (logoHeight > maxLogoHeight) {
+          const scale = maxLogoHeight / logoHeight;
+          logoHeight = maxLogoHeight;
+          logoWidth = logoWidth * scale;
+        }
+
+        page.drawImage(logoImage, {
+          x: leftMargin,
+          y: y - logoHeight + 10,
+          width: logoWidth,
+          height: logoHeight,
+        });
+        
+        logStep("Logo embedded in PDF");
+      } catch (embedError) {
+        logStep("Logo embed warning", { error: String(embedError) });
+      }
+    }
+
+    // Doctor info (right side)
+    const doctorDisplayName = doctorProfile.billing_name || doctorProfile.full_name || "Dr.";
+    page.drawText(doctorDisplayName, {
+      x: doctorInfoX,
+      y: doctorInfoY,
+      size: 11,
+      font: helveticaBold,
+      color: black,
+    });
+    doctorInfoY -= 14;
+
+    // Specialty / Practice Name
+    if (doctorProfile.practice_name) {
+      page.drawText(doctorProfile.practice_name, {
+        x: doctorInfoX,
+        y: doctorInfoY,
+        size: 10,
+        font: helvetica,
+        color: black,
+      });
+      doctorInfoY -= 14;
+    } else {
+      page.drawText("Facharzt für Dermatologie", {
+        x: doctorInfoX,
+        y: doctorInfoY,
+        size: 10,
+        font: helvetica,
+        color: black,
+      });
+      doctorInfoY -= 14;
+    }
+
+    // Practice address
+    if (doctorProfile.practice_address_street) {
+      page.drawText(doctorProfile.practice_address_street, {
+        x: doctorInfoX,
+        y: doctorInfoY,
+        size: 10,
+        font: helvetica,
+        color: black,
+      });
+      doctorInfoY -= 14;
+    }
+
+    const cityLine = [
+      doctorProfile.practice_address_zip,
+      doctorProfile.practice_address_city
+    ].filter(Boolean).join(" ");
+    
+    if (cityLine) {
+      page.drawText(cityLine, {
+        x: doctorInfoX,
+        y: doctorInfoY,
+        size: 10,
+        font: helvetica,
+        color: black,
+      });
+      doctorInfoY -= 14;
+    }
+
+    // Phone
+    const doctorPhone = doctorProfile.billing_phone || doctorProfile.phone;
+    if (doctorPhone) {
+      page.drawText(`Tel: ${doctorPhone}`, {
+        x: doctorInfoX,
+        y: doctorInfoY,
+        size: 10,
+        font: helvetica,
+        color: black,
+      });
+      doctorInfoY -= 14;
+    }
+
+    // Email
+    if (doctorProfile.billing_email) {
+      page.drawText(`E-Mail: ${doctorProfile.billing_email}`, {
+        x: doctorInfoX,
+        y: doctorInfoY,
+        size: 10,
+        font: helvetica,
+        color: black,
+      });
+      doctorInfoY -= 14;
+    }
+
+    // UID Number
+    if (doctorProfile.uid_number) {
+      page.drawText(`UID: ${doctorProfile.uid_number}`, {
+        x: doctorInfoX,
+        y: doctorInfoY,
+        size: 10,
+        font: helveticaBold,
+        color: black,
+      });
+      doctorInfoY -= 14;
+    }
+
+    // ============= TITLE SECTION =============
+    y = height - 140;
+    
+    // Horizontal line
+    page.drawLine({
+      start: { x: leftMargin, y: y },
+      end: { x: rightMargin, y: y },
+      thickness: 0.5,
+      color: lightGray,
+    });
+    
+    y -= 30;
+
+    // Title: "HONORARNOTE BEI PRIVATORDINATION"
+    const titleText = "HONORARNOTE BEI PRIVATORDINATION";
+    const titleWidth = helveticaBold.widthOfTextAtSize(titleText, 14);
     page.drawText(titleText, {
       x: (width - titleWidth) / 2,
       y: y,
-      size: 16,
+      size: 14,
+      font: helveticaBold,
+      color: black,
+    });
+
+    y -= 18;
+
+    // Subtitle
+    const subtitleText = "Zur Vorlage bei Versicherung";
+    const subtitleWidth = helvetica.widthOfTextAtSize(subtitleText, 10);
+    page.drawText(subtitleText, {
+      x: (width - subtitleWidth) / 2,
+      y: y,
+      size: 10,
+      font: helvetica,
+      color: gray,
+    });
+
+    y -= 30;
+
+    // ============= BILLING METADATA SECTION =============
+    page.drawLine({
+      start: { x: leftMargin, y: y },
+      end: { x: rightMargin, y: y },
+      thickness: 0.5,
+      color: lightGray,
+    });
+    
+    y -= 20;
+
+    page.drawText(`Rechnungsnummer:`, {
+      x: leftMargin,
+      y: y,
+      size: 9,
+      font: helvetica,
+      color: gray,
+    });
+    page.drawText(honorarnoteNumber || "N/A", {
+      x: leftMargin + 100,
+      y: y,
+      size: 9,
+      font: helveticaBold,
+      color: black,
+    });
+
+    page.drawText("Original", {
+      x: rightMargin - 40,
+      y: y,
+      size: 9,
+      font: helveticaBold,
+      color: black,
+    });
+
+    y -= 14;
+
+    page.drawText(`Rechnungsdatum:`, {
+      x: leftMargin,
+      y: y,
+      size: 9,
+      font: helvetica,
+      color: gray,
+    });
+    page.drawText(formatDate(billDate), {
+      x: leftMargin + 100,
+      y: y,
+      size: 9,
+      font: helvetica,
+      color: black,
+    });
+
+    y -= 14;
+
+    page.drawText(`Leistungsdatum:`, {
+      x: leftMargin,
+      y: y,
+      size: 9,
+      font: helvetica,
+      color: gray,
+    });
+    page.drawText(formatDate(serviceDate), {
+      x: leftMargin + 100,
+      y: y,
+      size: 9,
+      font: helvetica,
+      color: black,
+    });
+
+    y -= 30;
+
+    // ============= PATIENT SECTION =============
+    page.drawLine({
+      start: { x: leftMargin, y: y },
+      end: { x: rightMargin, y: y },
+      thickness: 0.5,
+      color: lightGray,
+    });
+    
+    y -= 20;
+
+    page.drawText("PATIENT", {
+      x: leftMargin,
+      y: y,
+      size: 11,
+      font: helveticaBold,
+      color: black,
+    });
+
+    y -= 18;
+
+    // Patient Name
+    const patientName = consultation.patient?.full_name || "N/A";
+    page.drawText("Name:", {
+      x: leftMargin,
+      y: y,
+      size: 9,
+      font: helvetica,
+      color: gray,
+    });
+    page.drawText(patientName, {
+      x: leftMargin + 80,
+      y: y,
+      size: 9,
+      font: helveticaBold,
+      color: black,
+    });
+
+    y -= 14;
+
+    // Date of Birth
+    if (consultation.patient?.date_of_birth) {
+      const dob = new Date(consultation.patient.date_of_birth);
+      page.drawText("Geburtsdatum:", {
+        x: leftMargin,
+        y: y,
+        size: 9,
+        font: helvetica,
+        color: gray,
+      });
+      page.drawText(formatDate(dob), {
+        x: leftMargin + 80,
+        y: y,
+        size: 9,
+        font: helvetica,
+        color: black,
+      });
+      y -= 14;
+    }
+
+    // Insurance Number (first 4 digits)
+    if (consultation.patient?.social_security_number) {
+      const svNr = consultation.patient.social_security_number.slice(0, 4);
+      page.drawText("Vers.Nr:", {
+        x: leftMargin,
+        y: y,
+        size: 9,
+        font: helvetica,
+        color: gray,
+      });
+      page.drawText(svNr, {
+        x: leftMargin + 80,
+        y: y,
+        size: 9,
+        font: helvetica,
+        color: black,
+      });
+      y -= 14;
+    }
+
+    // Patient Address
+    const patientAddress = [
+      consultation.patient?.patient_address_street,
+      [consultation.patient?.patient_address_zip, consultation.patient?.patient_address_city].filter(Boolean).join(" ")
+    ].filter(Boolean).join(", ");
+
+    if (patientAddress) {
+      page.drawText("Anschrift:", {
+        x: leftMargin,
+        y: y,
+        size: 9,
+        font: helvetica,
+        color: gray,
+      });
+      page.drawText(patientAddress, {
+        x: leftMargin + 80,
+        y: y,
+        size: 9,
+        font: helvetica,
+        color: black,
+      });
+      y -= 14;
+    }
+
+    // Insurance Provider
+    if (consultation.patient?.insurance_provider) {
+      page.drawText("Versicherung:", {
+        x: leftMargin,
+        y: y,
+        size: 9,
+        font: helvetica,
+        color: gray,
+      });
+      page.drawText(consultation.patient.insurance_provider, {
+        x: leftMargin + 80,
+        y: y,
+        size: 9,
+        font: helvetica,
+        color: black,
+      });
+      y -= 14;
+    }
+
+    y -= 20;
+
+    // ============= SERVICES TABLE =============
+    page.drawLine({
+      start: { x: leftMargin, y: y },
+      end: { x: rightMargin, y: y },
+      thickness: 0.5,
+      color: lightGray,
+    });
+    
+    y -= 20;
+
+    page.drawText("ERBRACHTE LEISTUNGEN", {
+      x: leftMargin,
+      y: y,
+      size: 11,
       font: helveticaBold,
       color: black,
     });
 
     y -= 25;
 
-    // Date range (same date on both sides)
-    const dateRangeText = `${formatDate(billDate)} - ${formatDate(billDate)}`;
-    const dateRangeWidth = helvetica.widthOfTextAtSize(dateRangeText, 10);
-    page.drawText(dateRangeText, {
-      x: (width - dateRangeWidth) / 2,
-      y: y,
-      size: 10,
-      font: helvetica,
-      color: black,
+    // Table header
+    const tableTop = y + 5;
+    const colDate = leftMargin;
+    const colDesc = leftMargin + 80;
+    const colAmount = rightMargin - 80;
+    
+    // Header row background
+    page.drawRectangle({
+      x: leftMargin,
+      y: y - 15,
+      width: rightMargin - leftMargin,
+      height: 20,
+      color: lightGray,
     });
 
-    y -= 18;
-
-    // "Zur Vorlage bei Versicherung"
-    const insuranceText = "Zur Vorlage bei Versicherung";
-    const insuranceWidth = helvetica.widthOfTextAtSize(insuranceText, 10);
-    page.drawText(insuranceText, {
-      x: (width - insuranceWidth) / 2,
-      y: y,
-      size: 10,
-      font: helvetica,
-      color: black,
-    });
-
-    y -= 40;
-
-    // ============= BILL INFO BOX (Right side) =============
-    const billBoxX = rightMargin - 180;
-    let billBoxY = y;
-
-    page.drawText(`Rechnungsnummer: ${honorarnoteNumber}`, {
-      x: billBoxX,
-      y: billBoxY,
+    page.drawText("Datum", {
+      x: colDate + 5,
+      y: y - 10,
       size: 9,
-      font: helvetica,
+      font: helveticaBold,
       color: black,
     });
-    billBoxY -= 14;
-
-    page.drawText(`Rechnungsdatum: ${formatDate(billDate)}`, {
-      x: billBoxX,
-      y: billBoxY,
+    page.drawText("Beschreibung", {
+      x: colDesc,
+      y: y - 10,
       size: 9,
-      font: helvetica,
+      font: helveticaBold,
       color: black,
     });
-    billBoxY -= 14;
-
-    page.drawText("Original", {
-      x: billBoxX,
-      y: billBoxY,
+    page.drawText("Betrag", {
+      x: colAmount + 15,
+      y: y - 10,
       size: 9,
       font: helveticaBold,
       color: black,
     });
 
-    y -= 50;
+    y -= 35;
 
-    // ============= PATIENT INFO LINE =============
-    const patientName = consultation.patient?.full_name || "N/A";
-    const insurance = consultation.patient?.insurance_provider || "Privat";
-    const patientLine = `Pat.: ${patientName}, Kasse: ${insurance}, Kat: ERW`;
-    
-    page.drawText(patientLine, {
-      x: leftMargin,
+    // Service row
+    page.drawText(formatDate(serviceDate), {
+      x: colDate + 5,
       y: y,
-      size: 10,
+      size: 9,
       font: helvetica,
       color: black,
     });
 
-    y -= 16;
+    // Service description with ICD-10
+    const serviceDesc = "Telemedizinische Konsultation";
+    page.drawText(serviceDesc, {
+      x: colDesc,
+      y: y,
+      size: 9,
+      font: helvetica,
+      color: black,
+    });
 
-    // DOB and Insurance Number line
-    let dobLine = "";
-    if (consultation.patient?.date_of_birth) {
-      const dob = new Date(consultation.patient.date_of_birth);
-      dobLine += `Geb. am: ${formatDate(dob)}`;
-    }
-    if (consultation.patient?.social_security_number) {
-      // Show first 4 digits as "Vers.Nr"
-      const svNr = consultation.patient.social_security_number.slice(0, 4);
-      if (dobLine) dobLine += ", ";
-      dobLine += `Vers.Nr: ${svNr}`;
-    }
-    
-    if (dobLine) {
-      page.drawText(dobLine, {
-        x: leftMargin,
+    const amount = consultation.consultation_price || (consultation.pricing_plan === "urgent" ? 74 : 49);
+    page.drawText(`€ ${amount.toFixed(2).replace(".", ",")}`, {
+      x: colAmount + 10,
+      y: y,
+      size: 9,
+      font: helveticaBold,
+      color: black,
+    });
+
+    y -= 14;
+
+    page.drawText("(Dermatologie)", {
+      x: colDesc,
+      y: y,
+      size: 9,
+      font: helvetica,
+      color: gray,
+    });
+
+    y -= 14;
+
+    // ICD-10 code and description
+    const icd10Text = `ICD-10: ${consultation.icd10_code}`;
+    page.drawText(icd10Text, {
+      x: colDesc,
+      y: y,
+      size: 9,
+      font: helvetica,
+      color: black,
+    });
+
+    y -= 14;
+
+    if (consultation.icd10_description) {
+      const diagDesc = consultation.icd10_description.length > 50 
+        ? consultation.icd10_description.substring(0, 47) + "..." 
+        : consultation.icd10_description;
+      page.drawText(diagDesc, {
+        x: colDesc,
         y: y,
-        size: 10,
+        size: 8,
         font: helvetica,
-        color: black,
+        color: gray,
       });
+      y -= 14;
     }
 
-    y -= 40;
+    y -= 10;
 
-    // ============= SERVICE INTRO =============
-    page.drawText("Für meine Tätigkeit erlaube ich mir, folgendes Honorar in Rechnung zu stellen:", {
-      x: leftMargin,
+    // Totals row
+    page.drawLine({
+      start: { x: colAmount - 30, y: y },
+      end: { x: rightMargin, y: y },
+      thickness: 0.5,
+      color: black,
+    });
+
+    y -= 18;
+
+    page.drawText("Gesamt:", {
+      x: colAmount - 25,
+      y: y,
+      size: 10,
+      font: helveticaBold,
+      color: black,
+    });
+    page.drawText(`€ ${amount.toFixed(2).replace(".", ",")}`, {
+      x: colAmount + 10,
       y: y,
       size: 10,
       font: helveticaBold,
@@ -365,87 +793,28 @@ serve(async (req) => {
 
     y -= 30;
 
-    // ============= MEDICAL SERVICES TABLE =============
-    // Header: "Medizinische Leistungen"
-    page.drawText("Medizinische Leistungen", {
+    // Tax exemption note
+    page.drawText("Umsatzsteuerbefreit gemäß § 6 Abs. 1 Z 19 UStG (Heilbehandlung)", {
       x: leftMargin,
       y: y,
-      size: 11,
-      font: helveticaBold,
-      color: black,
-    });
-
-    y -= 25;
-
-    // Draw table border
-    const tableTop = y + 5;
-    const tableHeight = 30;
-    const tableWidth = rightMargin - leftMargin;
-    
-    page.drawRectangle({
-      x: leftMargin,
-      y: y - tableHeight + 10,
-      width: tableWidth,
-      height: tableHeight,
-      borderColor: black,
-      borderWidth: 0.5,
-    });
-
-    // Service description
-    const serviceDesc = "Telemedizinische Konsultation (Dermatologie)";
-    page.drawText(serviceDesc, {
-      x: leftMargin + 10,
-      y: y - 5,
-      size: 9,
-      font: helvetica,
-      color: black,
-    });
-
-    // Amount
-    const amount = consultation.consultation_price || (consultation.pricing_plan === "urgent" ? 74 : 49);
-    
-    page.drawText("Rechnungsbetrag", {
-      x: rightMargin - 150,
-      y: y - 5,
-      size: 9,
-      font: helvetica,
-      color: black,
-    });
-
-    page.drawText(`EURO ${amount.toFixed(2)}`, {
-      x: rightMargin - 70,
-      y: y - 5,
-      size: 9,
-      font: helveticaBold,
-      color: black,
-    });
-
-    y -= tableHeight + 20;
-
-    // ============= TAX NOTE =============
-    page.drawText("Umsatzsteuerbefreit gemäß § 6 Abs. 1 Z 19 UStG.", {
-      x: leftMargin,
-      y: y,
-      size: 9,
+      size: 8,
       font: helvetica,
       color: gray,
     });
 
+    y -= 30;
+
+    // ============= PAYMENT SECTION =============
+    page.drawLine({
+      start: { x: leftMargin, y: y },
+      end: { x: rightMargin, y: y },
+      thickness: 0.5,
+      color: lightGray,
+    });
+    
     y -= 20;
 
-    // ============= PAYMENT CONFIRMATION =============
-    page.drawText(`Betrag erhalten am ${formatDate(billDate)}`, {
-      x: leftMargin,
-      y: y,
-      size: 9,
-      font: helvetica,
-      color: black,
-    });
-
-    y -= 40;
-
-    // ============= DIAGNOSIS SECTION =============
-    page.drawText("Diagnose(n):", {
+    page.drawText("ZAHLUNGSINFORMATION", {
       x: leftMargin,
       y: y,
       size: 11,
@@ -455,94 +824,66 @@ serve(async (req) => {
 
     y -= 18;
 
-    // ICD-10 description (diagnosis)
-    const diagnosisText = consultation.icd10_description || consultation.icd10_code || "N/A";
-    page.drawText(diagnosisText, {
+    page.drawText(`Betrag bereits beglichen am: ${formatDate(billDate)}`, {
       x: leftMargin,
       y: y,
-      size: 10,
+      size: 9,
       font: helvetica,
       color: black,
     });
 
-    // ============= BOTTOM: Doctor Info & Signature =============
-    const bottomY = 180;
-    let yBottom = bottomY;
+    y -= 14;
 
-    // Doctor name (use billing name if available)
-    const doctorDisplayName = doctorProfile.billing_name || doctorProfile.full_name || "Dr.";
-    page.drawText(doctorDisplayName, {
+    page.drawText("Zahlungsart: Kreditkarte (Online)", {
       x: leftMargin,
-      y: yBottom,
-      size: 11,
-      font: helveticaBold,
+      y: y,
+      size: 9,
+      font: helvetica,
       color: black,
     });
-    yBottom -= 14;
 
-    // Practice name / specialty
-    if (doctorProfile.practice_name) {
-      page.drawText(doctorProfile.practice_name, {
+    y -= 20;
+
+    // Bank details
+    if (doctorProfile.iban || doctorProfile.bic) {
+      page.drawText("Bankverbindung für Rückfragen:", {
         x: leftMargin,
-        y: yBottom,
-        size: 10,
+        y: y,
+        size: 9,
         font: helvetica,
-        color: black,
+        color: gray,
       });
-      yBottom -= 14;
-    }
+      y -= 14;
 
-    // Address
-    if (doctorProfile.practice_address_zip || doctorProfile.practice_address_city) {
-      const cityLine = [
-        doctorProfile.practice_address_zip,
-        doctorProfile.practice_address_city
-      ].filter(Boolean).join(" ");
-      
-      let addressLine = cityLine;
-      if (doctorProfile.practice_address_street) {
-        addressLine += `, ${doctorProfile.practice_address_street}`;
+      if (doctorProfile.iban) {
+        page.drawText(`IBAN: ${doctorProfile.iban}`, {
+          x: leftMargin,
+          y: y,
+          size: 9,
+          font: helvetica,
+          color: black,
+        });
+        y -= 14;
       }
-      
-      page.drawText(addressLine, {
-        x: leftMargin,
-        y: yBottom,
-        size: 10,
-        font: helvetica,
-        color: black,
-      });
-      yBottom -= 14;
+
+      if (doctorProfile.bic) {
+        page.drawText(`BIC: ${doctorProfile.bic}`, {
+          x: leftMargin,
+          y: y,
+          size: 9,
+          font: helvetica,
+          color: black,
+        });
+      }
     }
 
-    // Phone
-    const doctorPhone = doctorProfile.billing_phone || doctorProfile.phone;
-    if (doctorPhone) {
-      page.drawText(`T: ${doctorPhone}`, {
-        x: leftMargin,
-        y: yBottom,
-        size: 10,
-        font: helvetica,
-        color: black,
-      });
-      yBottom -= 14;
-    }
+    // ============= FOOTER: Signature =============
+    const footerY = 100;
 
-    // Email/Website
-    if (doctorProfile.billing_email) {
-      page.drawText(doctorProfile.billing_email, {
-        x: leftMargin,
-        y: yBottom,
-        size: 10,
-        font: helvetica,
-        color: black,
-      });
-    }
-
-    // Signature (right side, aligned with doctor info)
+    // Signature (right-aligned)
     if (signatureImageBytes) {
       try {
         let signatureImage;
-        // Check if PNG or JPEG
         if (signatureImageBytes[0] === 0x89 && signatureImageBytes[1] === 0x50) {
           signatureImage = await pdfDoc.embedPng(signatureImageBytes);
         } else {
@@ -570,7 +911,7 @@ serve(async (req) => {
         // Position signature on right side
         page.drawImage(signatureImage, {
           x: rightMargin - sigWidth - 20,
-          y: bottomY - sigHeight + 30,
+          y: footerY,
           width: sigWidth,
           height: sigHeight,
         });
@@ -581,12 +922,30 @@ serve(async (req) => {
       }
     }
 
+    // Doctor name and specialty below signature
+    page.drawText(doctorDisplayName, {
+      x: rightMargin - 170,
+      y: footerY - 20,
+      size: 10,
+      font: helveticaBold,
+      color: black,
+    });
+
+    const specialty = doctorProfile.practice_name || "Facharzt für Dermatologie";
+    page.drawText(specialty, {
+      x: rightMargin - 170,
+      y: footerY - 34,
+      size: 9,
+      font: helvetica,
+      color: gray,
+    });
+
     // Save PDF
     const pdfBytes = await pdfDoc.save();
     logStep("PDF generated", { size: pdfBytes.length });
 
     // Upload to storage
-    const storagePath = `${user.id}/${consultation_id}/honorarnote_${honorarnoteNumber.replace(/\//g, "-")}.pdf`;
+    const storagePath = `${user.id}/${consultation_id}/honorarnote_${honorarnoteNumber?.replace(/\//g, "-") || "draft"}.pdf`;
     
     const { error: uploadError } = await supabaseClient.storage
       .from("honorarnoten")
@@ -597,7 +956,7 @@ serve(async (req) => {
 
     if (uploadError) {
       logStep("Upload error", { error: uploadError.message });
-      throw new Error(`Failed to upload PDF: ${uploadError.message}`);
+      throw new Error("Failed to generate document");
     }
 
     // Update consultation with storage path
@@ -612,7 +971,7 @@ serve(async (req) => {
       .createSignedUrl(storagePath, 3600); // 1 hour expiry
 
     if (signedUrlError) {
-      throw new Error(`Failed to generate signed URL: ${signedUrlError.message}`);
+      throw new Error("Failed to generate document");
     }
 
     logStep("Honorarnote generated successfully", { storagePath });

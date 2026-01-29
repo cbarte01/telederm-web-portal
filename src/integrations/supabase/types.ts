@@ -265,6 +265,7 @@ export type Database = {
           practice_address_city: string | null
           practice_address_street: string | null
           practice_address_zip: string | null
+          practice_logo_url: string | null
           practice_name: string | null
           referral_code: string | null
           signature_url: string | null
@@ -299,6 +300,7 @@ export type Database = {
           practice_address_city?: string | null
           practice_address_street?: string | null
           practice_address_zip?: string | null
+          practice_logo_url?: string | null
           practice_name?: string | null
           referral_code?: string | null
           signature_url?: string | null
@@ -333,6 +335,7 @@ export type Database = {
           practice_address_city?: string | null
           practice_address_street?: string | null
           practice_address_zip?: string | null
+          practice_logo_url?: string | null
           practice_name?: string | null
           referral_code?: string | null
           signature_url?: string | null
