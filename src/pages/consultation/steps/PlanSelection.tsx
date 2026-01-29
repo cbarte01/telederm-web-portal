@@ -25,12 +25,12 @@ const PlanSelection = ({ draft, updateDraft, onNext }: PlanSelectionProps) => {
   const [pricing, setPricing] = useState<PricingData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch pricing - either from referred doctor or group settings
+  // Fetch pricing - either from referred doctor or group settings via edge function
   useEffect(() => {
     const fetchPricing = async () => {
       setIsLoading(true);
       try {
-        // If we have a referred doctor, get their pricing
+        // If we have a referred doctor, get their pricing from profiles
         if (draft.referredDoctorId) {
           const { data: doctorProfile, error: doctorError } = await supabase
             .from("profiles")
@@ -48,21 +48,16 @@ const PlanSelection = ({ draft, updateDraft, onNext }: PlanSelectionProps) => {
           }
         }
 
-        // Fall back to group pricing from admin settings
-        const { data: settings, error: settingsError } = await supabase
-          .from("admin_settings")
-          .select("setting_value")
-          .eq("setting_key", "group_pricing")
-          .maybeSingle();
+        // Fetch group pricing via public edge function (bypasses admin_settings RLS)
+        const { data, error } = await supabase.functions.invoke("get-current-pricing");
 
-        if (!settingsError && settings) {
-          const groupPricing = settings.setting_value as unknown as PricingData;
+        if (!error && data) {
           setPricing({
-            standard_price: groupPricing.standard_price ?? 49,
-            urgent_price: groupPricing.urgent_price ?? 74,
+            standard_price: data.standard_price ?? 49,
+            urgent_price: data.urgent_price ?? 74,
           });
         } else {
-          // Default fallback
+          console.error("Error fetching group pricing:", error);
           setPricing({ standard_price: 49, urgent_price: 74 });
         }
       } catch (error) {
