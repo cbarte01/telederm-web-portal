@@ -26,6 +26,7 @@ interface ConsultationDetail {
   doctor_avatar_url?: string | null;
   icd10_code?: string | null;
   icd10_description?: string | null;
+  report_storage_path?: string | null;
 }
 
 interface ConsultationDetailDialogProps {
@@ -79,6 +80,7 @@ export const ConsultationDetailDialog = ({ consultation, open, onOpenChange }: C
   const { i18n } = useTranslation();
   const { toast } = useToast();
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isDownloadingReport, setIsDownloadingReport] = useState(false);
   const lang = i18n.language === "de" ? "de" : "en";
 
   if (!consultation) return null;
@@ -131,6 +133,52 @@ export const ConsultationDetailDialog = ({ consultation, open, onOpenChange }: C
       });
     } finally {
       setIsDownloading(false);
+    }
+  };
+
+  const handleDownloadReport = async () => {
+    if (!consultation) return;
+    setIsDownloadingReport(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-consultation-report", {
+        body: { consultation_id: consultation.id, language: lang },
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        // Fetch the PDF as a blob to ensure download works cross-origin
+        const response = await fetch(data.url);
+        if (!response.ok) throw new Error("Failed to fetch PDF");
+        
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = lang === "de" ? "Befundbericht.pdf" : "Consultation_Report.pdf";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Clean up the blob URL
+        URL.revokeObjectURL(blobUrl);
+        
+        toast({
+          title: lang === "de" ? "Befundbericht erstellt" : "Consultation report generated",
+        });
+      }
+    } catch (err) {
+      console.error("Report download error:", err);
+      toast({
+        variant: "destructive",
+        title: lang === "de" ? "Fehler" : "Error",
+        description: lang === "de" 
+          ? "Befundbericht konnte nicht erstellt werden." 
+          : "Could not generate consultation report.",
+      });
+    } finally {
+      setIsDownloadingReport(false);
     }
   };
 
@@ -283,9 +331,30 @@ export const ConsultationDetailDialog = ({ consultation, open, onOpenChange }: C
             )}
           </div>
 
-          {/* Honorarnote Download - only for completed consultations with ICD-10 */}
+          {/* Downloads - only for completed consultations with ICD-10 */}
           {consultation.status === "completed" && hasIcd10 && (
-            <div className="mt-4 pt-4 border-t border-border">
+            <div className="mt-4 pt-4 border-t border-border space-y-3">
+              {/* Consultation Report Download */}
+              <Button 
+                variant="default" 
+                className="w-full gap-2"
+                onClick={handleDownloadReport}
+                disabled={isDownloadingReport}
+              >
+                {isDownloadingReport ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <FileText className="h-4 w-4" />
+                )}
+                {lang === "de" ? "Befundbericht herunterladen" : "Download Consultation Report"}
+              </Button>
+              <p className="text-xs text-muted-foreground text-center">
+                {lang === "de"
+                  ? "Zusammenfassung Ihrer Konsultation inkl. ärztlicher Beurteilung"
+                  : "Summary of your consultation including doctor's assessment"}
+              </p>
+
+              {/* Honorarnote Download */}
               <Button 
                 variant="outline" 
                 className="w-full gap-2"
@@ -299,7 +368,7 @@ export const ConsultationDetailDialog = ({ consultation, open, onOpenChange }: C
                 )}
                 {lang === "de" ? "Honorarnote herunterladen" : "Download Medical Fee Note"}
               </Button>
-              <p className="text-xs text-muted-foreground mt-2 text-center">
+              <p className="text-xs text-muted-foreground text-center">
                 {lang === "de"
                   ? "Zur Einreichung bei Ihrer privaten Krankenversicherung"
                   : "For submission to your private health insurance"}
