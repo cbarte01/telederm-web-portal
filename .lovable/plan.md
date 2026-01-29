@@ -1,159 +1,263 @@
 
-# Bug Fix Plan: Three Critical Issues
+# Embeddable Widget & QR Code Generation for Doctor Referrals
 
-This plan addresses three bugs that need to be fixed without breaking existing functionality.
+## Overview
 
----
+This plan implements two complementary features to help doctors share their referral links:
 
-## Bug 1: Spacebar Not Working in Text Fields (Steps 5 and 7)
-
-### Root Cause
-In `TimelineChanges.tsx` (Step 5) and `MedicalHistory.tsx` (Step 7), the Yes/No selection buttons are plain `<button>` elements. When these buttons have focus (which happens after clicking them), pressing the spacebar triggers the button's click handler instead of inserting a space into the adjacent textarea.
-
-This is standard browser behavior: spacebar activates a focused button element.
-
-### Solution
-Add `type="button"` attribute to all the selection buttons. This is a defensive practice, but the real fix is ensuring focus moves appropriately. However, the cleanest fix is to prevent the spacebar from triggering these buttons when the user is typing in a textarea.
-
-We will add an `onKeyDown` handler to these buttons that prevents spacebar activation when the textarea is visible and likely being used:
-
-**Files to modify:**
-- `src/pages/consultation/steps/TimelineChanges.tsx`
-- `src/pages/consultation/steps/MedicalHistory.tsx`
-
-**Changes:**
-Add `type="button"` to all `<button>` elements in these files to ensure they don't accidentally submit forms and to be explicit about their behavior. The actual issue is that after clicking "Yes", the button retains focus, so when the user tabs to the textarea and starts typing, they might still have focus on the button.
-
-The cleanest solution is to auto-focus the textarea when it appears after selecting "Yes".
+1. **Embeddable Widget**: An iframe-based consultation card doctors can embed on their websites
+2. **QR Code Generator**: Downloadable QR codes for physical materials (business cards, posters, etc.)
 
 ---
 
-## Bug 2: Consultation Photos Not Visible for Doctors
+## Feature 1: Embeddable Widget
 
-### Root Cause
-The storage bucket RLS policy for doctors to view consultation photos has a logic flaw. The current policy:
+### How It Works
 
-```sql
-((get_doctor_queue_type(auth.uid()) = 'group'::doctor_queue_type) AND (c.doctor_id IS NULL))
+Doctors will be able to copy an embed code from their Profile page that looks like:
+
+```html
+<iframe 
+  src="https://telederm-health.lovable.app/widget/DR_KRAUS" 
+  width="350" 
+  height="200" 
+  frameborder="0"
+  style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+</iframe>
 ```
 
-This means "group" queue doctors can ONLY see photos for unclaimed cases where `doctor_id IS NULL`. Once they claim a case (set `doctor_id = their_id`), they lose access to the photos because the condition `c.doctor_id IS NULL` fails.
+When embedded on a doctor's website, this displays a branded consultation card with:
+- Medena logo
+- Doctor's name and practice name
+- "Start Online Consultation" button
+- Clean, professional design that matches any website
 
-The fix needs to mirror the logic in the `consultations` table RLS which correctly handles claimed cases:
+### Visual Concept
 
-```sql
-((doctor_id IS NULL) OR (doctor_id = auth.uid()))
+```text
+┌─────────────────────────────────────┐
+│  [Logo]  Medena Care                │
+│                                     │
+│  Online Dermatology Consultation    │
+│  with Dr. Müller                    │
+│  Hautarztpraxis Dr. Müller          │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │   Start Consultation →      │    │
+│  └─────────────────────────────┘    │
+└─────────────────────────────────────┘
 ```
 
-### Solution
-Update the storage RLS policy for the `consultation-photos` bucket to allow "group" doctors to also access photos for cases they have claimed.
+### Technical Implementation
 
-**Database migration required:**
-Drop and recreate the doctor storage access policy with corrected logic:
+**A. New Widget Route & Page**
 
-```sql
-DROP POLICY IF EXISTS "Doctors can view consultation photos" ON storage.objects;
+Create a dedicated widget page that:
+- Loads the doctor's public profile data from `doctor_public_profiles`
+- Renders a compact, styled card optimized for iframe embedding
+- Clicking the button redirects to the consultation flow with `?ref=CODE`
+- Supports both German and English (auto-detects or uses `?lang=de` parameter)
 
-CREATE POLICY "Doctors can view consultation photos"
-ON storage.objects FOR SELECT
-USING (
-  (bucket_id = 'consultation-photos'::text) 
-  AND has_role(auth.uid(), 'doctor'::app_role) 
-  AND (EXISTS (
-    SELECT 1 FROM consultations c
-    WHERE (
-      (c.id)::text = (storage.foldername(objects.name))[2]
-      AND c.status <> 'draft'::consultation_status
-      AND (
-        (get_doctor_queue_type(auth.uid()) = 'individual'::doctor_queue_type AND c.doctor_id = auth.uid())
-        OR (get_doctor_queue_type(auth.uid()) = 'group'::doctor_queue_type AND (c.doctor_id IS NULL OR c.doctor_id = auth.uid()))
-        OR (get_doctor_queue_type(auth.uid()) = 'hybrid'::doctor_queue_type AND (c.doctor_id IS NULL OR c.doctor_id = auth.uid()))
-      )
-    )
-  ))
-);
-```
+**B. Profile Page Enhancement**
+
+Add an "Embed Code" section to the doctor's Referral Settings card:
+- Shows a copyable code snippet
+- Includes size customization options (compact/standard)
+- Preview button to see what the widget looks like
 
 ---
 
-## Bug 3: Honorarnote Not Visible for Doctors on Closed Cases
+## Feature 2: QR Code Generator
 
-### Current Implementation Analysis
-Looking at the `ConsultationDetail.tsx` code:
+### How It Works
 
-```typescript
-const canDownloadHonorarnote = consultation.status === "completed" && !!(consultation as any).icd10_code;
+Doctors can generate and download a QR code that links directly to their referral URL. This QR code can be:
+- Printed on business cards
+- Displayed on posters in the waiting room
+- Added to prescription pads or patient handouts
+
+### Visual Concept in Profile Page
+
+```text
+┌─────────────────────────────────────────────┐
+│  QR Code for Your Referral Link             │
+│                                             │
+│  ┌─────────────┐                            │
+│  │ █▀▀▀▀▀▀▀█   │   Download this QR code    │
+│  │ █ ▄▄▄ █ ▀█  │   for your practice        │
+│  │ █ █▀█ █ ▄█  │   materials.               │
+│  │ █ ▀▀▀ █ █   │                            │
+│  │ █▀▀▀▀▀▀▀█   │   [Download PNG]           │
+│  └─────────────┘   [Download SVG]           │
+│                                             │
+└─────────────────────────────────────────────┘
 ```
 
-The download button IS shown when:
-1. Status is "completed"
-2. ICD-10 code exists
+### Technical Implementation
 
-The button triggers `handleDownloadHonorarnote()` which calls the `generate-honorarnote` edge function.
+**A. QR Code Generation**
 
-### Likely Issue
-The issue is that the `ConsultationDetail` component receives its consultation data from the parent `DoctorDashboard`, which fetches consultations but does NOT include `icd10_code` and `icd10_description` in the SELECT query.
+Use a client-side QR code library (qrcode.react or similar) to:
+- Generate QR code from the referral URL
+- Render as both PNG (for printing) and SVG (for scaling)
+- Include Medena branding (optional logo in center)
 
-Looking at the fetch query in `DoctorDashboard.tsx`:
-```typescript
-.select(`
-  id, patient_id, doctor_id, status, concern_category, body_locations,
-  symptoms, symptom_severity, symptom_onset, has_changed, change_description,
-  has_allergies, allergies_description, takes_medications, medications_description,
-  has_self_treated, self_treatment_description, date_of_birth, biological_sex,
-  additional_notes, created_at, submitted_at, doctor_response, responded_at,
-  profiles:patient_id (full_name)
-`)
-```
+**B. Profile Page Enhancement**
 
-**Missing fields:** `icd10_code`, `icd10_description`, `honorarnote_number`, `honorarnote_storage_path`
-
-### Solution
-Add the missing fields to the SELECT query in `DoctorDashboard.tsx` so the `ConsultationDetail` component has access to them.
-
-**File to modify:**
-- `src/pages/dashboards/DoctorDashboard.tsx`
-
-Add to the select query:
-```typescript
-icd10_code,
-icd10_description,
-honorarnote_number,
-honorarnote_storage_path
-```
-
-Also update the `Consultation` interface to include these fields properly typed.
+Add a "QR Code" section below the referral link display:
+- Shows live QR code preview
+- Download buttons for PNG (300dpi) and SVG formats
+- Only visible when a referral code is set
 
 ---
 
-## Summary of Changes
+## Implementation Steps
 
-| File | Change |
-|------|--------|
-| `src/pages/consultation/steps/TimelineChanges.tsx` | Add `type="button"` to buttons, auto-focus textarea when it appears |
-| `src/pages/consultation/steps/MedicalHistory.tsx` | Add `type="button"` to buttons, auto-focus textareas when they appear |
-| Database migration | Fix storage RLS policy for doctor photo access |
-| `src/pages/dashboards/DoctorDashboard.tsx` | Add missing ICD-10 and honorarnote fields to query |
+### Step 1: Install QR Code Library
+
+Add `qrcode.react` package for client-side QR code generation.
+
+### Step 2: Create Widget Page
+
+**New file**: `src/pages/Widget.tsx`
+
+- Fetches doctor info from `doctor_public_profiles` using the referral code
+- Renders a compact, branded card with CTA button
+- Handles language switching via URL parameter
+- Includes proper meta tags for iframe embedding
+
+### Step 3: Add Widget Route
+
+**Update**: `src/App.tsx`
+
+- Add route: `/widget/:referralCode`
+
+### Step 4: Create Embed Code Generator Component
+
+**New file**: `src/components/profile/EmbedCodeGenerator.tsx`
+
+- Generates the iframe embed code
+- Provides copy-to-clipboard functionality
+- Shows size options (compact: 300x180, standard: 350x200)
+- Includes preview modal
+
+### Step 5: Create QR Code Generator Component
+
+**New file**: `src/components/profile/QRCodeGenerator.tsx`
+
+- Renders QR code from referral URL
+- Provides download as PNG and SVG
+- Styled to match the application design
+
+### Step 6: Update Profile Page
+
+**Update**: `src/pages/Profile.tsx`
+
+- Import and add `EmbedCodeGenerator` component
+- Import and add `QRCodeGenerator` component
+- Show both in the doctor's Referral Settings section (only when referral code exists)
+
+---
+
+## File Changes Summary
+
+| Action | File | Description |
+|--------|------|-------------|
+| Add | `package.json` | Add `qrcode.react` dependency |
+| Create | `src/pages/Widget.tsx` | Embeddable widget page |
+| Create | `src/components/profile/EmbedCodeGenerator.tsx` | Embed code generator |
+| Create | `src/components/profile/QRCodeGenerator.tsx` | QR code generator |
+| Update | `src/App.tsx` | Add widget route |
+| Update | `src/pages/Profile.tsx` | Add embed & QR sections |
 
 ---
 
 ## Technical Details
 
-### For Bug 1 - Auto-focus Implementation
-Use a `useEffect` with a ref to focus the textarea when `draft.hasChanged` becomes `true`:
+### Widget Page Styling
 
-```typescript
-const changeDescriptionRef = useRef<HTMLTextAreaElement>(null);
+The widget will use:
+- Minimal CSS (embedded, no external dependencies)
+- Medena's brand colors (teal primary, warm cream background)
+- Responsive design that works at various embed sizes
+- `target="_blank"` for the CTA to open consultation in new tab
 
-useEffect(() => {
-  if (draft.hasChanged && changeDescriptionRef.current) {
-    changeDescriptionRef.current.focus();
+### QR Code Options
+
+- **Size**: 256x256 pixels for preview, 1024x1024 for download
+- **Error correction**: Level M (15% recovery)
+- **Format**: PNG for print, SVG for digital
+- **Branding**: Option to include Medena logo overlay
+
+### Security Considerations
+
+- Widget page only exposes public doctor profile data
+- No authentication required for widget
+- Rate limiting on the public profile lookup (existing RLS policies)
+
+---
+
+## User Experience
+
+### For Doctors
+
+1. Go to Profile page
+2. Set up a referral code if not already done
+3. Scroll to "Website Integration" section
+4. Copy embed code OR download QR code
+5. Use on their website or printed materials
+
+### For Patients
+
+1. See widget on doctor's website or scan QR code
+2. Click "Start Consultation" or follow QR link
+3. Arrive at consultation flow with doctor pre-selected
+4. See familiar ReferralBanner confirming the doctor
+
+---
+
+## Translations
+
+Add to `src/i18n/locales/*/consultation.json`:
+
+**German**:
+```json
+{
+  "widget": {
+    "title": "Online Hautarzt-Beratung",
+    "subtitle": "mit",
+    "cta": "Beratung starten",
+    "poweredBy": "Powered by Medena Care"
+  },
+  "profile": {
+    "embedCode": "Einbettungscode",
+    "embedCodeDescription": "Fügen Sie diesen Code in Ihre Website ein",
+    "copyEmbedCode": "Code kopieren",
+    "qrCode": "QR-Code",
+    "qrCodeDescription": "Für Visitenkarten, Poster und Praxismaterialien",
+    "downloadPng": "PNG herunterladen",
+    "downloadSvg": "SVG herunterladen"
   }
-}, [draft.hasChanged]);
+}
 ```
 
-### For Bug 2 - RLS Policy Fix
-The key insight is that the existing policy mirrors the `consultations` table RLS for SELECT, but forgot to include the "claimed by me" case for group doctors. The fix aligns the storage policy with the table policy.
-
-### For Bug 3 - Missing Query Fields
-The interface in `DoctorDashboard.tsx` should be updated to properly type the ICD-10 fields, removing the need for the `(consultation as any).icd10_code` cast in `ConsultationDetail.tsx`.
+**English**:
+```json
+{
+  "widget": {
+    "title": "Online Dermatology Consultation",
+    "subtitle": "with",
+    "cta": "Start Consultation",
+    "poweredBy": "Powered by Medena Care"
+  },
+  "profile": {
+    "embedCode": "Embed Code",
+    "embedCodeDescription": "Add this code to your website",
+    "copyEmbedCode": "Copy Code",
+    "qrCode": "QR Code",
+    "qrCodeDescription": "For business cards, posters and practice materials",
+    "downloadPng": "Download PNG",
+    "downloadSvg": "Download SVG"
+  }
+}
+```
