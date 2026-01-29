@@ -14,6 +14,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { ArrowLeft, Loader2, Trash2, Copy, Check, Link as LinkIcon, Building2, Upload, X, FileSignature } from "lucide-react";
+import PracticeLogoUpload from "@/components/profile/PracticeLogoUpload";
 import { useToast } from "@/hooks/use-toast";
 import medenaLogo from "@/assets/logo/medena-logo.png";
 
@@ -142,6 +143,7 @@ const Profile = () => {
 
   const [signatureUrl, setSignatureUrl] = useState<string | null>(null);
   const [isUploadingSignature, setIsUploadingSignature] = useState(false);
+  const [practiceLogoUrl, setPracticeLogoUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -150,7 +152,7 @@ const Profile = () => {
       try {
       const { data, error } = await supabase
         .from("profiles")
-        .select("full_name, phone, referral_code, practice_name, welcome_message, standard_price, urgent_price, date_of_birth, social_security_number, biological_sex, uid_number, iban, bic, practice_address_street, practice_address_zip, practice_address_city, patient_address_street, patient_address_zip, patient_address_city, insurance_provider, billing_name, billing_email, billing_phone, signature_url")
+        .select("full_name, phone, referral_code, practice_name, welcome_message, standard_price, urgent_price, date_of_birth, social_security_number, biological_sex, uid_number, iban, bic, practice_address_street, practice_address_zip, practice_address_city, patient_address_street, patient_address_zip, patient_address_city, insurance_provider, billing_name, billing_email, billing_phone, signature_url, practice_logo_url")
         .eq("id", user.id)
         .maybeSingle();
 
@@ -201,6 +203,7 @@ const Profile = () => {
               practiceAddressCity: (data as any).practice_address_city || "",
             });
             setSignatureUrl((data as any).signature_url || null);
+            setPracticeLogoUrl((data as any).practice_logo_url || null);
           }
         }
       } catch (err) {
@@ -1143,6 +1146,15 @@ const Profile = () => {
                       </div>
                     </div>
                   </div>
+
+                  {/* Practice Logo Upload */}
+                  {user && (
+                    <PracticeLogoUpload
+                      userId={user.id}
+                      currentLogoUrl={practiceLogoUrl}
+                      onLogoChange={setPracticeLogoUrl}
+                    />
+                  )}
 
                   {/* Signature Upload */}
                   <div className="border-t border-border pt-6 mt-6">
