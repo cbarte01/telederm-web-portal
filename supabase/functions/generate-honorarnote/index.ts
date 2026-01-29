@@ -29,7 +29,10 @@ serve(async (req) => {
 
     // Get authenticated user
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("No authorization header provided");
+    if (!authHeader) {
+      logStep("Missing authorization header");
+      throw new Error("Unauthorized");
+    }
 
     const anonClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -38,22 +41,30 @@ serve(async (req) => {
     
     const token = authHeader.replace("Bearer ", "");
     const { data: userData, error: userError } = await anonClient.auth.getUser(token);
-    if (userError) throw new Error(`Authentication error: ${userError.message}`);
+    if (userError) {
+      logStep("Authentication error", { error: userError.message });
+      throw new Error("Unauthorized");
+    }
     
     const user = userData.user;
-    if (!user) throw new Error("User not authenticated");
+    if (!user) {
+      logStep("No user found");
+      throw new Error("Unauthorized");
+    }
     logStep("User authenticated", { userId: user.id });
 
     // Parse request body
     const { consultation_id } = await req.json();
     if (!consultation_id) {
-      throw new Error("consultation_id is required");
+      logStep("Missing consultation_id");
+      throw new Error("Invalid request");
     }
 
     // Validate consultation_id is a valid UUID
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(consultation_id)) {
-      throw new Error("Invalid consultation_id format");
+      logStep("Invalid consultation_id format", { consultation_id });
+      throw new Error("Invalid request");
     }
 
     logStep("Generating for consultation", { consultation_id });
@@ -77,7 +88,8 @@ serve(async (req) => {
       .single();
 
     if (consultationError || !consultation) {
-      throw new Error(`Consultation not found: ${consultationError?.message}`);
+      logStep("Consultation not found", { error: consultationError?.message });
+      throw new Error("Resource not found");
     }
 
     // Verify user is either the patient OR the assigned doctor
@@ -85,16 +97,19 @@ serve(async (req) => {
     const isAssignedDoctor = consultation.doctor_id === user.id;
     
     if (!isPatient && !isAssignedDoctor) {
-      throw new Error("Not authorized to access this consultation");
+      logStep("Unauthorized access attempt", { user_id: user.id, patient_id: consultation.patient_id, doctor_id: consultation.doctor_id });
+      throw new Error("Access denied");
     }
 
     // Verify consultation is completed with ICD-10 code
     if (consultation.status !== "completed") {
-      throw new Error("Consultation must be completed to generate Honorarnote");
+      logStep("Consultation not completed", { status: consultation.status });
+      throw new Error("Document not available");
     }
 
     if (!consultation.icd10_code) {
-      throw new Error("ICD-10 code is required to generate Honorarnote");
+      logStep("Missing ICD-10 code", { consultation_id });
+      throw new Error("Document not available");
     }
 
     logStep("Consultation fetched", { 
@@ -125,7 +140,8 @@ serve(async (req) => {
       .single();
 
     if (doctorError || !doctorProfile) {
-      throw new Error(`Doctor profile not found: ${doctorError?.message}`);
+      logStep("Doctor profile not found", { error: doctorError?.message });
+      throw new Error("Resource not found");
     }
 
     logStep("Doctor profile fetched", { 
@@ -157,7 +173,8 @@ serve(async (req) => {
           .rpc("increment_honorarnote_counter", { p_year: currentYear });
         
         if (updateError) {
-          throw new Error(`Failed to generate honorarnote number: ${updateError.message}`);
+          logStep("Failed to generate honorarnote number", { error: updateError.message });
+          throw new Error("Failed to generate document");
         }
         honorarnoteNumber = `RechNR//${shortYear}/${String(updatedCounter).padStart(3, "0")}`;
       } else {
@@ -611,9 +628,15 @@ serve(async (req) => {
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     logStep("ERROR", { message: errorMessage });
-    return new Response(JSON.stringify({ error: errorMessage }), {
+    // Return safe error messages to client
+    const safeErrors = ["Unauthorized", "Invalid request", "Resource not found", "Access denied", "Document not available", "Failed to generate document"];
+    const clientMessage = safeErrors.includes(errorMessage) ? errorMessage : "Failed to generate document";
+    const statusCode = errorMessage === "Unauthorized" ? 401 : 
+                       errorMessage === "Access denied" ? 403 :
+                       errorMessage === "Resource not found" || errorMessage === "Document not available" ? 404 : 500;
+    return new Response(JSON.stringify({ error: clientMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
+      status: statusCode,
     });
   }
 });

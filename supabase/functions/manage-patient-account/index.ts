@@ -178,9 +178,9 @@ Deno.serve(async (req) => {
     }
   } catch (error: unknown) {
     console.error("Error in manage-patient-account:", error);
-    const errorMessage = error instanceof Error ? error.message : "Internal server error";
+    // Always return generic error to client, detailed error is logged server-side
     return new Response(
-      JSON.stringify({ error: errorMessage }),
+      JSON.stringify({ error: "Operation failed" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

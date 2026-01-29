@@ -32,7 +32,10 @@ serve(async (req) => {
 
     // Get authenticated user
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("No authorization header provided");
+    if (!authHeader) {
+      logStep("Missing authorization header");
+      throw new Error("Unauthorized");
+    }
 
     const anonClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -41,10 +44,16 @@ serve(async (req) => {
     
     const token = authHeader.replace("Bearer ", "");
     const { data: userData, error: userError } = await anonClient.auth.getUser(token);
-    if (userError) throw new Error(`Authentication error: ${userError.message}`);
+    if (userError) {
+      logStep("Authentication error", { error: userError.message });
+      throw new Error("Unauthorized");
+    }
     
     const user = userData.user;
-    if (!user) throw new Error("User not authenticated");
+    if (!user) {
+      logStep("No user found");
+      throw new Error("Unauthorized");
+    }
     logStep("User authenticated", { userId: user.id });
 
     // Parse request body
@@ -52,18 +61,21 @@ serve(async (req) => {
     logStep("Request body", { session_id, consultation_id });
 
     if (!session_id || !consultation_id) {
-      throw new Error("session_id and consultation_id are required");
+      logStep("Missing required fields", { has_session_id: !!session_id, has_consultation_id: !!consultation_id });
+      throw new Error("Invalid request");
     }
 
     // Validate consultation_id is a valid UUID
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(consultation_id)) {
-      throw new Error("Invalid consultation_id format");
+      logStep("Invalid consultation_id format", { consultation_id });
+      throw new Error("Invalid request");
     }
 
     // Validate session_id format (Stripe checkout sessions start with cs_)
     if (!session_id.startsWith("cs_")) {
-      throw new Error("Invalid session_id format");
+      logStep("Invalid session_id format", { session_id });
+      throw new Error("Invalid request");
     }
 
     // Initialize Stripe and retrieve session
@@ -79,12 +91,14 @@ serve(async (req) => {
 
     // Verify session belongs to this consultation
     if (session.metadata?.consultation_id !== consultation_id) {
-      throw new Error("Session does not match consultation");
+      logStep("Session mismatch", { session_consultation: session.metadata?.consultation_id, requested: consultation_id });
+      throw new Error("Verification failed");
     }
 
     // Verify session belongs to this user
     if (session.metadata?.user_id !== user.id) {
-      throw new Error("Session does not belong to this user");
+      logStep("User mismatch", { session_user: session.metadata?.user_id, current_user: user.id });
+      throw new Error("Verification failed");
     }
 
     if (session.payment_status !== "paid") {
@@ -117,7 +131,7 @@ serve(async (req) => {
 
     if (updateError) {
       logStep("Error updating consultation", { error: updateError.message });
-      throw new Error(`Failed to update consultation: ${updateError.message}`);
+      throw new Error("Failed to process payment");
     }
 
     logStep("Consultation updated successfully", { consultation_id });
@@ -134,9 +148,13 @@ serve(async (req) => {
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     logStep("ERROR", { message: errorMessage });
-    return new Response(JSON.stringify({ error: errorMessage }), {
+    // Return safe error message to client
+    const safeErrors = ["Unauthorized", "Invalid request", "Verification failed", "Failed to process payment"];
+    const clientMessage = safeErrors.includes(errorMessage) ? errorMessage : "An error occurred";
+    const statusCode = errorMessage === "Unauthorized" ? 401 : 500;
+    return new Response(JSON.stringify({ error: clientMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
+      status: statusCode,
     });
   }
 });
