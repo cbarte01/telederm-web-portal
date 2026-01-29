@@ -52,9 +52,58 @@ serve(async (req) => {
     const { consultation_id, pricing_plan, custom_price } = await req.json();
     logStep("Request body", { consultation_id, pricing_plan, custom_price });
 
+    // Validate required fields
     if (!consultation_id || !pricing_plan) {
       throw new Error("consultation_id and pricing_plan are required");
     }
+
+    // Validate consultation_id is a valid UUID
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(consultation_id)) {
+      throw new Error("Invalid consultation_id format");
+    }
+
+    // Validate pricing_plan is a valid value
+    if (!["standard", "urgent"].includes(pricing_plan)) {
+      throw new Error("Invalid pricing_plan. Must be 'standard' or 'urgent'");
+    }
+
+    // Validate custom_price if provided
+    if (custom_price !== undefined && custom_price !== null) {
+      if (typeof custom_price !== "number" || isNaN(custom_price)) {
+        throw new Error("custom_price must be a valid number");
+      }
+      if (custom_price < 10 || custom_price > 1000) {
+        throw new Error("custom_price must be between €10 and €1000");
+      }
+    }
+
+    // Verify consultation belongs to the authenticated user
+    const supabaseServiceClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      { auth: { persistSession: false } }
+    );
+
+    const { data: consultation, error: consultationError } = await supabaseServiceClient
+      .from("consultations")
+      .select("patient_id, status")
+      .eq("id", consultation_id)
+      .single();
+
+    if (consultationError || !consultation) {
+      throw new Error("Consultation not found");
+    }
+
+    if (consultation.patient_id !== user.id) {
+      throw new Error("Not authorized to checkout this consultation");
+    }
+
+    if (consultation.status !== "draft") {
+      throw new Error("Consultation has already been submitted");
+    }
+
+    logStep("Consultation ownership verified", { consultation_id, patient_id: consultation.patient_id });
 
     // Determine which price to use
     let priceId = PRICE_IDS[pricing_plan as keyof typeof PRICE_IDS];

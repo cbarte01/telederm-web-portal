@@ -49,6 +49,13 @@ serve(async (req) => {
     if (!consultation_id) {
       throw new Error("consultation_id is required");
     }
+
+    // Validate consultation_id is a valid UUID
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(consultation_id)) {
+      throw new Error("Invalid consultation_id format");
+    }
+
     logStep("Generating for consultation", { consultation_id });
 
     // Fetch consultation with patient profile including address

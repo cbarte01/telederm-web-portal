@@ -55,6 +55,17 @@ serve(async (req) => {
       throw new Error("session_id and consultation_id are required");
     }
 
+    // Validate consultation_id is a valid UUID
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(consultation_id)) {
+      throw new Error("Invalid consultation_id format");
+    }
+
+    // Validate session_id format (Stripe checkout sessions start with cs_)
+    if (!session_id.startsWith("cs_")) {
+      throw new Error("Invalid session_id format");
+    }
+
     // Initialize Stripe and retrieve session
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const session = await stripe.checkout.sessions.retrieve(session_id, {
