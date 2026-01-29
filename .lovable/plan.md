@@ -1,263 +1,261 @@
 
-# Embeddable Widget & QR Code Generation for Doctor Referrals
+
+# Honorarnote Redesign Plan
 
 ## Overview
 
-This plan implements two complementary features to help doctors share their referral links:
-
-1. **Embeddable Widget**: An iframe-based consultation card doctors can embed on their websites
-2. **QR Code Generator**: Downloadable QR codes for physical materials (business cards, posters, etc.)
+This plan redesigns the medical fee note (Honorarnote) to meet Austrian insurance compliance standards while incorporating modern professional aesthetics and doctor/practice branding - all within the classic Austrian format layout.
 
 ---
 
-## Feature 1: Embeddable Widget
+## Current State Analysis
 
-### How It Works
+The existing Honorarnote is a functional PDF generated via `pdf-lib` with:
+- Basic A4 layout with Helvetica fonts
+- Centered title "Honorarnote bei Privatordination"
+- Right-aligned billing metadata (RechNR, date)
+- Single patient info line
+- Simple bordered services table
+- Doctor signature at bottom
 
-Doctors will be able to copy an embed code from their Profile page that looks like:
+**Identified Gaps:**
+- No practice logo support
+- Limited patient address display
+- Missing UID number prominently displayed
+- No payment method/bank details section
+- Tax exemption note is minimal
+- Doctor contact info layout could be improved
+- No visual hierarchy or modern typography
 
-```html
-<iframe 
-  src="https://telederm-health.lovable.app/widget/DR_KRAUS" 
-  width="350" 
-  height="200" 
-  frameborder="0"
-  style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
-</iframe>
-```
+---
 
-When embedded on a doctor's website, this displays a branded consultation card with:
-- Medena logo
-- Doctor's name and practice name
-- "Start Online Consultation" button
-- Clean, professional design that matches any website
+## Redesign Goals
 
-### Visual Concept
+1. **Insurance Compliance**: Ensure all fields required by Austrian private insurance (ÖGK/private Versicherung) are present
+2. **Modern & Professional**: Clean typography, better spacing, visual hierarchy
+3. **Branding & Identity**: Practice logo support, consistent professional appearance
+
+---
+
+## Technical Implementation
+
+### Phase 1: Database Changes
+
+Add new field to `profiles` table for practice logo:
 
 ```text
-┌─────────────────────────────────────┐
-│  [Logo]  Medena Care                │
-│                                     │
-│  Online Dermatology Consultation    │
-│  with Dr. Müller                    │
-│  Hautarztpraxis Dr. Müller          │
-│                                     │
-│  ┌─────────────────────────────┐    │
-│  │   Start Consultation →      │    │
-│  └─────────────────────────────┘    │
-└─────────────────────────────────────┘
+profiles table:
+  + practice_logo_url (text, nullable) - Storage path for practice logo
 ```
 
-### Technical Implementation
+Create storage bucket for practice logos:
+```text
+Bucket: practice-logos
+  - Public: Yes (for PDF embedding)
+  - Policies: Doctors can upload/manage their own
+```
 
-**A. New Widget Route & Page**
+### Phase 2: Profile Page Enhancement
 
-Create a dedicated widget page that:
-- Loads the doctor's public profile data from `doctor_public_profiles`
-- Renders a compact, styled card optimized for iframe embedding
-- Clicking the button redirects to the consultation flow with `?ref=CODE`
-- Supports both German and English (auto-detects or uses `?lang=de` parameter)
+Add logo upload component to doctor profile settings:
+- Image preview with upload zone
+- Max file size: 500KB
+- Supported formats: PNG, JPEG
+- Recommended dimensions: 200x80px (landscape)
 
-**B. Profile Page Enhancement**
+### Phase 3: PDF Layout Redesign
 
-Add an "Embed Code" section to the doctor's Referral Settings card:
-- Shows a copyable code snippet
-- Includes size customization options (compact/standard)
-- Preview button to see what the widget looks like
-
----
-
-## Feature 2: QR Code Generator
-
-### How It Works
-
-Doctors can generate and download a QR code that links directly to their referral URL. This QR code can be:
-- Printed on business cards
-- Displayed on posters in the waiting room
-- Added to prescription pads or patient handouts
-
-### Visual Concept in Profile Page
+The redesigned PDF maintains the classic Austrian Honorarnote format while adding professional polish:
 
 ```text
-┌─────────────────────────────────────────────┐
-│  QR Code for Your Referral Link             │
-│                                             │
-│  ┌─────────────┐                            │
-│  │ █▀▀▀▀▀▀▀█   │   Download this QR code    │
-│  │ █ ▄▄▄ █ ▀█  │   for your practice        │
-│  │ █ █▀█ █ ▄█  │   materials.               │
-│  │ █ ▀▀▀ █ █   │                            │
-│  │ █▀▀▀▀▀▀▀█   │   [Download PNG]           │
-│  └─────────────┘   [Download SVG]           │
-│                                             │
-└─────────────────────────────────────────────┘
++----------------------------------------------------------+
+|                                                          |
+|  [PRACTICE LOGO]          Dr. Max Mustermann             |
+|                           Facharzt für Dermatologie      |
+|                           Musterstraße 123, 1010 Wien    |
+|                           Tel: +43 1 234 5678            |
+|                           Email: praxis@example.at       |
+|                           UID: ATU12345678               |
+|                                                          |
++----------------------------------------------------------+
+|                                                          |
+|            HONORARNOTE BEI PRIVATORDINATION              |
+|               Zur Vorlage bei Versicherung               |
+|                                                          |
++----------------------------------------------------------+
+|                                                          |
+|  Rechnungsnummer: RechNR//25/001                         |
+|  Rechnungsdatum:  29.01.2026                             |
+|  Leistungsdatum:  29.01.2026                             |
+|  Original                                                |
+|                                                          |
++----------------------------------------------------------+
+|                                                          |
+|  PATIENT                                                 |
+|  --------------------------------------------------------|
+|  Name:          Maria Musterfrau                         |
+|  Geburtsdatum:  01.01.1980                               |
+|  Vers.Nr:       1234                                     |
+|  Anschrift:     Patientengasse 45, 1020 Wien             |
+|  Versicherung:  Wiener Städtische                        |
+|                                                          |
++----------------------------------------------------------+
+|                                                          |
+|  ERBRACHTE LEISTUNGEN                                    |
+|  --------------------------------------------------------|
+|  Datum      | Beschreibung                    | Betrag   |
+|  -----------|--------------------------------|----------|
+|  29.01.2026 | Telemedizinische Konsultation  | € 49,00  |
+|             | (Dermatologie)                 |          |
+|             | ICD-10: L20.9 - Atopische      |          |
+|             | Dermatitis                     |          |
+|  -----------|--------------------------------|----------|
+|                                    Gesamt:   | € 49,00  |
+|                                              |----------|
+|                                                          |
+|  Umsatzsteuerbefreit gemäß § 6 Abs. 1 Z 19 UStG         |
+|  (Heilbehandlung)                                        |
+|                                                          |
++----------------------------------------------------------+
+|                                                          |
+|  ZAHLUNGSINFORMATION                                     |
+|  --------------------------------------------------------|
+|  Betrag bereits beglichen am: 29.01.2026                 |
+|  Zahlungsart: Kreditkarte (Online)                       |
+|                                                          |
+|  Bankverbindung für Rückfragen:                          |
+|  IBAN: AT12 3456 7890 1234 5678                          |
+|  BIC: ABCDEFGH                                           |
+|                                                          |
++----------------------------------------------------------+
+|                                                          |
+|                                        [SIGNATURE IMAGE] |
+|                                                          |
+|  Dr. Max Mustermann                                      |
+|  Facharzt für Dermatologie                               |
+|                                                          |
++----------------------------------------------------------+
 ```
 
-### Technical Implementation
+### Phase 4: Edge Function Update
 
-**A. QR Code Generation**
+Modify `supabase/functions/generate-honorarnote/index.ts`:
 
-Use a client-side QR code library (qrcode.react or similar) to:
-- Generate QR code from the referral URL
-- Render as both PNG (for printing) and SVG (for scaling)
-- Include Medena branding (optional logo in center)
+**4.1 Data Fetching**
+- Add `practice_logo_url` to doctor profile query
+- Fetch patient full address fields
 
-**B. Profile Page Enhancement**
+**4.2 PDF Generation Updates**
 
-Add a "QR Code" section below the referral link display:
-- Shows live QR code preview
-- Download buttons for PNG (300dpi) and SVG formats
-- Only visible when a referral code is set
+Header Section:
+- Left: Practice logo (if available) with fallback to practice name
+- Right: Doctor name, specialty, full address, phone, email, UID
 
----
+Title Section:
+- Centered title with improved typography
+- Subtitle "Zur Vorlage bei Versicherung"
 
-## Implementation Steps
+Billing Metadata:
+- Invoice number, date
+- Service date (Leistungsdatum)
+- "Original" badge
 
-### Step 1: Install QR Code Library
+Patient Section:
+- Full name
+- Date of birth
+- Insurance number (first 4 digits)
+- Full address (street, zip, city)
+- Insurance provider
 
-Add `qrcode.react` package for client-side QR code generation.
+Services Table:
+- Date column
+- Description with ICD-10 code and description
+- Amount column
+- Visual borders and alternating shading (optional)
+- Totals row
 
-### Step 2: Create Widget Page
+Tax Note:
+- Full legal text for Austrian VAT exemption
 
-**New file**: `src/pages/Widget.tsx`
+Payment Section:
+- Payment confirmation with date
+- Payment method (if trackable)
+- Bank details (IBAN/BIC) for reference
 
-- Fetches doctor info from `doctor_public_profiles` using the referral code
-- Renders a compact, branded card with CTA button
-- Handles language switching via URL parameter
-- Includes proper meta tags for iframe embedding
-
-### Step 3: Add Widget Route
-
-**Update**: `src/App.tsx`
-
-- Add route: `/widget/:referralCode`
-
-### Step 4: Create Embed Code Generator Component
-
-**New file**: `src/components/profile/EmbedCodeGenerator.tsx`
-
-- Generates the iframe embed code
-- Provides copy-to-clipboard functionality
-- Shows size options (compact: 300x180, standard: 350x200)
-- Includes preview modal
-
-### Step 5: Create QR Code Generator Component
-
-**New file**: `src/components/profile/QRCodeGenerator.tsx`
-
-- Renders QR code from referral URL
-- Provides download as PNG and SVG
-- Styled to match the application design
-
-### Step 6: Update Profile Page
-
-**Update**: `src/pages/Profile.tsx`
-
-- Import and add `EmbedCodeGenerator` component
-- Import and add `QRCodeGenerator` component
-- Show both in the doctor's Referral Settings section (only when referral code exists)
+Footer:
+- Signature image (right-aligned)
+- Doctor name and specialty
 
 ---
 
-## File Changes Summary
+## Files to be Modified
 
-| Action | File | Description |
-|--------|------|-------------|
-| Add | `package.json` | Add `qrcode.react` dependency |
-| Create | `src/pages/Widget.tsx` | Embeddable widget page |
-| Create | `src/components/profile/EmbedCodeGenerator.tsx` | Embed code generator |
-| Create | `src/components/profile/QRCodeGenerator.tsx` | QR code generator |
-| Update | `src/App.tsx` | Add widget route |
-| Update | `src/pages/Profile.tsx` | Add embed & QR sections |
+| File | Change Type | Description |
+|------|-------------|-------------|
+| `supabase/functions/generate-honorarnote/index.ts` | Major rewrite | Complete PDF layout redesign |
+| `src/pages/Profile.tsx` | Enhancement | Add practice logo upload section |
+| New migration | Database | Add `practice_logo_url` to profiles |
+| New storage bucket | Infrastructure | Create `practice-logos` bucket |
 
 ---
 
-## Technical Details
+## Insurance Compliance Checklist
 
-### Widget Page Styling
+The redesigned Honorarnote will include all fields typically required by Austrian insurers:
 
-The widget will use:
-- Minimal CSS (embedded, no external dependencies)
-- Medena's brand colors (teal primary, warm cream background)
-- Responsive design that works at various embed sizes
-- `target="_blank"` for the CTA to open consultation in new tab
-
-### QR Code Options
-
-- **Size**: 256x256 pixels for preview, 1024x1024 for download
-- **Error correction**: Level M (15% recovery)
-- **Format**: PNG for print, SVG for digital
-- **Branding**: Option to include Medena logo overlay
-
-### Security Considerations
-
-- Widget page only exposes public doctor profile data
-- No authentication required for widget
-- Rate limiting on the public profile lookup (existing RLS policies)
-
----
-
-## User Experience
-
-### For Doctors
-
-1. Go to Profile page
-2. Set up a referral code if not already done
-3. Scroll to "Website Integration" section
-4. Copy embed code OR download QR code
-5. Use on their website or printed materials
-
-### For Patients
-
-1. See widget on doctor's website or scan QR code
-2. Click "Start Consultation" or follow QR link
-3. Arrive at consultation flow with doctor pre-selected
-4. See familiar ReferralBanner confirming the doctor
+- [x] Doctor full name and title
+- [x] Practice address with zip/city
+- [x] UID number (tax ID)
+- [x] Contact information (phone, email)
+- [x] Sequential invoice number
+- [x] Invoice date
+- [x] Service date(s)
+- [x] Patient full name
+- [x] Patient date of birth
+- [x] Patient insurance number
+- [x] Patient address
+- [x] Insurance provider name
+- [x] Service description
+- [x] ICD-10 diagnosis code and description
+- [x] Amount with currency
+- [x] VAT exemption notice with legal reference
+- [x] Payment confirmation
+- [x] Doctor signature
+- [x] Bank details (IBAN/BIC)
 
 ---
 
-## Translations
+## Implementation Order
 
-Add to `src/i18n/locales/*/consultation.json`:
+1. Create database migration for `practice_logo_url` field
+2. Create `practice-logos` storage bucket with RLS policies
+3. Add logo upload component to Profile page
+4. Redesign the PDF generation in the edge function
+5. Test with sample data
+6. Verify download works for both patients and doctors
 
-**German**:
-```json
-{
-  "widget": {
-    "title": "Online Hautarzt-Beratung",
-    "subtitle": "mit",
-    "cta": "Beratung starten",
-    "poweredBy": "Powered by Medena Care"
-  },
-  "profile": {
-    "embedCode": "Einbettungscode",
-    "embedCodeDescription": "Fügen Sie diesen Code in Ihre Website ein",
-    "copyEmbedCode": "Code kopieren",
-    "qrCode": "QR-Code",
-    "qrCodeDescription": "Für Visitenkarten, Poster und Praxismaterialien",
-    "downloadPng": "PNG herunterladen",
-    "downloadSvg": "SVG herunterladen"
-  }
-}
-```
+---
 
-**English**:
-```json
-{
-  "widget": {
-    "title": "Online Dermatology Consultation",
-    "subtitle": "with",
-    "cta": "Start Consultation",
-    "poweredBy": "Powered by Medena Care"
-  },
-  "profile": {
-    "embedCode": "Embed Code",
-    "embedCodeDescription": "Add this code to your website",
-    "copyEmbedCode": "Copy Code",
-    "qrCode": "QR Code",
-    "qrCodeDescription": "For business cards, posters and practice materials",
-    "downloadPng": "Download PNG",
-    "downloadSvg": "Download SVG"
-  }
-}
-```
+## Design Considerations
+
+**Typography:**
+- Headers: Helvetica Bold, 12-14pt
+- Body: Helvetica Regular, 10pt
+- Fine print: Helvetica Regular, 8-9pt
+
+**Spacing:**
+- Consistent 50pt margins
+- 20pt section gaps
+- 14pt line height
+
+**Visual Elements:**
+- Thin border lines (0.5pt) for section separation
+- Table with header row highlighted
+- Signature positioned right-aligned at bottom
+
+**Logo Handling:**
+- Max width: 150px
+- Max height: 60px
+- Scaled proportionally
+- PNG or JPEG support
+
