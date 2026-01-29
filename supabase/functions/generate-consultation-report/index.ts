@@ -200,9 +200,17 @@ serve(async (req) => {
     if (!consultation_id) {
       throw new Error("consultation_id is required");
     }
-    
-    const lang = language === "en" ? "en" : "de";
-    const t = translations[lang];
+
+    // Validate consultation_id is a valid UUID
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(consultation_id)) {
+      throw new Error("Invalid consultation_id format");
+    }
+
+    // Validate and sanitize language - only allow 'en' or 'de'
+    const allowedLanguages = ["en", "de"];
+    const lang = allowedLanguages.includes(language) ? language : "de";
+    const t = translations[lang as keyof typeof translations];
     logStep("Generating report", { consultation_id, language: lang });
 
     // Fetch consultation with patient profile
@@ -441,8 +449,9 @@ serve(async (req) => {
 
     // Body locations
     if (consultation.body_locations && consultation.body_locations.length > 0) {
+      const langKey = lang as "en" | "de";
       const locations = consultation.body_locations
-        .map((loc: string) => bodyAreaLabels[loc]?.[lang] || loc)
+        .map((loc: string) => bodyAreaLabels[loc]?.[langKey] || loc)
         .join(", ");
       const locLines = wrapText(`${t.affectedAreas}: ${locations}`, rightMargin - leftMargin, helvetica, 10);
       for (const line of locLines) {
