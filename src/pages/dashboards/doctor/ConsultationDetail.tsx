@@ -37,6 +37,7 @@ interface Consultation {
   patient_id: string;
   doctor_id: string | null;
   status: string;
+  consultation_type: string | null;
   concern_category: string | null;
   body_locations: string[] | null;
   symptoms: string[] | null;
@@ -74,6 +75,7 @@ const concernLabels: Record<string, { en: string; de: string }> = {
   infections: { en: "Infections", de: "Infektionen" },
   allergies: { en: "Allergies & Reactions", de: "Allergien & Reaktionen" },
   pigmentation: { en: "Pigmentation", de: "Pigmentierung" },
+  prescription: { en: "Prescription Request", de: "Rezeptanfrage" },
 };
 
 const symptomLabels: Record<string, { en: string; de: string }> = {
@@ -298,9 +300,11 @@ const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: Consulta
         </Button>
         <div className="flex-1">
           <h2 className="text-2xl font-bold text-foreground">
-            {consultation.concern_category 
-              ? concernLabels[consultation.concern_category]?.[lang] || consultation.concern_category
-              : (lang === "de" ? "Dermatologische Anfrage" : "Dermatology Consultation")}
+            {consultation.consultation_type === 'prescription'
+              ? concernLabels.prescription[lang]
+              : (consultation.concern_category 
+                  ? concernLabels[consultation.concern_category]?.[lang] || consultation.concern_category
+                  : (lang === "de" ? "Dermatologische Anfrage" : "Dermatology Consultation"))}
           </h2>
           <p className="text-muted-foreground text-sm">
             {lang === "de" ? "Eingereicht am" : "Submitted"}{" "}

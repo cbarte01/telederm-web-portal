@@ -16,6 +16,7 @@ interface Consultation {
   patient_id: string;
   doctor_id: string | null;
   status: string;
+  consultation_type: string | null;
   concern_category: string | null;
   body_locations: string[] | null;
   symptoms: string[] | null;
@@ -69,6 +70,7 @@ const DoctorDashboard = () => {
         patient_id,
         doctor_id,
         status,
+        consultation_type,
         concern_category,
         body_locations,
         symptoms,
