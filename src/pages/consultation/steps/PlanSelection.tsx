@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Clock, Zap, Check, Loader2 } from "lucide-react";
+import { Clock, Zap, Check, Loader2, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { ConsultationDraft } from "@/types/consultation";
+import { ConsultationDraft, PricingPlan } from "@/types/consultation";
 
 interface PlanSelectionProps {
   draft: ConsultationDraft;
@@ -11,19 +11,20 @@ interface PlanSelectionProps {
   onNext: () => void;
 }
 
-type PricingPlan = 'standard' | 'urgent';
-
 interface PricingData {
   standard_price: number;
   urgent_price: number;
+  prescription_price: number;
 }
 
 const PlanSelection = ({ draft, updateDraft, onNext }: PlanSelectionProps) => {
-  const { t, i18n } = useTranslation("consultation");
+  const { i18n } = useTranslation("consultation");
   const lang = i18n.language === "de" ? "de" : "en";
   const [selectedPlan, setSelectedPlan] = useState<PricingPlan | undefined>(draft.pricingPlan);
   const [pricing, setPricing] = useState<PricingData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const isPrescriptionFlow = draft.consultationType === 'prescription';
 
   // Fetch pricing - either from referred doctor or group settings via edge function
   useEffect(() => {
@@ -34,7 +35,7 @@ const PlanSelection = ({ draft, updateDraft, onNext }: PlanSelectionProps) => {
         if (draft.referredDoctorId) {
           const { data: doctorProfile, error: doctorError } = await supabase
             .from("profiles")
-            .select("standard_price, urgent_price")
+            .select("standard_price, urgent_price, prescription_price")
             .eq("id", draft.referredDoctorId)
             .maybeSingle();
 
@@ -42,6 +43,7 @@ const PlanSelection = ({ draft, updateDraft, onNext }: PlanSelectionProps) => {
             setPricing({
               standard_price: doctorProfile.standard_price ?? 49,
               urgent_price: doctorProfile.urgent_price ?? 74,
+              prescription_price: (doctorProfile as any).prescription_price ?? 29,
             });
             setIsLoading(false);
             return;
@@ -55,14 +57,15 @@ const PlanSelection = ({ draft, updateDraft, onNext }: PlanSelectionProps) => {
           setPricing({
             standard_price: data.standard_price ?? 49,
             urgent_price: data.urgent_price ?? 74,
+            prescription_price: data.prescription_price ?? 29,
           });
         } else {
           console.error("Error fetching group pricing:", error);
-          setPricing({ standard_price: 49, urgent_price: 74 });
+          setPricing({ standard_price: 49, urgent_price: 74, prescription_price: 29 });
         }
       } catch (error) {
         console.error("Error fetching pricing:", error);
-        setPricing({ standard_price: 49, urgent_price: 74 });
+        setPricing({ standard_price: 49, urgent_price: 74, prescription_price: 29 });
       } finally {
         setIsLoading(false);
       }
@@ -71,12 +74,30 @@ const PlanSelection = ({ draft, updateDraft, onNext }: PlanSelectionProps) => {
     fetchPricing();
   }, [draft.referredDoctorId]);
 
+  // Auto-select prescription plan for prescription flow
+  useEffect(() => {
+    if (isPrescriptionFlow && pricing && !selectedPlan) {
+      setSelectedPlan('prescription');
+      updateDraft({ 
+        pricingPlan: 'prescription',
+        consultationPrice: pricing.prescription_price
+      });
+    }
+  }, [isPrescriptionFlow, pricing, selectedPlan, updateDraft]);
+
   const handleSelectPlan = (plan: PricingPlan) => {
     setSelectedPlan(plan);
-    const price = plan === 'standard' ? pricing?.standard_price : pricing?.urgent_price;
+    let price: number;
+    if (plan === 'prescription') {
+      price = pricing?.prescription_price ?? 29;
+    } else if (plan === 'urgent') {
+      price = pricing?.urgent_price ?? 74;
+    } else {
+      price = pricing?.standard_price ?? 49;
+    }
     updateDraft({ 
       pricingPlan: plan,
-      consultationPrice: price ?? (plan === 'standard' ? 49 : 74)
+      consultationPrice: price
     });
   };
 
@@ -86,7 +107,30 @@ const PlanSelection = ({ draft, updateDraft, onNext }: PlanSelectionProps) => {
     }
   };
 
-  const plans = [
+  // Prescription-only plan for prescription flow
+  const prescriptionPlan = {
+    key: 'prescription' as PricingPlan,
+    icon: FileText,
+    price: pricing?.prescription_price ?? 29,
+    responseTime: lang === "de" ? "24 Stunden" : "24 hours",
+    popular: false,
+    name: lang === "de" ? "Rezeptanforderung" : "Prescription Request",
+    description: lang === "de" 
+      ? "Fordern Sie eine Rezeptverlängerung für eine bestehende Behandlung bei Ihrem Arzt an"
+      : "Request a prescription renewal for an existing treatment from your doctor",
+    features: lang === "de" ? [
+      "Rezept innerhalb von 24 Stunden ausgestellt",
+      "In Ihre e-Medikation (ELGA) hochgeladen",
+      "Keine Konsultation oder neue Diagnose enthalten"
+    ] : [
+      "Prescription issued within 24 hours",
+      "Uploaded to your e-Medikation (ELGA)",
+      "No consultation or new diagnosis included"
+    ]
+  };
+
+  // Standard consultation plans
+  const consultationPlans = [
     {
       key: 'standard' as PricingPlan,
       icon: Clock,
@@ -131,6 +175,8 @@ const PlanSelection = ({ draft, updateDraft, onNext }: PlanSelectionProps) => {
     }
   ];
 
+  const plansToShow = isPrescriptionFlow ? [prescriptionPlan] : consultationPlans;
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -143,17 +189,23 @@ const PlanSelection = ({ draft, updateDraft, onNext }: PlanSelectionProps) => {
     <div className="space-y-6">
       <div className="text-center space-y-2">
         <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-          {lang === "de" ? "Wählen Sie Ihren Plan" : "Choose Your Plan"}
+          {isPrescriptionFlow 
+            ? (lang === "de" ? "Rezeptanforderung" : "Prescription Request")
+            : (lang === "de" ? "Wählen Sie Ihren Plan" : "Choose Your Plan")}
         </h1>
         <p className="text-muted-foreground">
-          {lang === "de" 
-            ? "Wählen Sie die Dringlichkeitsstufe für Ihre Anfrage"
-            : "Select the urgency level for your consultation"}
+          {isPrescriptionFlow
+            ? (lang === "de" 
+                ? "Bestätigen Sie Ihre Rezeptanforderung" 
+                : "Confirm your prescription request")
+            : (lang === "de" 
+                ? "Wählen Sie die Dringlichkeitsstufe für Ihre Anfrage"
+                : "Select the urgency level for your consultation")}
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4 lg:gap-6">
-        {plans.map((plan) => {
+      <div className={`grid gap-4 lg:gap-6 ${isPrescriptionFlow ? '' : 'md:grid-cols-2'}`}>
+        {plansToShow.map((plan) => {
           const isSelected = selectedPlan === plan.key;
           return (
             <button
@@ -164,10 +216,10 @@ const PlanSelection = ({ draft, updateDraft, onNext }: PlanSelectionProps) => {
                 isSelected
                   ? "border-primary shadow-lg ring-2 ring-primary/20"
                   : "border-border hover:border-primary/50 hover:shadow-md"
-              } ${plan.popular ? "md:-translate-y-1" : ""}`}
+              } ${plan.popular && !isPrescriptionFlow ? "md:-translate-y-1" : ""}`}
             >
               {/* Popular Badge */}
-              {plan.popular && (
+              {plan.popular && !isPrescriptionFlow && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                   <span className="inline-block bg-primary text-primary-foreground text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full">
                     {lang === "de" ? "Empfohlen" : "Recommended"}
@@ -178,9 +230,13 @@ const PlanSelection = ({ draft, updateDraft, onNext }: PlanSelectionProps) => {
               {/* Plan Header */}
               <div className="mb-4">
                 <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-3 ${
-                  plan.popular ? "bg-primary" : "bg-primary/10"
+                  isPrescriptionFlow 
+                    ? "bg-emerald-500" 
+                    : plan.popular ? "bg-primary" : "bg-primary/10"
                 }`}>
-                  <plan.icon className={`w-6 h-6 ${plan.popular ? "text-primary-foreground" : "text-primary"}`} />
+                  <plan.icon className={`w-6 h-6 ${
+                    isPrescriptionFlow || plan.popular ? "text-primary-foreground" : "text-primary"
+                  }`} />
                 </div>
                 <h3 className="text-xl font-semibold text-foreground mb-1">
                   {plan.name}
@@ -208,9 +264,13 @@ const PlanSelection = ({ draft, updateDraft, onNext }: PlanSelectionProps) => {
                 {plan.features.map((feature, index) => (
                   <li key={index} className="flex items-start gap-2">
                     <div className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
-                      plan.popular ? "bg-primary" : "bg-primary/10"
+                      isPrescriptionFlow 
+                        ? "bg-emerald-500" 
+                        : plan.popular ? "bg-primary" : "bg-primary/10"
                     }`}>
-                      <Check className={`w-2.5 h-2.5 ${plan.popular ? "text-primary-foreground" : "text-primary"}`} />
+                      <Check className={`w-2.5 h-2.5 ${
+                        isPrescriptionFlow || plan.popular ? "text-primary-foreground" : "text-primary"
+                      }`} />
                     </div>
                     <span className="text-sm text-foreground">{feature}</span>
                   </li>
@@ -220,7 +280,9 @@ const PlanSelection = ({ draft, updateDraft, onNext }: PlanSelectionProps) => {
               {/* Selection Indicator */}
               {isSelected && (
                 <div className="absolute top-4 right-4">
-                  <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                    isPrescriptionFlow ? "bg-emerald-500" : "bg-primary"
+                  }`}>
                     <Check className="w-4 h-4 text-primary-foreground" />
                   </div>
                 </div>

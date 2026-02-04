@@ -12,7 +12,8 @@ import {
   ChevronRight,
   Inbox,
   UserCheck,
-  Users
+  Users,
+  FileText
 } from "lucide-react";
 
 interface Consultation {
@@ -21,6 +22,7 @@ interface Consultation {
   doctor_id: string | null;
   status: string;
   concern_category: string | null;
+  consultation_type?: string | null;
   body_locations: string[] | null;
   created_at: string;
   submitted_at: string | null;
@@ -42,6 +44,7 @@ const concernLabels: Record<string, { en: string; de: string }> = {
   infections: { en: "Infections", de: "Infektionen" },
   allergies: { en: "Allergies & Reactions", de: "Allergien & Reaktionen" },
   pigmentation: { en: "Pigmentation", de: "Pigmentierung" },
+  prescription: { en: "Prescription Request", de: "Rezeptanforderung" },
 };
 
 const ConsultationQueue = ({ 
@@ -186,11 +189,21 @@ const ConsultationQueue = ({
                       {activeTab === "completed" && <CheckCircle className="h-6 w-6 text-green-500" />}
                     </div>
                     <div>
-                      <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
-                        {consultation.concern_category 
-                          ? concernLabels[consultation.concern_category]?.[lang] || consultation.concern_category
-                          : (lang === "de" ? "Dermatologische Anfrage" : "Dermatology Consultation")}
-                      </h3>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                          {consultation.consultation_type === 'prescription'
+                            ? concernLabels.prescription[lang]
+                            : (consultation.concern_category 
+                                ? concernLabels[consultation.concern_category]?.[lang] || consultation.concern_category
+                                : (lang === "de" ? "Dermatologische Anfrage" : "Dermatology Consultation"))}
+                        </h3>
+                        {consultation.consultation_type === 'prescription' && (
+                          <Badge variant="outline" className="text-xs gap-1 text-emerald-600 border-emerald-600">
+                            <FileText className="h-3 w-3" />
+                            {lang === "de" ? "Rezept" : "Rx"}
+                          </Badge>
+                        )}
+                      </div>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <span>{consultation.profiles?.full_name || (lang === "de" ? "Patient" : "Patient")}</span>
                         <span>•</span>

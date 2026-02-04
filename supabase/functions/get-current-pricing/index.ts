@@ -9,11 +9,13 @@ const corsHeaders = {
 interface PricingData {
   standard_price: number;
   urgent_price: number;
+  prescription_price: number;
 }
 
 const DEFAULT_PRICING: PricingData = {
   standard_price: 49,
   urgent_price: 74,
+  prescription_price: 29,
 };
 
 Deno.serve(async (req) => {
@@ -57,6 +59,7 @@ Deno.serve(async (req) => {
       JSON.stringify({
         standard_price: pricing.standard_price ?? DEFAULT_PRICING.standard_price,
         urgent_price: pricing.urgent_price ?? DEFAULT_PRICING.urgent_price,
+        prescription_price: pricing.prescription_price ?? DEFAULT_PRICING.prescription_price,
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },

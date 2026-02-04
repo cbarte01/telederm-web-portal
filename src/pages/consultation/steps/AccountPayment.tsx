@@ -123,6 +123,8 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep, onAllowNavigation
     
     setIsProcessingPayment(true);
     
+    const isPrescriptionFlow = draft.consultationType === 'prescription';
+    
     try {
       // Create consultation in draft status first
       const db = supabase as any;
@@ -131,25 +133,26 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep, onAllowNavigation
         .insert({
           patient_id: patientProfile.id,
           status: "draft", // Will be updated to "submitted" after payment
-          concern_category: draft.concernCategory,
-          body_locations: draft.bodyLocations,
-          symptom_onset: draft.symptomOnset,
-          has_changed: draft.hasChanged,
-          change_description: draft.changeDescription,
-          symptoms: draft.symptoms,
-          symptom_severity: draft.symptomSeverity,
-          has_allergies: draft.hasAllergies,
-          allergies_description: draft.allergiesDescription,
-          takes_medications: draft.takesMedications,
-          medications_description: draft.medicationsDescription,
-          has_self_treated: draft.hasSelfTreated,
-          self_treatment_description: draft.selfTreatmentDescription,
+          consultation_type: draft.consultationType || 'consultation',
+          concern_category: isPrescriptionFlow ? null : draft.concernCategory,
+          body_locations: isPrescriptionFlow ? [] : draft.bodyLocations,
+          symptom_onset: isPrescriptionFlow ? null : draft.symptomOnset,
+          has_changed: isPrescriptionFlow ? null : draft.hasChanged,
+          change_description: isPrescriptionFlow ? null : draft.changeDescription,
+          symptoms: isPrescriptionFlow ? [] : draft.symptoms,
+          symptom_severity: isPrescriptionFlow ? null : draft.symptomSeverity,
+          has_allergies: isPrescriptionFlow ? null : draft.hasAllergies,
+          allergies_description: isPrescriptionFlow ? null : draft.allergiesDescription,
+          takes_medications: isPrescriptionFlow ? null : draft.takesMedications,
+          medications_description: isPrescriptionFlow ? null : draft.medicationsDescription,
+          has_self_treated: isPrescriptionFlow ? null : draft.hasSelfTreated,
+          self_treatment_description: isPrescriptionFlow ? null : draft.selfTreatmentDescription,
           date_of_birth: patientProfile.date_of_birth,
           biological_sex: patientProfile.biological_sex,
           additional_notes: draft.additionalNotes,
           doctor_id: draft.referredDoctorId || null,
           pricing_plan: draft.pricingPlan || "standard",
-          consultation_price: draft.consultationPrice || (draft.pricingPlan === "urgent" ? 74 : 49),
+          consultation_price: draft.consultationPrice || (draft.pricingPlan === "urgent" ? 74 : draft.pricingPlan === "prescription" ? 29 : 49),
           payment_status: "pending",
         })
         .select()
@@ -159,29 +162,31 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep, onAllowNavigation
       
       setConsultationId(consultation.id);
 
-      // Upload photos to storage
-      for (const photo of draft.photos) {
-        if (photo.file) {
-          const filePath = `${user.id}/${consultation.id}/${photo.type}_${Date.now()}.jpg`;
-          
-          const { error: uploadError } = await supabase.storage
-            .from("consultation-photos")
-            .upload(filePath, photo.file, {
-              contentType: photo.file.type,
-            });
+      // Upload photos to storage (only for regular consultations)
+      if (!isPrescriptionFlow) {
+        for (const photo of draft.photos) {
+          if (photo.file) {
+            const filePath = `${user.id}/${consultation.id}/${photo.type}_${Date.now()}.jpg`;
+            
+            const { error: uploadError } = await supabase.storage
+              .from("consultation-photos")
+              .upload(filePath, photo.file, {
+                contentType: photo.file.type,
+              });
 
-          if (uploadError) {
-            console.error("Photo upload error:", uploadError);
-            continue;
+            if (uploadError) {
+              console.error("Photo upload error:", uploadError);
+              continue;
+            }
+
+            await supabase
+              .from("consultation_photos")
+              .insert({
+                consultation_id: consultation.id,
+                storage_path: filePath,
+                photo_type: photo.type,
+              });
           }
-
-          await supabase
-            .from("consultation_photos")
-            .insert({
-              consultation_id: consultation.id,
-              storage_path: filePath,
-              photo_type: photo.type,
-            });
         }
       }
 
@@ -227,6 +232,7 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep, onAllowNavigation
     infections: { en: "Infections", de: "Infektionen" },
     allergies: { en: "Allergies & Reactions", de: "Allergien & Reaktionen" },
     pigmentation: { en: "Pigmentation", de: "Pigmentierung" },
+    prescription: { en: "Prescription Request", de: "Rezeptanforderung" },
   };
 
   const onsetLabels: Record<string, { en: string; de: string }> = {
@@ -295,6 +301,8 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep, onAllowNavigation
     patientProfile.date_of_birth && 
     patientProfile.biological_sex;
 
+  const isPrescriptionFlow = draft.consultationType === 'prescription';
+
   return (
     <div className="space-y-6">
       <div className="text-center space-y-2">
@@ -302,15 +310,35 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep, onAllowNavigation
           {t("step9.title")}
         </h1>
         <p className="text-muted-foreground">
-          {t("step9.subtitle")}
+          {isPrescriptionFlow 
+            ? (lang === "de" ? "Melden Sie sich an, um Ihre Rezeptanforderung einzureichen" : "Sign in to submit your prescription request")
+            : t("step9.subtitle")}
         </p>
       </div>
 
       {/* Detailed Consultation Summary */}
       <div className="p-4 rounded-xl border border-border bg-card space-y-5">
         <h3 className="font-semibold text-foreground text-lg border-b border-border pb-2">
-          {t("step9.summary.title")}
+          {isPrescriptionFlow 
+            ? (lang === "de" ? "Ihre Rezeptanforderung" : "Your Prescription Request")
+            : t("step9.summary.title")}
         </h3>
+        
+        {/* Prescription Request Type Indicator */}
+        {isPrescriptionFlow && (
+          <SummarySection icon={FileText} title={lang === "de" ? "Anfrageart" : "Request Type"}>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
+                {lang === "de" ? "Rezeptanforderung" : "Prescription Request"}
+              </span>
+            </div>
+            <p className="text-sm mt-2">
+              {lang === "de" 
+                ? "Sie fordern eine Rezeptverlängerung für eine bestehende Behandlung an."
+                : "You are requesting a prescription renewal for an existing treatment."}
+            </p>
+          </SummarySection>
+        )}
         
         {/* Personal Details - from profile */}
         {user && patientProfile && (
@@ -335,82 +363,94 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep, onAllowNavigation
           </SummarySection>
         )}
 
-        {/* Concern & Location */}
-        <SummarySection icon={MapPin} title={lang === "de" ? "Anliegen & Betroffene Stellen" : "Concern & Affected Areas"}>
-          <SummaryRow 
-            label={lang === "de" ? "Kategorie" : "Category"} 
-            value={draft.concernCategory ? categoryLabels[draft.concernCategory]?.[lang] : undefined} 
-          />
-          <SummaryRow 
-            label={lang === "de" ? "Körperstellen" : "Body areas"} 
-            value={draft.bodyLocations.length > 0 ? draft.bodyLocations.map(l => BODY_AREA_LABELS[l]?.[lang]).join(", ") : undefined} 
-          />
-        </SummarySection>
+        {/* Concern & Location - only for regular consultations */}
+        {!isPrescriptionFlow && (
+          <SummarySection icon={MapPin} title={lang === "de" ? "Anliegen & Betroffene Stellen" : "Concern & Affected Areas"}>
+            <SummaryRow 
+              label={lang === "de" ? "Kategorie" : "Category"} 
+              value={draft.concernCategory ? categoryLabels[draft.concernCategory]?.[lang] : undefined} 
+            />
+            <SummaryRow 
+              label={lang === "de" ? "Körperstellen" : "Body areas"} 
+              value={draft.bodyLocations.length > 0 ? draft.bodyLocations.map(l => BODY_AREA_LABELS[l]?.[lang]).join(", ") : undefined} 
+            />
+          </SummarySection>
+        )}
 
-        {/* Photos */}
-        <SummarySection icon={Camera} title={lang === "de" ? "Hochgeladene Fotos" : "Uploaded Photos"}>
-          <p>{draft.photos.length} {lang === "de" ? "Foto(s) hochgeladen" : "photo(s) uploaded"}</p>
-          {draft.photos.length > 0 && (
-            <div className="flex gap-2 mt-2">
-              {draft.photos.map((photo, idx) => (
-                photo.preview && (
-                  <img 
-                    key={idx} 
-                    src={photo.preview} 
-                    alt={`Photo ${idx + 1}`} 
-                    className="w-12 h-12 object-cover rounded-md border border-border"
-                  />
-                )
-              ))}
-            </div>
-          )}
-        </SummarySection>
+        {/* Photos - only for regular consultations */}
+        {!isPrescriptionFlow && (
+          <SummarySection icon={Camera} title={lang === "de" ? "Hochgeladene Fotos" : "Uploaded Photos"}>
+            <p>{draft.photos.length} {lang === "de" ? "Foto(s) hochgeladen" : "photo(s) uploaded"}</p>
+            {draft.photos.length > 0 && (
+              <div className="flex gap-2 mt-2">
+                {draft.photos.map((photo, idx) => (
+                  photo.preview && (
+                    <img 
+                      key={idx} 
+                      src={photo.preview} 
+                      alt={`Photo ${idx + 1}`} 
+                      className="w-12 h-12 object-cover rounded-md border border-border"
+                    />
+                  )
+                ))}
+              </div>
+            )}
+          </SummarySection>
+        )}
 
-        {/* Timeline */}
-        <SummarySection icon={Clock} title={lang === "de" ? "Zeitverlauf" : "Timeline"}>
-          <SummaryRow 
-            label={lang === "de" ? "Beginn" : "Onset"} 
-            value={draft.symptomOnset ? onsetLabels[draft.symptomOnset]?.[lang] : undefined} 
-          />
-          <SummaryRow 
-            label={lang === "de" ? "Verändert" : "Changed"} 
-            value={draft.hasChanged !== undefined ? (draft.hasChanged ? (lang === "de" ? "Ja" : "Yes") : (lang === "de" ? "Nein" : "No")) : undefined} 
-          />
-          {draft.hasChanged && draft.changeDescription && (
-            <div className="mt-1">
-              <span className="text-xs">{lang === "de" ? "Beschreibung der Veränderung" : "Change description"}:</span>
-              <p className="font-medium text-foreground mt-0.5 text-xs italic">"{draft.changeDescription}"</p>
-            </div>
-          )}
-        </SummarySection>
+        {/* Timeline - only for regular consultations */}
+        {!isPrescriptionFlow && (
+          <SummarySection icon={Clock} title={lang === "de" ? "Zeitverlauf" : "Timeline"}>
+            <SummaryRow 
+              label={lang === "de" ? "Beginn" : "Onset"} 
+              value={draft.symptomOnset ? onsetLabels[draft.symptomOnset]?.[lang] : undefined} 
+            />
+            <SummaryRow 
+              label={lang === "de" ? "Verändert" : "Changed"} 
+              value={draft.hasChanged !== undefined ? (draft.hasChanged ? (lang === "de" ? "Ja" : "Yes") : (lang === "de" ? "Nein" : "No")) : undefined} 
+            />
+            {draft.hasChanged && draft.changeDescription && (
+              <div className="mt-1">
+                <span className="text-xs">{lang === "de" ? "Beschreibung der Veränderung" : "Change description"}:</span>
+                <p className="font-medium text-foreground mt-0.5 text-xs italic">"{draft.changeDescription}"</p>
+              </div>
+            )}
+          </SummarySection>
+        )}
 
-        {/* Symptoms */}
-        <SummarySection icon={Activity} title={lang === "de" ? "Symptome" : "Symptoms"}>
-          <SummaryRow 
-            label={lang === "de" ? "Symptome" : "Symptoms"} 
-            value={getSelectedSymptoms() || (lang === "de" ? "Keine angegeben" : "None specified")} 
-          />
-          <SummaryRow 
-            label={lang === "de" ? "Schweregrad" : "Severity"} 
-            value={draft.symptomSeverity ? severityLabels[draft.symptomSeverity]?.[lang] : undefined} 
-          />
-        </SummarySection>
+        {/* Symptoms - only for regular consultations */}
+        {!isPrescriptionFlow && (
+          <SummarySection icon={Activity} title={lang === "de" ? "Symptome" : "Symptoms"}>
+            <SummaryRow 
+              label={lang === "de" ? "Symptome" : "Symptoms"} 
+              value={getSelectedSymptoms() || (lang === "de" ? "Keine angegeben" : "None specified")} 
+            />
+            <SummaryRow 
+              label={lang === "de" ? "Schweregrad" : "Severity"} 
+              value={draft.symptomSeverity ? severityLabels[draft.symptomSeverity]?.[lang] : undefined} 
+            />
+          </SummarySection>
+        )}
 
-        {/* Medical History */}
-        <SummarySection icon={Stethoscope} title={lang === "de" ? "Krankengeschichte" : "Medical History"}>
-          <SummaryRow 
-            label={lang === "de" ? "Allergien" : "Allergies"} 
-            value={draft.hasAllergies !== undefined ? (draft.hasAllergies ? (draft.allergiesDescription || (lang === "de" ? "Ja" : "Yes")) : (lang === "de" ? "Keine" : "None")) : undefined} 
-          />
-          <SummaryRow 
-            label={lang === "de" ? "Medikamente" : "Medications"} 
-            value={draft.takesMedications !== undefined ? (draft.takesMedications ? (draft.medicationsDescription || (lang === "de" ? "Ja" : "Yes")) : (lang === "de" ? "Keine" : "None")) : undefined} 
-          />
-          <SummaryRow 
-            label={lang === "de" ? "Selbstbehandlung" : "Self-treated"} 
-            value={draft.hasSelfTreated !== undefined ? (draft.hasSelfTreated ? (draft.selfTreatmentDescription || (lang === "de" ? "Ja" : "Yes")) : (lang === "de" ? "Nein" : "No")) : undefined} 
-          />
-        </SummarySection>
+        {/* Medical History - only for regular consultations */}
+        {!isPrescriptionFlow && (
+          <SummarySection icon={Stethoscope} title={lang === "de" ? "Krankengeschichte" : "Medical History"}>
+            <SummaryRow 
+              label={lang === "de" ? "Allergien" : "Allergies"} 
+              value={draft.hasAllergies !== undefined ? (draft.hasAllergies ? (draft.allergiesDescription || (lang === "de" ? "Ja" : "Yes")) : (lang === "de" ? "Keine" : "None")) : undefined} 
+            />
+            <SummaryRow 
+              label={lang === "de" ? "Medikamente" : "Medications"} 
+              value={draft.takesMedications !== undefined ? (draft.takesMedications ? (draft.medicationsDescription || (lang === "de" ? "Ja" : "Yes")) : (lang === "de" ? "Keine" : "None")) : undefined} 
+            />
+            {draft.hasSelfTreated !== undefined && (
+              <SummaryRow 
+                label={lang === "de" ? "Selbstbehandlung" : "Self-treated"} 
+                value={draft.hasSelfTreated ? (draft.selfTreatmentDescription || (lang === "de" ? "Ja" : "Yes")) : (lang === "de" ? "Nein" : "No")} 
+              />
+            )}
+          </SummarySection>
+        )}
 
         {/* Additional Notes */}
         {draft.additionalNotes && (

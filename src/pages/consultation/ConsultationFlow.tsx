@@ -161,12 +161,39 @@ const ConsultationFlow = () => {
     );
   }
 
-  const progress = (draft.currentStep / TOTAL_STEPS) * 100;
+  // For prescription flow, calculate different progress
+  const isPrescriptionFlow = draft.consultationType === 'prescription';
+  const prescriptionSteps = [1, 8, 9, 10]; // Steps in prescription flow
+  
+  const getDisplayProgress = () => {
+    if (isPrescriptionFlow) {
+      const currentIndex = prescriptionSteps.indexOf(draft.currentStep);
+      return {
+        current: currentIndex >= 0 ? currentIndex + 1 : 1,
+        total: prescriptionSteps.length
+      };
+    }
+    return { current: draft.currentStep, total: TOTAL_STEPS };
+  };
+
+  const displayProgress = getDisplayProgress();
+  const progress = (displayProgress.current / displayProgress.total) * 100;
+
+  // Handle back button for prescription flow
+  const handleBack = () => {
+    if (isPrescriptionFlow && draft.currentStep === 8) {
+      // Go back to step 1 from step 8 in prescription flow
+      setStep(1);
+      updateDraft({ consultationType: undefined, pricingPlan: undefined });
+    } else {
+      goToPreviousStep();
+    }
+  };
 
   const renderStep = () => {
     switch (draft.currentStep) {
       case 1:
-        return <ConcernSelection draft={draft} updateDraft={updateDraft} onNext={goToNextStep} />;
+        return <ConcernSelection draft={draft} updateDraft={updateDraft} onNext={goToNextStep} setStep={setStep} />;
       case 2:
         return <BodyLocationPicker draft={draft} updateDraft={updateDraft} onNext={goToNextStep} />;
       case 3:
@@ -186,7 +213,7 @@ const ConsultationFlow = () => {
       case 10:
         return <Confirmation />;
       default:
-        return <ConcernSelection draft={draft} updateDraft={updateDraft} onNext={goToNextStep} />;
+        return <ConcernSelection draft={draft} updateDraft={updateDraft} onNext={goToNextStep} setStep={setStep} />;
     }
   };
 
@@ -200,7 +227,7 @@ const ConsultationFlow = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={goToPreviousStep}
+                onClick={handleBack}
                 className="shrink-0"
               >
                 <ArrowLeft className="h-5 w-5" />
@@ -214,7 +241,7 @@ const ConsultationFlow = () => {
           
           <div className="flex-1 max-w-xs mx-4">
             <div className="text-xs text-center text-muted-foreground mb-1">
-              {t("flow.progress", { current: draft.currentStep, total: TOTAL_STEPS })}
+              {t("flow.progress", { current: displayProgress.current, total: displayProgress.total })}
             </div>
             <Progress value={progress} className="h-2" />
           </div>
