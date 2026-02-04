@@ -32,13 +32,13 @@ const ConcernSelection = ({ draft, updateDraft, onNext, setStep }: ConcernSelect
   };
 
   const handlePrescriptionRequest = () => {
+    // Set consultationType and skip to step 8 in a single update to avoid race condition
     updateDraft({ 
       consultationType: 'prescription',
       concernCategory: undefined,
-      pricingPlan: 'prescription'
+      pricingPlan: 'prescription',
+      currentStep: 8
     });
-    // Skip to step 8 (Plan Selection)
-    setStep(8);
   };
 
   return (
