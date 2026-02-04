@@ -15,8 +15,8 @@ Welcome to the official documentation for **Medena Care**, Austria's leading onl
 - [Ärztehandbuch (Deutsch)](user-manuals/doctor-manual-de.md)
 
 ### For Administrators
-- [Admin Guide (English)](user-manuals/admin-manual-en.md)
-- [Administratorhandbuch (Deutsch)](user-manuals/admin-manual-de.md)
+- ✅ [Admin Guide (English)](user-manuals/admin-manual-en.md)
+- ✅ [Administratorhandbuch (Deutsch)](user-manuals/admin-manual-de.md)
 
 ---
 
