@@ -86,6 +86,7 @@ interface Doctor {
   avatar_url: string | null;
   standard_price: number | null;
   urgent_price: number | null;
+  prescription_price: number | null;
 }
 
 interface Patient {
@@ -146,12 +147,13 @@ const AdminDashboard = () => {
   // Group pricing state
   const [groupStandardPrice, setGroupStandardPrice] = useState<number>(49);
   const [groupUrgentPrice, setGroupUrgentPrice] = useState<number>(74);
+  const [groupPrescriptionPrice, setGroupPrescriptionPrice] = useState<number>(29);
   const [isSavingGroupPricing, setIsSavingGroupPricing] = useState(false);
   const [isLoadingGroupPricing, setIsLoadingGroupPricing] = useState(true);
 
   // Doctor pricing edit state
   const [editingDoctorPricing, setEditingDoctorPricing] = useState<string | null>(null);
-  const [doctorPriceInputs, setDoctorPriceInputs] = useState<{ standard: number; urgent: number }>({ standard: 49, urgent: 74 });
+  const [doctorPriceInputs, setDoctorPriceInputs] = useState<{ standard: number; urgent: number; prescription: number }>({ standard: 49, urgent: 74, prescription: 29 });
 
   // Widget dialog state
   const [widgetDialogDoctor, setWidgetDialogDoctor] = useState<Doctor | null>(null);
@@ -370,7 +372,7 @@ const AdminDashboard = () => {
       // Fetch profiles
       const { data: profiles, error: profilesError } = await supabase
         .from("profiles")
-        .select("id, full_name, is_active, doctor_queue_type, referral_code, standard_price, urgent_price")
+        .select("id, full_name, is_active, doctor_queue_type, referral_code, standard_price, urgent_price, prescription_price")
         .in("id", userIds);
 
       if (profilesError) throw profilesError;
@@ -400,6 +402,7 @@ const AdminDashboard = () => {
           avatar_url: publicProfile?.avatar_url || null,
           standard_price: profile?.standard_price ?? null,
           urgent_price: profile?.urgent_price ?? null,
+          prescription_price: profile?.prescription_price ?? null,
         };
       });
 
@@ -696,9 +699,10 @@ const AdminDashboard = () => {
       if (error && error.code !== "PGRST116") throw error;
 
       if (data?.setting_value) {
-        const pricing = data.setting_value as { standard: number; urgent: number };
+        const pricing = data.setting_value as { standard: number; urgent: number; prescription?: number };
         setGroupStandardPrice(pricing.standard || 49);
         setGroupUrgentPrice(pricing.urgent || 74);
+        setGroupPrescriptionPrice(pricing.prescription ?? 29);
       }
     } catch (err) {
       console.error("Error fetching group pricing:", err);
@@ -716,11 +720,21 @@ const AdminDashboard = () => {
         .eq("setting_key", "group_pricing")
         .single();
 
+      const pricingValue = { 
+        standard: groupStandardPrice, 
+        urgent: groupUrgentPrice,
+        prescription: groupPrescriptionPrice,
+        // Also add standard_price, urgent_price, prescription_price keys for edge function compatibility
+        standard_price: groupStandardPrice,
+        urgent_price: groupUrgentPrice,
+        prescription_price: groupPrescriptionPrice,
+      };
+
       if (existing) {
         const { error } = await supabase
           .from("admin_settings")
           .update({
-            setting_value: { standard: groupStandardPrice, urgent: groupUrgentPrice },
+            setting_value: pricingValue,
           })
           .eq("setting_key", "group_pricing");
         if (error) throw error;
@@ -729,7 +743,7 @@ const AdminDashboard = () => {
           .from("admin_settings")
           .insert({
             setting_key: "group_pricing",
-            setting_value: { standard: groupStandardPrice, urgent: groupUrgentPrice },
+            setting_value: pricingValue,
           });
         if (error) throw error;
       }
@@ -757,6 +771,7 @@ const AdminDashboard = () => {
         .update({
           standard_price: doctorPriceInputs.standard,
           urgent_price: doctorPriceInputs.urgent,
+          prescription_price: doctorPriceInputs.prescription,
         })
         .eq("id", doctorId);
 
@@ -785,6 +800,7 @@ const AdminDashboard = () => {
     setDoctorPriceInputs({
       standard: doctor.standard_price ?? 49,
       urgent: doctor.urgent_price ?? 74,
+      prescription: doctor.prescription_price ?? 29,
     });
   };
 
@@ -1356,17 +1372,28 @@ const AdminDashboard = () => {
                                     type="number"
                                     value={doctorPriceInputs.standard}
                                     onChange={(e) => setDoctorPriceInputs(prev => ({ ...prev, standard: Number(e.target.value) }))}
-                                    className="w-16 h-7 text-xs"
+                                    className="w-14 h-7 text-xs"
                                     min={1}
                                     max={999}
+                                    title={lang === "de" ? "Standard" : "Standard"}
                                   />
                                   <Input
                                     type="number"
                                     value={doctorPriceInputs.urgent}
                                     onChange={(e) => setDoctorPriceInputs(prev => ({ ...prev, urgent: Number(e.target.value) }))}
-                                    className="w-16 h-7 text-xs"
+                                    className="w-14 h-7 text-xs"
                                     min={1}
                                     max={999}
+                                    title={lang === "de" ? "Dringend" : "Urgent"}
+                                  />
+                                  <Input
+                                    type="number"
+                                    value={doctorPriceInputs.prescription}
+                                    onChange={(e) => setDoctorPriceInputs(prev => ({ ...prev, prescription: Number(e.target.value) }))}
+                                    className="w-14 h-7 text-xs"
+                                    min={1}
+                                    max={999}
+                                    title={lang === "de" ? "Rezept" : "Prescription"}
                                   />
                                 </div>
                                 <Button
@@ -1393,8 +1420,8 @@ const AdminDashboard = () => {
                               </div>
                             ) : (
                               <div className="flex items-center gap-2">
-                                <span className="text-sm">
-                                  {doctor.standard_price ?? 49} / {doctor.urgent_price ?? 74}
+                                <span className="text-sm" title={lang === "de" ? "Standard / Dringend / Rezept" : "Standard / Urgent / Prescription"}>
+                                  {doctor.standard_price ?? 49} / {doctor.urgent_price ?? 74} / {doctor.prescription_price ?? 29}
                                 </span>
                                 <Button
                                   variant="ghost"
@@ -1635,7 +1662,7 @@ const AdminDashboard = () => {
                         ? "Diese Preise werden Patienten angezeigt, die über die Hauptwebsite ohne Arzt-Empfehlungslink kommen."
                         : "These prices are shown to patients who come through the main website without a doctor referral link."}
                     </p>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-3 gap-4">
                       <div>
                         <label className="text-sm font-medium">{lang === "de" ? "Standard-Anfrage (€)" : "Standard Request (€)"}</label>
                         <Input 
@@ -1659,6 +1686,18 @@ const AdminDashboard = () => {
                           className="mt-1" 
                         />
                         <p className="text-xs text-muted-foreground mt-1">{lang === "de" ? "24h Antwortzeit" : "24h response"}</p>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium">{lang === "de" ? "Rezeptanforderung (€)" : "Prescription Request (€)"}</label>
+                        <Input 
+                          type="number" 
+                          value={groupPrescriptionPrice} 
+                          onChange={(e) => setGroupPrescriptionPrice(Number(e.target.value))}
+                          min={1} 
+                          max={999} 
+                          className="mt-1" 
+                        />
+                        <p className="text-xs text-muted-foreground mt-1">{lang === "de" ? "Folgerezepte" : "Follow-up prescriptions"}</p>
                       </div>
                     </div>
                     <Button 

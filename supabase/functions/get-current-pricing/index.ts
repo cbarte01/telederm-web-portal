@@ -7,9 +7,13 @@ const corsHeaders = {
 };
 
 interface PricingData {
-  standard_price: number;
-  urgent_price: number;
-  prescription_price: number;
+  standard_price?: number;
+  urgent_price?: number;
+  prescription_price?: number;
+  // Support legacy naming
+  standard?: number;
+  urgent?: number;
+  prescription?: number;
 }
 
 const DEFAULT_PRICING: PricingData = {
@@ -55,11 +59,12 @@ Deno.serve(async (req) => {
     const pricing = data.setting_value as PricingData;
     console.log("Returning pricing:", pricing);
 
+    // Support both naming conventions (standard/urgent/prescription and standard_price/urgent_price/prescription_price)
     return new Response(
       JSON.stringify({
-        standard_price: pricing.standard_price ?? DEFAULT_PRICING.standard_price,
-        urgent_price: pricing.urgent_price ?? DEFAULT_PRICING.urgent_price,
-        prescription_price: pricing.prescription_price ?? DEFAULT_PRICING.prescription_price,
+        standard_price: pricing.standard_price ?? pricing.standard ?? DEFAULT_PRICING.standard_price,
+        urgent_price: pricing.urgent_price ?? pricing.urgent ?? DEFAULT_PRICING.urgent_price,
+        prescription_price: pricing.prescription_price ?? pricing.prescription ?? DEFAULT_PRICING.prescription_price,
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
