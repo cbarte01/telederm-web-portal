@@ -575,9 +575,8 @@ const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: Consulta
                     />
                   </div>
 
-                  {/* ICD-10 Code Section - only for regular consultations */}
-                  {!isPrescriptionRequest && (
-                    <div className="border-t border-border pt-4 mt-4 space-y-4">
+                  {/* ICD-10 Code Section - required for all consultations */}
+                  <div className="border-t border-border pt-4 mt-4 space-y-4">
                       <div className="space-y-2">
                         <Label htmlFor="icd10Code" className="flex items-center gap-2">
                           <FileText className="h-4 w-4 text-primary" />
@@ -635,14 +634,13 @@ const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: Consulta
                           onChange={(e) => setIcd10Description(e.target.value)}
                           placeholder={lang === "de" ? "z.B. Allergische Urticaria" : "e.g. Allergic Urticaria"}
                         />
-                      </div>
                     </div>
-                  )}
+                  </div>
 
                   <div className="flex flex-col gap-2 pt-4">
                     <Button 
                       onClick={() => handleSubmitResponse("completed")}
-                      disabled={isSubmitting || !response.trim() || (!isPrescriptionRequest && !icd10Code.trim())}
+                      disabled={isSubmitting || !response.trim() || !icd10Code.trim()}
                       className="w-full gap-2"
                     >
                       <Send className="h-4 w-4" />
