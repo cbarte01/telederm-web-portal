@@ -202,7 +202,7 @@ const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: Consulta
     loadPhotos();
   }, [photos]);
 
-  // Prescription requests don't require ICD-10
+  // Check if this is a prescription request (for hiding certain sections)
   const isPrescriptionRequest = consultation.consultation_type === 'prescription';
 
   const handleSubmitResponse = async (newStatus: "in_review" | "completed") => {
@@ -218,8 +218,8 @@ const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: Consulta
         return;
       }
       
-      // ICD-10 is only required for regular consultations, not prescription requests
-      if (!isPrescriptionRequest && !icd10Code.trim()) {
+      // ICD-10 is required for all consultations including prescription requests
+      if (!icd10Code.trim()) {
         toast({
           title: lang === "de" ? "Fehler" : "Error",
           description: lang === "de" 
