@@ -202,6 +202,9 @@ const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: Consulta
     loadPhotos();
   }, [photos]);
 
+  // Prescription requests don't require ICD-10
+  const isPrescriptionRequest = consultation.consultation_type === 'prescription';
+
   const handleSubmitResponse = async (newStatus: "in_review" | "completed") => {
     if (newStatus === "completed") {
       if (!response.trim()) {
@@ -215,7 +218,8 @@ const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: Consulta
         return;
       }
       
-      if (!icd10Code.trim()) {
+      // ICD-10 is only required for regular consultations, not prescription requests
+      if (!isPrescriptionRequest && !icd10Code.trim()) {
         toast({
           title: lang === "de" ? "Fehler" : "Error",
           description: lang === "de" 
@@ -364,89 +368,108 @@ const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: Consulta
             </CardContent>
           </Card>
 
-          {/* Symptoms */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <AlertCircle className="h-5 w-5 text-primary" />
-                {lang === "de" ? "Symptome & Verlauf" : "Symptoms & Timeline"}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {consultation.symptoms && (consultation.symptoms as string[]).length > 0 && (
-                <div>
-                  <p className="text-sm text-muted-foreground mb-2">{lang === "de" ? "Symptome" : "Symptoms"}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {(consultation.symptoms as string[]).map((symptom) => (
-                      <Badge key={symptom} variant="outline">
-                        {symptomLabels[symptom]?.[lang] || symptom}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {consultation.symptom_severity && (
-                <div>
-                  <p className="text-sm text-muted-foreground">{lang === "de" ? "Schweregrad" : "Severity"}</p>
-                  <p className="font-medium capitalize">{consultation.symptom_severity}</p>
-                </div>
-              )}
-              {consultation.symptom_onset && (
-                <div>
-                  <p className="text-sm text-muted-foreground">{lang === "de" ? "Beginn" : "Onset"}</p>
-                  <p className="font-medium">{onsetLabels[consultation.symptom_onset]?.[lang] || consultation.symptom_onset}</p>
-                </div>
-              )}
-              {consultation.has_changed && consultation.change_description && (
-                <div>
-                  <p className="text-sm text-muted-foreground">{lang === "de" ? "Veränderungen" : "Changes"}</p>
-                  <p className="font-medium">{consultation.change_description}</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Medical History */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Pill className="h-5 w-5 text-primary" />
-                {lang === "de" ? "Medizinische Vorgeschichte" : "Medical History"}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <p className="text-sm text-muted-foreground">{lang === "de" ? "Allergien" : "Allergies"}</p>
-                  <p className="font-medium">
-                    {consultation.has_allergies 
-                      ? consultation.allergies_description || (lang === "de" ? "Ja" : "Yes")
-                      : (lang === "de" ? "Keine bekannt" : "None known")}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">{lang === "de" ? "Medikamente" : "Medications"}</p>
-                  <p className="font-medium">
-                    {consultation.takes_medications 
-                      ? consultation.medications_description || (lang === "de" ? "Ja" : "Yes")
-                      : (lang === "de" ? "Keine" : "None")}
-                  </p>
-                </div>
-                {consultation.has_self_treated && (
-                  <div className="sm:col-span-2">
-                    <p className="text-sm text-muted-foreground">{lang === "de" ? "Selbstbehandlung" : "Self-Treatment"}</p>
-                    <p className="font-medium">{consultation.self_treatment_description || (lang === "de" ? "Ja" : "Yes")}</p>
+          {/* Symptoms - hidden for prescription requests */}
+          {!isPrescriptionRequest && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <AlertCircle className="h-5 w-5 text-primary" />
+                  {lang === "de" ? "Symptome & Verlauf" : "Symptoms & Timeline"}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {consultation.symptoms && (consultation.symptoms as string[]).length > 0 && (
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-2">{lang === "de" ? "Symptome" : "Symptoms"}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {(consultation.symptoms as string[]).map((symptom) => (
+                        <Badge key={symptom} variant="outline">
+                          {symptomLabels[symptom]?.[lang] || symptom}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
                 )}
-              </div>
-              {consultation.additional_notes && (
-                <div>
-                  <p className="text-sm text-muted-foreground">{lang === "de" ? "Zusätzliche Hinweise" : "Additional Notes"}</p>
-                  <p className="font-medium">{consultation.additional_notes}</p>
+                {consultation.symptom_severity && (
+                  <div>
+                    <p className="text-sm text-muted-foreground">{lang === "de" ? "Schweregrad" : "Severity"}</p>
+                    <p className="font-medium capitalize">{consultation.symptom_severity}</p>
+                  </div>
+                )}
+                {consultation.symptom_onset && (
+                  <div>
+                    <p className="text-sm text-muted-foreground">{lang === "de" ? "Beginn" : "Onset"}</p>
+                    <p className="font-medium">{onsetLabels[consultation.symptom_onset]?.[lang] || consultation.symptom_onset}</p>
+                  </div>
+                )}
+                {consultation.has_changed && consultation.change_description && (
+                  <div>
+                    <p className="text-sm text-muted-foreground">{lang === "de" ? "Veränderungen" : "Changes"}</p>
+                    <p className="font-medium">{consultation.change_description}</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Medical History - hidden for prescription requests */}
+          {!isPrescriptionRequest && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Pill className="h-5 w-5 text-primary" />
+                  {lang === "de" ? "Medizinische Vorgeschichte" : "Medical History"}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <p className="text-sm text-muted-foreground">{lang === "de" ? "Allergien" : "Allergies"}</p>
+                    <p className="font-medium">
+                      {consultation.has_allergies 
+                        ? consultation.allergies_description || (lang === "de" ? "Ja" : "Yes")
+                        : (lang === "de" ? "Keine bekannt" : "None known")}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">{lang === "de" ? "Medikamente" : "Medications"}</p>
+                    <p className="font-medium">
+                      {consultation.takes_medications 
+                        ? consultation.medications_description || (lang === "de" ? "Ja" : "Yes")
+                        : (lang === "de" ? "Keine" : "None")}
+                    </p>
+                  </div>
+                  {consultation.has_self_treated && (
+                    <div className="sm:col-span-2">
+                      <p className="text-sm text-muted-foreground">{lang === "de" ? "Selbstbehandlung" : "Self-Treatment"}</p>
+                      <p className="font-medium">{consultation.self_treatment_description || (lang === "de" ? "Ja" : "Yes")}</p>
+                    </div>
+                  )}
                 </div>
-              )}
-            </CardContent>
-          </Card>
+                {consultation.additional_notes && (
+                  <div>
+                    <p className="text-sm text-muted-foreground">{lang === "de" ? "Zusätzliche Hinweise" : "Additional Notes"}</p>
+                    <p className="font-medium">{consultation.additional_notes}</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Additional notes for prescription requests */}
+          {isPrescriptionRequest && consultation.additional_notes && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <FileText className="h-5 w-5 text-primary" />
+                  {lang === "de" ? "Rezeptanfrage-Details" : "Prescription Request Details"}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="font-medium">{consultation.additional_notes}</p>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Photos */}
           {photos.length > 0 && (
@@ -552,72 +575,74 @@ const ConsultationDetail = ({ consultation, photos, onBack, onUpdate }: Consulta
                     />
                   </div>
 
-                  {/* ICD-10 Code Section */}
-                  <div className="border-t border-border pt-4 mt-4 space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="icd10Code" className="flex items-center gap-2">
-                        <FileText className="h-4 w-4 text-primary" />
-                        {lang === "de" ? "ICD-10-Code (für Honorarnote)" : "ICD-10 Code (for medical fee note)"}
-                      </Label>
-                      <div className="relative">
+                  {/* ICD-10 Code Section - only for regular consultations */}
+                  {!isPrescriptionRequest && (
+                    <div className="border-t border-border pt-4 mt-4 space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="icd10Code" className="flex items-center gap-2">
+                          <FileText className="h-4 w-4 text-primary" />
+                          {lang === "de" ? "ICD-10-Code (für Honorarnote)" : "ICD-10 Code (for medical fee note)"}
+                        </Label>
+                        <div className="relative">
+                          <Input
+                            id="icd10Code"
+                            value={icd10Code}
+                            onChange={(e) => {
+                              const value = e.target.value.toUpperCase();
+                              setIcd10Code(value);
+                              setShowIcd10Suggestions(value.length > 0);
+                            }}
+                            onFocus={() => setShowIcd10Suggestions(icd10Code.length > 0 || true)}
+                            onBlur={() => setTimeout(() => setShowIcd10Suggestions(false), 200)}
+                            placeholder={lang === "de" ? "z.B. L50.0" : "e.g. L50.0"}
+                            className="font-mono"
+                          />
+                          {showIcd10Suggestions && (
+                            <div className="absolute z-10 w-full mt-1 bg-popover border border-border rounded-md shadow-lg max-h-48 overflow-y-auto">
+                              {COMMON_ICD10_CODES
+                                .filter(item => 
+                                  item.code.includes(icd10Code) || 
+                                  item.description.toLowerCase().includes(icd10Code.toLowerCase()) ||
+                                  icd10Code.length === 0
+                                )
+                                .slice(0, 8)
+                                .map((item) => (
+                                  <button
+                                    key={item.code}
+                                    type="button"
+                                    className="w-full px-3 py-2 text-left text-sm hover:bg-accent focus:bg-accent focus:outline-none"
+                                    onMouseDown={() => {
+                                      setIcd10Code(item.code);
+                                      setIcd10Description(item.description);
+                                      setShowIcd10Suggestions(false);
+                                    }}
+                                  >
+                                    <span className="font-mono font-medium text-primary">{item.code}</span>
+                                    <span className="text-muted-foreground ml-2">– {item.description}</span>
+                                  </button>
+                                ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="icd10Description">
+                          {lang === "de" ? "Diagnose (optional)" : "Diagnosis (optional)"}
+                        </Label>
                         <Input
-                          id="icd10Code"
-                          value={icd10Code}
-                          onChange={(e) => {
-                            const value = e.target.value.toUpperCase();
-                            setIcd10Code(value);
-                            setShowIcd10Suggestions(value.length > 0);
-                          }}
-                          onFocus={() => setShowIcd10Suggestions(icd10Code.length > 0 || true)}
-                          onBlur={() => setTimeout(() => setShowIcd10Suggestions(false), 200)}
-                          placeholder={lang === "de" ? "z.B. L50.0" : "e.g. L50.0"}
-                          className="font-mono"
+                          id="icd10Description"
+                          value={icd10Description}
+                          onChange={(e) => setIcd10Description(e.target.value)}
+                          placeholder={lang === "de" ? "z.B. Allergische Urticaria" : "e.g. Allergic Urticaria"}
                         />
-                        {showIcd10Suggestions && (
-                          <div className="absolute z-10 w-full mt-1 bg-popover border border-border rounded-md shadow-lg max-h-48 overflow-y-auto">
-                            {COMMON_ICD10_CODES
-                              .filter(item => 
-                                item.code.includes(icd10Code) || 
-                                item.description.toLowerCase().includes(icd10Code.toLowerCase()) ||
-                                icd10Code.length === 0
-                              )
-                              .slice(0, 8)
-                              .map((item) => (
-                                <button
-                                  key={item.code}
-                                  type="button"
-                                  className="w-full px-3 py-2 text-left text-sm hover:bg-accent focus:bg-accent focus:outline-none"
-                                  onMouseDown={() => {
-                                    setIcd10Code(item.code);
-                                    setIcd10Description(item.description);
-                                    setShowIcd10Suggestions(false);
-                                  }}
-                                >
-                                  <span className="font-mono font-medium text-primary">{item.code}</span>
-                                  <span className="text-muted-foreground ml-2">– {item.description}</span>
-                                </button>
-                              ))}
-                          </div>
-                        )}
                       </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="icd10Description">
-                        {lang === "de" ? "Diagnose (optional)" : "Diagnosis (optional)"}
-                      </Label>
-                      <Input
-                        id="icd10Description"
-                        value={icd10Description}
-                        onChange={(e) => setIcd10Description(e.target.value)}
-                        placeholder={lang === "de" ? "z.B. Allergische Urticaria" : "e.g. Allergic Urticaria"}
-                      />
-                    </div>
-                  </div>
+                  )}
 
                   <div className="flex flex-col gap-2 pt-4">
                     <Button 
                       onClick={() => handleSubmitResponse("completed")}
-                      disabled={isSubmitting || !response.trim() || !icd10Code.trim()}
+                      disabled={isSubmitting || !response.trim() || (!isPrescriptionRequest && !icd10Code.trim())}
                       className="w-full gap-2"
                     >
                       <Send className="h-4 w-4" />
