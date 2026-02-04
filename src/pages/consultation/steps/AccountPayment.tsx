@@ -303,6 +303,23 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep, onAllowNavigation
 
   const isPrescriptionFlow = draft.consultationType === 'prescription';
 
+  const getPlanLabel = () => {
+    if (draft.pricingPlan === 'prescription') {
+      return lang === 'de' ? 'Rezeptanforderung' : 'Prescription Request';
+    }
+    if (draft.pricingPlan === 'urgent') {
+      return lang === 'de' ? 'Dringliche Anfrage' : 'Urgent Request';
+    }
+    return lang === 'de' ? 'Standard-Anfrage' : 'Standard Request';
+  };
+
+  const getPlanPrice = () => {
+    if (typeof draft.consultationPrice === 'number') return draft.consultationPrice;
+    if (draft.pricingPlan === 'prescription') return 29;
+    if (draft.pricingPlan === 'urgent') return 74;
+    return 49;
+  };
+
   return (
     <div className="space-y-6">
       <div className="text-center space-y-2">
@@ -480,14 +497,11 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep, onAllowNavigation
           <SummarySection icon={CreditCard} title={lang === "de" ? "Gewählter Plan" : "Selected Plan"}>
             <SummaryRow 
               label={lang === "de" ? "Plan" : "Plan"} 
-              value={draft.pricingPlan === 'urgent' 
-                ? (lang === "de" ? "Dringliche Anfrage" : "Urgent Request")
-                : (lang === "de" ? "Standard-Anfrage" : "Standard Request")
-              } 
+              value={getPlanLabel()} 
             />
             <SummaryRow 
               label={lang === "de" ? "Preis" : "Price"} 
-              value={`€${draft.consultationPrice ?? (draft.pricingPlan === 'urgent' ? 74 : 49)}`} 
+              value={`€${getPlanPrice()}`} 
             />
           </SummarySection>
         )}
@@ -695,8 +709,8 @@ const AccountPayment = ({ draft, updateDraft, onNext, setStep, onAllowNavigation
                   <>
                     <CreditCard className="h-4 w-4" />
                     {lang === "de" 
-                      ? `Jetzt bezahlen (€${draft.consultationPrice || (draft.pricingPlan === "urgent" ? 74 : 49)})` 
-                      : `Pay now (€${draft.consultationPrice || (draft.pricingPlan === "urgent" ? 74 : 49)})`}
+                      ? `Jetzt bezahlen (€${getPlanPrice()})` 
+                      : `Pay now (€${getPlanPrice()})`}
                   </>
                 )}
               </Button>
