@@ -16,6 +16,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 interface Consultation {
   id: string;
   status: string;
+  consultation_type: string | null;
   concern_category: string | null;
   body_locations: string[] | null;
   symptom_onset: string | null;
@@ -86,7 +87,7 @@ const PatientDashboard = () => {
       const { data, error } = await supabase
         .from("consultations")
         .select(`
-          id, status, concern_category, body_locations, symptom_onset, 
+          id, status, consultation_type, concern_category, body_locations, symptom_onset, 
           symptoms, symptom_severity, doctor_response, created_at, 
           submitted_at, responded_at, doctor_id, icd10_code, icd10_description,
           report_storage_path
@@ -240,9 +241,11 @@ const PatientDashboard = () => {
                             </div>
                             <div>
                               <h3 className="font-semibold text-foreground">
-                                {consultation.concern_category 
-                                  ? concernLabels[consultation.concern_category]?.[lang] || consultation.concern_category
-                                  : (lang === "de" ? "Hautanfrage" : "Skin Consultation")}
+                                {consultation.consultation_type === 'prescription'
+                                  ? (lang === "de" ? "Rezeptanfrage" : "Prescription Request")
+                                  : consultation.concern_category 
+                                    ? concernLabels[consultation.concern_category]?.[lang] || consultation.concern_category
+                                    : (lang === "de" ? "Hautanfrage" : "Skin Consultation")}
                               </h3>
                               <p className="text-sm text-muted-foreground">
                                 {lang === "de" ? "Eingereicht am" : "Submitted"} {formatDate(consultation.submitted_at || consultation.created_at)}
@@ -298,9 +301,11 @@ const PatientDashboard = () => {
                           <div className="flex items-center justify-between">
                             <div>
                               <h3 className="font-medium text-foreground group-hover:text-primary transition-colors">
-                                {consultation.concern_category 
-                                  ? concernLabels[consultation.concern_category]?.[lang] || consultation.concern_category
-                                  : (lang === "de" ? "Hautanfrage" : "Skin Consultation")}
+                                {consultation.consultation_type === 'prescription'
+                                  ? (lang === "de" ? "Rezeptanfrage" : "Prescription Request")
+                                  : consultation.concern_category 
+                                    ? concernLabels[consultation.concern_category]?.[lang] || consultation.concern_category
+                                    : (lang === "de" ? "Hautanfrage" : "Skin Consultation")}
                               </h3>
                               <p className="text-sm text-muted-foreground">
                                 {formatDate(consultation.submitted_at || consultation.created_at)}
