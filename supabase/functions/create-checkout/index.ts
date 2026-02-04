@@ -69,9 +69,9 @@ serve(async (req) => {
       throw new Error("Invalid consultation_id format");
     }
 
-    // Validate pricing_plan is a valid value
-    if (!["standard", "urgent"].includes(pricing_plan)) {
-      throw new Error("Invalid pricing_plan. Must be 'standard' or 'urgent'");
+    // Validate pricing_plan is a valid value (now includes prescription)
+    if (!["standard", "urgent", "prescription"].includes(pricing_plan)) {
+      throw new Error("Invalid pricing_plan. Must be 'standard', 'urgent', or 'prescription'");
     }
 
     // Validate custom_price if provided
@@ -113,7 +113,16 @@ serve(async (req) => {
 
     // Determine which price to use
     let priceId = PRICE_IDS[pricing_plan as keyof typeof PRICE_IDS];
-    let amount = pricing_plan === "urgent" ? 7400 : 4900; // in cents
+    let amount: number;
+    
+    // Set default amounts based on pricing plan
+    if (pricing_plan === "prescription") {
+      amount = 2900; // €29 in cents
+    } else if (pricing_plan === "urgent") {
+      amount = 7400; // €74 in cents
+    } else {
+      amount = 4900; // €49 in cents
+    }
 
     // If custom price is provided (from doctor's individual pricing), use that
     if (custom_price && typeof custom_price === "number") {
@@ -157,8 +166,26 @@ serve(async (req) => {
       line_items: [],
     };
 
-    // Use price_id if standard pricing, otherwise use price_data for custom amounts
-    if (!custom_price) {
+    // Product names based on pricing plan
+    const productNames = {
+      standard: {
+        name: "Standard Medena Care Konsultation",
+        description: "Antwort innerhalb von 48 Stunden"
+      },
+      urgent: {
+        name: "Dringliche Medena Care Konsultation",
+        description: "Antwort innerhalb von 12 Stunden"
+      },
+      prescription: {
+        name: "Medena Care Rezeptanforderung",
+        description: "Rezept innerhalb von 24 Stunden"
+      }
+    };
+
+    const productInfo = productNames[pricing_plan as keyof typeof productNames] || productNames.standard;
+
+    // Use price_id if standard pricing and not prescription, otherwise use price_data for custom amounts
+    if (!custom_price && priceId) {
       sessionConfig.line_items = [{ price: priceId, quantity: 1 }];
     } else {
       sessionConfig.line_items = [{
@@ -166,12 +193,8 @@ serve(async (req) => {
           currency: "eur",
           unit_amount: amount,
           product_data: {
-            name: pricing_plan === "urgent" 
-              ? "Dringliche Medena Care Konsultation" 
-              : "Standard Medena Care Konsultation",
-            description: pricing_plan === "urgent"
-              ? "Antwort innerhalb von 12 Stunden"
-              : "Antwort innerhalb von 48 Stunden",
+            name: productInfo.name,
+            description: productInfo.description,
           },
         },
         quantity: 1,
@@ -197,7 +220,7 @@ serve(async (req) => {
       "Unauthorized",
       "consultation_id and pricing_plan are required",
       "Invalid consultation_id format",
-      "Invalid pricing_plan. Must be 'standard' or 'urgent'",
+      "Invalid pricing_plan. Must be 'standard', 'urgent', or 'prescription'",
       "custom_price must be a valid number",
       "custom_price must be between €10 and €1000",
       "Consultation not found",

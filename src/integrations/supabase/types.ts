@@ -79,6 +79,7 @@ export type Database = {
           change_description: string | null
           concern_category: string | null
           consultation_price: number | null
+          consultation_type: string | null
           created_at: string
           date_of_birth: string | null
           doctor_id: string | null
@@ -116,6 +117,7 @@ export type Database = {
           change_description?: string | null
           concern_category?: string | null
           consultation_price?: number | null
+          consultation_type?: string | null
           created_at?: string
           date_of_birth?: string | null
           doctor_id?: string | null
@@ -153,6 +155,7 @@ export type Database = {
           change_description?: string | null
           concern_category?: string | null
           consultation_price?: number | null
+          consultation_type?: string | null
           created_at?: string
           date_of_birth?: string | null
           doctor_id?: string | null
@@ -267,6 +270,7 @@ export type Database = {
           practice_address_zip: string | null
           practice_logo_url: string | null
           practice_name: string | null
+          prescription_price: number | null
           referral_code: string | null
           signature_url: string | null
           social_security_number: string | null
@@ -302,6 +306,7 @@ export type Database = {
           practice_address_zip?: string | null
           practice_logo_url?: string | null
           practice_name?: string | null
+          prescription_price?: number | null
           referral_code?: string | null
           signature_url?: string | null
           social_security_number?: string | null
@@ -337,6 +342,7 @@ export type Database = {
           practice_address_zip?: string | null
           practice_logo_url?: string | null
           practice_name?: string | null
+          prescription_price?: number | null
           referral_code?: string | null
           signature_url?: string | null
           social_security_number?: string | null

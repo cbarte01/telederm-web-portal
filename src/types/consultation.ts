@@ -1,3 +1,5 @@
+export type ConsultationType = 'consultation' | 'prescription';
+
 export type ConcernCategory = 
   | 'skin'
   | 'hair'
@@ -57,9 +59,12 @@ export interface ConsultationPhoto {
   storagePath?: string;
 }
 
-export type PricingPlan = 'standard' | 'urgent';
+export type PricingPlan = 'standard' | 'urgent' | 'prescription';
 
 export interface ConsultationDraft {
+  // Consultation type (consultation or prescription request)
+  consultationType?: ConsultationType;
+  
   // Step 1 - Concern
   concernCategory?: ConcernCategory;
   
