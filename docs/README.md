@@ -7,12 +7,12 @@ Welcome to the official documentation for **Medena Care**, Austria's leading onl
 ## 📚 User Manuals
 
 ### For Patients
-- [Patient Guide (English)](user-manuals/patient-manual-en.md)
-- [Patientenhandbuch (Deutsch)](user-manuals/patient-manual-de.md)
+- ✅ [Patient Guide (English)](user-manuals/patient-manual-en.md)
+- ✅ [Patientenhandbuch (Deutsch)](user-manuals/patient-manual-de.md)
 
 ### For Doctors
-- [Doctor Guide (English)](user-manuals/doctor-manual-en.md)
-- [Ärztehandbuch (Deutsch)](user-manuals/doctor-manual-de.md)
+- ✅ [Doctor Guide (English)](user-manuals/doctor-manual-en.md)
+- ✅ [Ärztehandbuch (Deutsch)](user-manuals/doctor-manual-de.md)
 
 ### For Administrators
 - ✅ [Admin Guide (English)](user-manuals/admin-manual-en.md)
@@ -24,17 +24,17 @@ Welcome to the official documentation for **Medena Care**, Austria's leading onl
 
 | Document | Description |
 |----------|-------------|
-| [Architecture Overview](technical/architecture.md) | System design, frontend routing, backend integration |
-| [Database Schema](technical/database-schema.md) | Tables, relationships, enums, RLS policies |
-| [Edge Functions API](technical/edge-functions.md) | API reference for all backend functions |
-| [Authentication](technical/authentication.md) | Auth flows, role-based access control |
-| [Payment Integration](technical/payment-integration.md) | Stripe checkout, pricing, verification |
+| ✅ [Architecture Overview](technical/architecture.md) | System design, frontend routing, backend integration |
+| ✅ [Database Schema](technical/database-schema.md) | Tables, relationships, enums, RLS policies |
+| ✅ [Edge Functions API](technical/edge-functions.md) | API reference for all backend functions |
+| ✅ [Authentication](technical/authentication.md) | Auth flows, role-based access control |
+| ✅ [Payment Integration](technical/payment-integration.md) | Stripe checkout, pricing, verification |
 
 ---
 
 ## 📝 Changelog
 
-See [Changelog](changelog.md) for release notes and feature updates.
+See ✅ [Changelog](changelog.md) for release notes and feature updates.
 
 ---
 
