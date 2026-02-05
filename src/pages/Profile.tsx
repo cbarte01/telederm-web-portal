@@ -13,9 +13,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { ArrowLeft, Loader2, Trash2, Copy, Check, Link as LinkIcon, Building2, Upload, X, FileSignature } from "lucide-react";
+import { ArrowLeft, Loader2, Trash2, Copy, Check, Link as LinkIcon, Building2, Upload, X, FileSignature, Shield, LogOut } from "lucide-react";
 import PracticeLogoUpload from "@/components/profile/PracticeLogoUpload";
 import { useToast } from "@/hooks/use-toast";
+import { useSessionRevocation } from "@/hooks/useSessionRevocation";
 import medenaLogo from "@/assets/logo/medena-logo.png";
 
 const profileSchema = z.object({
@@ -92,6 +93,93 @@ const SignaturePreview = ({ signatureUrl, userId }: { signatureUrl: string; user
       alt="Signature" 
       className="max-w-[200px] max-h-[80px] object-contain" 
     />
+  );
+};
+
+// Security Section Component
+const SecuritySection = () => {
+  const { i18n } = useTranslation("auth");
+  const { signOut } = useAuth();
+  const { revokeAllSessions, isRevoking } = useSessionRevocation();
+  const { toast } = useToast();
+  const lang = i18n.language === "de" ? "de" : "en";
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const handleRevokeAllSessions = async () => {
+    const result = await revokeAllSessions();
+    if (result.success) {
+      toast({
+        title: lang === "de" ? "Alle Sitzungen beendet" : "All sessions revoked",
+        description: lang === "de" 
+          ? "Sie werden jetzt abgemeldet." 
+          : "You will now be signed out."
+      });
+      // Sign out the current session after revoking all
+      setTimeout(() => signOut(), 1500);
+    }
+    setShowConfirm(false);
+  };
+
+  return (
+    <Card className="shadow-card mb-8">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Shield className="h-5 w-5 text-primary" />
+          {lang === "de" ? "Sicherheit" : "Security"}
+        </CardTitle>
+        <CardDescription>
+          {lang === "de" 
+            ? "Verwalten Sie Ihre Sitzungen und Gerätezugriffe."
+            : "Manage your sessions and device access."}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          <div className="flex items-start justify-between gap-4 p-4 border border-border rounded-lg">
+            <div>
+              <h4 className="font-medium text-foreground flex items-center gap-2">
+                <LogOut className="h-4 w-4" />
+                {lang === "de" ? "Alle Geräte abmelden" : "Logout from all devices"}
+              </h4>
+              <p className="text-sm text-muted-foreground mt-1">
+                {lang === "de" 
+                  ? "Beenden Sie alle aktiven Sitzungen auf allen Geräten. Sie werden anschließend auch hier abgemeldet."
+                  : "End all active sessions on all devices. You will also be logged out from this session."}
+              </p>
+            </div>
+            <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" disabled={isRevoking}>
+                  {isRevoking && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {lang === "de" ? "Alle abmelden" : "Logout all"}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    {lang === "de" ? "Alle Sitzungen beenden?" : "Revoke all sessions?"}
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {lang === "de" 
+                      ? "Alle Ihre aktiven Sitzungen auf allen Geräten werden beendet. Sie müssen sich erneut anmelden."
+                      : "All your active sessions on all devices will be ended. You will need to sign in again."}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>
+                    {lang === "de" ? "Abbrechen" : "Cancel"}
+                  </AlertDialogCancel>
+                  <AlertDialogAction onClick={handleRevokeAllSessions} disabled={isRevoking}>
+                    {isRevoking && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    {lang === "de" ? "Ja, alle abmelden" : "Yes, logout all"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
@@ -1229,6 +1317,9 @@ const Profile = () => {
             </CardContent>
           </Card>
         )}
+
+        {/* Security Section */}
+        <SecuritySection />
 
         <Card className="shadow-card border-destructive/50">
           <CardHeader>
