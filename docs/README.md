@@ -58,7 +58,7 @@ See ✅ [Changelog](changelog.md) for release notes and feature updates.
 
 ## Documentation Maintenance
 
-When adding new features to Medena Care, please update:
+When adding new features to Medena Care, follow the **[Maintenance Checklist](MAINTENANCE.md)** and update:
 
 - [ ] Relevant user manual(s) - both EN and DE versions
 - [ ] Technical documentation if backend changes are made
