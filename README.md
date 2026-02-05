@@ -1,5 +1,7 @@
 # Welcome to your Lovable project
 
+ > **New Developer?** Start with the [Quick Start Guide](docs/QUICKSTART.md) for setup instructions and key concepts.
+ 
 ## Project info
 
 **URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
@@ -60,6 +62,12 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
+ ## Documentation
+ 
+ - [Quick Start Guide](docs/QUICKSTART.md) - Setup and first steps
+ - [Full Documentation](docs/README.md) - User manuals and technical docs
+ - [Maintenance Checklist](docs/MAINTENANCE.md) - Guidelines for adding features
+ 
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
