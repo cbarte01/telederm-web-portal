@@ -1,250 +1,70 @@
 
-# Documentation & Manuals System Plan
+# Add Minimal CSP Meta Tag
 
-## Overview
+## Summary
+Add a Content Security Policy meta tag to `index.html` that provides defense-in-depth XSS protection while maintaining compatibility with all application features including Supabase, Stripe checkout, and external images.
 
-This plan establishes a comprehensive documentation system for the Medena Care teledermatology platform. The documentation will be organized in a `docs/` directory with bilingual (English/German) user manuals for each role and technical documentation for developers.
+## What This Achieves
+- Blocks execution of injected inline scripts (primary XSS protection)
+- Restricts which domains can load resources
+- Prevents clickjacking via frame-ancestors restriction
+- Adds defense-in-depth layer on top of existing React/Zod protections
 
----
+## Implementation
 
-## Documentation Structure
+### File to Modify: `index.html`
 
-```text
-docs/
-├── README.md                           # Documentation hub / table of contents
-├── user-manuals/
-│   ├── patient-manual-en.md            # Patient guide (English)
-│   ├── patient-manual-de.md            # Patient guide (German)
-│   ├── doctor-manual-en.md             # Doctor guide (English)
-│   ├── doctor-manual-de.md             # Doctor guide (German)
-│   ├── admin-manual-en.md              # Admin guide (English)
-│   └── admin-manual-de.md              # Admin guide (German)
-├── technical/
-│   ├── architecture.md                 # System architecture overview
-│   ├── database-schema.md              # Database tables, relationships, RLS policies
-│   ├── edge-functions.md               # API reference for all edge functions
-│   ├── authentication.md               # Auth flows and role-based access
-│   └── payment-integration.md          # Stripe integration details
-└── changelog.md                        # Feature changelog / release notes
+Add CSP meta tag to the `<head>` section:
+
+```html
+<meta http-equiv="Content-Security-Policy" 
+      content="default-src 'self'; 
+               script-src 'self'; 
+               style-src 'self' 'unsafe-inline'; 
+               img-src 'self' data: https: blob:; 
+               font-src 'self' data:; 
+               connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://checkout.stripe.com; 
+               frame-src https://js.stripe.com https://checkout.stripe.com; 
+               frame-ancestors 'self';">
 ```
 
----
+### CSP Directives Explained
 
-## User Manual Contents
+| Directive | Value | Purpose |
+|-----------|-------|---------|
+| `default-src` | `'self'` | Fallback - only allow resources from same origin |
+| `script-src` | `'self'` | Only allow scripts from your domain (blocks inline XSS) |
+| `style-src` | `'self' 'unsafe-inline'` | Allow Tailwind's inline styles |
+| `img-src` | `'self' data: https: blob:` | Allow local images, data URIs, any HTTPS images (Unsplash, Google favicon, doctor websites), and blob URLs for photo uploads |
+| `font-src` | `'self' data:` | Allow bundled fonts and data URI fonts |
+| `connect-src` | `'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://checkout.stripe.com` | Allow API calls to Supabase (including realtime WebSocket) and Stripe |
+| `frame-src` | `https://js.stripe.com https://checkout.stripe.com` | Allow Stripe checkout iframes |
+| `frame-ancestors` | `'self'` | Prevent your app from being embedded (clickjacking protection) |
 
-### Patient Manual (EN/DE)
-| Section | Description |
-|---------|-------------|
-| Getting Started | Account creation, email verification, login |
-| Starting a Consultation | 10-step flow walkthrough with screenshots guidance |
-| Prescription Requests | How to request a prescription renewal |
-| Payment | Pricing plans, Stripe checkout process |
-| Viewing Results | Dashboard overview, reading doctor responses |
-| Downloading Reports | How to access consultation reports |
-| Profile Management | Updating personal info, medical history |
-| B2B Referrals | Using a doctor's referral link |
+### External Resources Accounted For
 
-### Doctor Manual (EN/DE)
-| Section | Description |
-|---------|-------------|
-| Getting Started | Account activation (via admin), first login |
-| Dashboard Overview | Stats cards, consultation queue tabs |
-| Reviewing Consultations | Claiming cases, viewing patient photos/history |
-| Responding to Cases | Writing diagnoses, ICD-10 codes, completing consultations |
-| Prescription Requests | Handling prescription requests vs regular consultations |
-| Honorarnote | Understanding auto-generated medical fee notes |
-| Profile Settings | Avatar, practice info, signature, banking details |
-| Referral System | Using referral codes, QR codes, embed widgets |
-
-### Admin Manual (EN/DE)
-| Section | Description |
-|---------|-------------|
-| Dashboard Overview | Platform statistics, recent consultations |
-| Doctor Management | Creating accounts, activating/deactivating, queue types |
-| Patient Management | Viewing patient list, case counts |
-| Pricing Configuration | Group pricing, individual doctor pricing |
-| Widget System | Generating embed codes for doctors |
-| System Settings | Platform-wide configuration |
+Based on codebase analysis:
+- **Supabase**: API calls and realtime subscriptions (`*.supabase.co`, `wss://*.supabase.co`)
+- **Stripe**: Payment checkout (`api.stripe.com`, `checkout.stripe.com`, `js.stripe.com`)
+- **Images**: Google favicon, Unsplash blog images, doctor website images (allowed via `https:`)
+- **Photo uploads**: Blob URLs for client-side image previews
 
 ---
 
-## Technical Documentation Contents
+## Technical Notes
 
-### Architecture Overview
-- High-level system diagram
-- Frontend routing structure
-- Backend (Supabase/Lovable Cloud) integration points
-- File storage strategy
+### Why `'unsafe-inline'` for styles only?
+- Tailwind CSS and many UI libraries use inline styles
+- Blocking inline styles would break the entire UI
+- Inline styles are lower-risk than inline scripts
 
-### Database Schema
-- All tables with field descriptions
-- Enum types (app_role, consultation_status, doctor_queue_type)
-- Key relationships and foreign keys
-- RLS policy summary per table
+### Why no `'unsafe-inline'` for scripts?
+- This is the key XSS protection - blocks injected `<script>` tags
+- Vite bundles all JS into external files, so no legitimate inline scripts needed
 
-### Edge Functions API Reference
-| Function | Method | Description |
-|----------|--------|-------------|
-| create-checkout | POST | Creates Stripe checkout session |
-| verify-payment | POST | Verifies payment and updates consultation |
-| create-doctor-account | POST | Creates new doctor account (admin only) |
-| manage-doctor-account | POST | Activate/deactivate/delete doctors |
-| manage-patient-account | POST | Patient account management |
-| get-current-pricing | GET | Fetches pricing for consultation flow |
-| generate-consultation-report | POST | Generates PDF report for patient |
-| generate-honorarnote | POST | Generates medical fee note for doctor |
-| seed-admin | POST | Initial admin account creation |
+### Widget Embedding Consideration
+The Widget page (`/widget/:referralCode`) is designed to be embedded on doctor websites. The `frame-ancestors 'self'` directive would block this. Options:
+1. Keep as-is (widget opens in new tab anyway via `window.open`)
+2. If iframe embedding is needed later, remove `frame-ancestors` or set to `*`
 
-### Authentication Guide
-- Supabase Auth configuration
-- Role-based access control implementation
-- Protected routes logic
-- Session management
-
-### Payment Integration
-- Stripe checkout flow
-- Webhook handling (if applicable)
-- Custom pricing vs predefined price IDs
-- Payment verification flow
-
----
-
-## Keeping Documentation Up-to-Date
-
-### Strategy: Hybrid Approach
-
-1. **User Manuals**: Updated manually alongside feature development
-   - When a UI change is made, update the corresponding manual section
-   - Use version tags (e.g., "Last updated: Feb 2026")
-
-2. **Technical Documentation**: Semi-automated with manual curation
-   - Database schema section references `src/integrations/supabase/types.ts`
-   - Edge function reference updated when functions change
-   - Architecture diagrams updated for major structural changes
-
-3. **Changelog**: Maintained with each release
-   - Date, version, summary of changes
-   - Links to relevant manual sections
-
-### Documentation Checklist (for future features)
-When adding new features, update:
-- [ ] Relevant user manual(s)
-- [ ] Technical docs if backend changes
-- [ ] Changelog entry
-- [ ] README.md if navigation changes
-
----
-
-## Implementation Phases
-
-### Phase 1: Core Structure
-- Create `docs/` directory structure
-- Create `docs/README.md` as documentation hub
-- Create English patient manual (most common user type)
-
-### Phase 2: Complete User Manuals
-- German patient manual
-- English & German doctor manuals
-- English & German admin manuals
-
-### Phase 3: Technical Documentation
-- Architecture overview with diagram
-- Database schema documentation
-- Edge functions API reference
-- Authentication and payment guides
-
-### Phase 4: Maintenance System
-- Add changelog.md
-- Add documentation checklist to PR template (optional)
-- Add "last updated" timestamps to each document
-
----
-
-## Technical Considerations
-
-### File Format
-- All documentation in Markdown (`.md`) for:
-  - Easy editing in any text editor
-  - Git version control friendly
-  - Renders nicely in GitHub/GitLab
-  - Can be converted to PDF/HTML if needed
-
-### Linking Strategy
-- Internal links use relative paths
-- External links to Stripe docs, Supabase docs where relevant
-- Screenshots stored in `docs/images/` subdirectory (optional future enhancement)
-
-### Language Handling
-- Separate files per language (not combined)
-- Matching filenames with `-en` / `-de` suffixes
-- Consistent structure between language versions
-
----
-
-## Sample Content Outline: Patient Manual (English)
-
-```text
-# Medena Care Patient Guide
-
-## Table of Contents
-1. Introduction
-2. Creating Your Account
-3. Starting a Skin Consultation
-4. Requesting a Prescription
-5. Payment
-6. Viewing Your Results
-7. Managing Your Profile
-8. FAQs
-
-## 1. Introduction
-Welcome to Medena Care, Austria's leading online dermatology platform...
-
-## 2. Creating Your Account
-1. Go to medena.care
-2. Click "Get Started" or "Start Consultation"
-3. Enter your email and create a password
-4. Check your email for a verification link
-...
-
-## 3. Starting a Skin Consultation
-The consultation process has 10 simple steps:
-
-### Step 1: Select Your Concern
-Choose the category that best matches your skin issue...
-
-### Step 2: Mark the Affected Area
-Tap on the body diagram to indicate where the problem is...
-
-[continues for all 10 steps]
-```
-
----
-
-## Files to Create
-
-| File | Priority | Description |
-|------|----------|-------------|
-| docs/README.md | High | Documentation hub with links to all guides |
-| docs/user-manuals/patient-manual-en.md | High | English patient guide |
-| docs/user-manuals/patient-manual-de.md | High | German patient guide |
-| docs/user-manuals/doctor-manual-en.md | Medium | English doctor guide |
-| docs/user-manuals/doctor-manual-de.md | Medium | German doctor guide |
-| docs/user-manuals/admin-manual-en.md | Medium | English admin guide |
-| docs/user-manuals/admin-manual-de.md | Medium | German admin guide |
-| docs/technical/architecture.md | Medium | System architecture |
-| docs/technical/database-schema.md | Medium | Database documentation |
-| docs/technical/edge-functions.md | Medium | API reference |
-| docs/technical/authentication.md | Low | Auth documentation |
-| docs/technical/payment-integration.md | Low | Stripe documentation |
-| docs/changelog.md | Low | Release notes |
-
----
-
-## Estimated Implementation Time
-- Phase 1 (Core + Patient EN): ~1 session
-- Phase 2 (All User Manuals): ~2-3 sessions
-- Phase 3 (Technical Docs): ~1-2 sessions
-- Phase 4 (Maintenance): Ongoing
-
-Total initial setup: ~4-6 sessions
-
+Currently the widget uses `window.open` so `frame-ancestors 'self'` is fine.
