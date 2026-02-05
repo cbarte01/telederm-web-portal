@@ -59,9 +59,11 @@ import {
   Pencil,
   Save,
   X,
-  Code
+  Code,
+  Power
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useSessionRevocation } from "@/hooks/useSessionRevocation";
 import medenaLogo from "@/assets/logo/medena-logo.png";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { DoctorAvatarManager } from "@/components/admin/DoctorAvatarManager";
@@ -139,10 +141,13 @@ const AdminDashboard = () => {
   const [doctorSortDir, setDoctorSortDir] = useState<'asc' | 'desc'>('asc');
   const [confirmDialog, setConfirmDialog] = useState<{
     open: boolean;
-    type: 'deactivate' | 'reactivate' | 'delete';
+    type: 'deactivate' | 'reactivate' | 'delete' | 'force_logout';
     target: Doctor | Patient | null;
     targetType: 'doctor' | 'patient';
   }>({ open: false, type: 'deactivate', target: null, targetType: 'doctor' });
+
+  // Session revocation hook
+  const { revokeAllSessions, isRevoking } = useSessionRevocation();
 
   // Group pricing state
   const [groupStandardPrice, setGroupStandardPrice] = useState<number>(49);
@@ -574,8 +579,20 @@ const AdminDashboard = () => {
     }
   };
 
-  const openConfirmDialog = (type: 'deactivate' | 'reactivate' | 'delete', target: Doctor | Patient, targetType: 'doctor' | 'patient') => {
+  const openConfirmDialog = (type: 'deactivate' | 'reactivate' | 'delete' | 'force_logout', target: Doctor | Patient, targetType: 'doctor' | 'patient') => {
     setConfirmDialog({ open: true, type, target, targetType });
+  };
+
+  const handleForceLogout = async (userId: string, userName: string | null) => {
+    const result = await revokeAllSessions(userId, 'admin_force_logout');
+    if (result.success) {
+      toast({
+        title: lang === "de" ? "Sitzungen beendet" : "Sessions revoked",
+        description: lang === "de" 
+          ? `Alle Sitzungen von ${userName || 'Benutzer'} wurden beendet.`
+          : `All sessions for ${userName || 'user'} have been revoked.`
+      });
+    }
   };
 
   const handleUpdateQueueType = async (doctorId: string, queueType: 'group' | 'individual' | 'hybrid') => {
@@ -1179,6 +1196,13 @@ const AdminDashboard = () => {
                                   </DropdownMenuItem>
                                 )}
                                 <DropdownMenuItem 
+                                  onClick={() => openConfirmDialog('force_logout', patient, 'patient')}
+                                  className="gap-2"
+                                >
+                                  <Power className="h-4 w-4" />
+                                  {lang === "de" ? "Abmelden" : "Force Logout"}
+                                </DropdownMenuItem>
+                                <DropdownMenuItem 
                                   onClick={() => openConfirmDialog('delete', patient, 'patient')}
                                   className="gap-2 text-destructive focus:text-destructive"
                                 >
@@ -1487,6 +1511,13 @@ const AdminDashboard = () => {
                                   </DropdownMenuItem>
                                 )}
                                 <DropdownMenuItem 
+                                  onClick={() => openConfirmDialog('force_logout', doctor, 'doctor')}
+                                  className="gap-2"
+                                >
+                                  <Power className="h-4 w-4" />
+                                  {lang === "de" ? "Abmelden" : "Force Logout"}
+                                </DropdownMenuItem>
+                                <DropdownMenuItem 
                                   onClick={() => openConfirmDialog('delete', doctor, 'doctor')}
                                   className="gap-2 text-destructive focus:text-destructive"
                                 >
@@ -1573,7 +1604,9 @@ const AdminDashboard = () => {
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>
-                    {confirmDialog.targetType === 'doctor' ? (
+                    {confirmDialog.type === 'force_logout' ? (
+                      lang === "de" ? "Benutzer abmelden" : "Force Logout User"
+                    ) : confirmDialog.targetType === 'doctor' ? (
                       <>
                         {confirmDialog.type === 'deactivate' && (t("dashboard.admin.deactivateDoctor"))}
                         {confirmDialog.type === 'reactivate' && (t("dashboard.admin.reactivateDoctor"))}
@@ -1588,7 +1621,11 @@ const AdminDashboard = () => {
                     )}
                   </AlertDialogTitle>
                   <AlertDialogDescription>
-                    {confirmDialog.targetType === 'doctor' ? (
+                    {confirmDialog.type === 'force_logout' ? (
+                      lang === "de" 
+                        ? `Dies beendet alle aktiven Sitzungen von ${confirmDialog.target?.full_name || 'diesem Benutzer'}. Der Benutzer muss sich erneut anmelden.`
+                        : `This will end all active sessions for ${confirmDialog.target?.full_name || 'this user'}. They will need to sign in again.`
+                    ) : confirmDialog.targetType === 'doctor' ? (
                       <>
                         {confirmDialog.type === 'deactivate' && t("dashboard.admin.confirmDeactivate")}
                         {confirmDialog.type === 'reactivate' && t("dashboard.admin.confirmReactivate")}
@@ -1608,16 +1645,25 @@ const AdminDashboard = () => {
                   <AlertDialogAction
                     onClick={() => {
                       if (confirmDialog.target) {
-                        if (confirmDialog.targetType === 'doctor') {
-                          handleDoctorAction(confirmDialog.type, confirmDialog.target as Doctor);
+                        if (confirmDialog.type === 'force_logout') {
+                          handleForceLogout(confirmDialog.target.id, confirmDialog.target.full_name);
+                          setConfirmDialog({ ...confirmDialog, open: false });
+                        } else if (confirmDialog.targetType === 'doctor') {
+                          handleDoctorAction(confirmDialog.type as 'deactivate' | 'reactivate' | 'delete', confirmDialog.target as Doctor);
                         } else {
-                          handlePatientAction(confirmDialog.type, confirmDialog.target as Patient);
+                          handlePatientAction(confirmDialog.type as 'deactivate' | 'reactivate' | 'delete', confirmDialog.target as Patient);
                         }
                       }
                     }}
                     className={confirmDialog.type === 'delete' ? "bg-destructive hover:bg-destructive/90" : ""}
+                    disabled={confirmDialog.type === 'force_logout' && isRevoking}
                   >
-                    {confirmDialog.targetType === 'doctor' ? (
+                    {confirmDialog.type === 'force_logout' ? (
+                      <>
+                        {isRevoking && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        {lang === "de" ? "Abmelden" : "Force Logout"}
+                      </>
+                    ) : confirmDialog.targetType === 'doctor' ? (
                       <>
                         {confirmDialog.type === 'deactivate' && t("dashboard.admin.deactivateDoctor")}
                         {confirmDialog.type === 'reactivate' && t("dashboard.admin.reactivateDoctor")}

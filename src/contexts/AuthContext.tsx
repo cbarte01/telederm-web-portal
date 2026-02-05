@@ -37,10 +37,58 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   // We use a per-tab marker: if a session is restored but the marker is missing, we sign out.
   const TAB_SESSION_MARKER_KEY = "medena_tab_session_marker";
 
+  // Check if a session has been revoked by comparing token iat with revoked_before timestamp
+  const checkSessionRevocation = async (currentSession: Session): Promise<boolean> => {
+    if (!currentSession?.user?.id) return true; // No session = valid (nothing to revoke)
+    
+    try {
+      // Query the session_revocations table
+      const { data, error } = await (supabase as any)
+        .from('session_revocations')
+        .select('revoked_before')
+        .eq('user_id', currentSession.user.id)
+        .maybeSingle();
+      
+      if (error) {
+        console.warn('Error checking session revocation:', error);
+        return true; // On error, allow the session
+      }
+      
+      if (!data?.revoked_before) {
+        return true; // No revocation record = valid session
+      }
+      
+      // Get the token's issued-at time from the access token
+      // The iat claim is in the JWT payload
+      const tokenParts = currentSession.access_token?.split('.');
+      if (!tokenParts || tokenParts.length !== 3) {
+        return true; // Can't parse token, allow it
+      }
+      
+      try {
+        const payload = JSON.parse(atob(tokenParts[1]));
+        const tokenIssuedAt = payload.iat ? new Date(payload.iat * 1000) : null;
+        const revokedBefore = new Date(data.revoked_before);
+        
+        if (tokenIssuedAt && tokenIssuedAt < revokedBefore) {
+          console.log('Session revoked: token issued before revocation timestamp');
+          return false; // Token was issued before revocation = invalid
+        }
+      } catch (parseError) {
+        console.warn('Error parsing token:', parseError);
+        return true; // On parse error, allow the session
+      }
+      
+      return true; // Token issued after revocation = valid
+    } catch (err) {
+      console.warn('Error in session revocation check:', err);
+      return true; // On error, allow the session
+    }
+  };
+
   useEffect(() => {
     // Track whether initial session check is complete to avoid race conditions
     let initialCheckComplete = false;
-    let shouldSignOut = false;
 
     // Check for tab marker FIRST, before any auth events
     const hasTabMarker = (() => {
@@ -57,7 +105,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         // If we haven't completed initial check and there's no marker, 
         // this is a restored session that should be invalidated
         if (!initialCheckComplete && session && !hasTabMarker) {
-          shouldSignOut = true;
           return; // Don't update state yet, let getSession handle it
         }
 
@@ -94,7 +141,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     );
 
     // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       initialCheckComplete = true;
 
       // If the browser restored a persisted session (localStorage) but this is a fresh tab, sign out.
@@ -105,6 +152,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           setIsLoading(false);
         });
         return;
+      }
+
+      // Check if session has been revoked
+      if (session) {
+        const isValid = await checkSessionRevocation(session);
+        if (!isValid) {
+          console.log('Session has been revoked, signing out');
+          supabase.auth.signOut().finally(() => {
+            setSession(null);
+            setUser(null);
+            setIsLoading(false);
+          });
+          return;
+        }
       }
 
       // If we have a valid session with marker, ensure marker is set

@@ -26,3 +26,6 @@ verify_jwt = false
 
 [functions.get-current-pricing]
 verify_jwt = false
+
+[functions.revoke-sessions]
+verify_jwt = false
