@@ -59,6 +59,7 @@ const App = () => (
             <Route path="/consultation" element={<ConsultationFlow />} />
             <Route path="/consultation/success" element={<PaymentSuccess />} />
             <Route path="/widget/:referralCode" element={<Widget />} />
+            <Route path="/befundbericht-preview" element={<BefundberichtPreview />} />
             
             {/* Auth pages */}
             <Route path="/auth" element={<PatientAuth />} />
