@@ -33,6 +33,9 @@ import Widget from "./pages/Widget";
 // Profile page
 import Profile from "./pages/Profile";
 
+// Dev preview pages
+import BefundberichtPreview from "./pages/BefundberichtPreview";
+
 const queryClient = new QueryClient();
 
 const App = () => (
