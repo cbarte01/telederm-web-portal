@@ -33,6 +33,9 @@ import Widget from "./pages/Widget";
 // Profile page
 import Profile from "./pages/Profile";
 
+// Dev preview pages
+import BefundberichtPreview from "./pages/BefundberichtPreview";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -56,6 +59,7 @@ const App = () => (
             <Route path="/consultation" element={<ConsultationFlow />} />
             <Route path="/consultation/success" element={<PaymentSuccess />} />
             <Route path="/widget/:referralCode" element={<Widget />} />
+            <Route path="/befundbericht-preview" element={<BefundberichtPreview />} />
             
             {/* Auth pages */}
             <Route path="/auth" element={<PatientAuth />} />
