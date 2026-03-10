@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Trash2, GripVertical, Save, ArrowLeft, ChevronDown, ChevronUp, MessageSquareText, FolderOpen } from "lucide-react";
+import { Plus, Trash2, Save, ChevronDown, ChevronUp, MessageSquareText, FolderOpen, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
+import medenaLogo from "@/assets/logo/medena-logo.png";
 
 interface Snippet {
   id: string;
@@ -98,12 +99,7 @@ const MockupSnippetSettings = () => {
     setCategories((prev) =>
       prev.map((c) =>
         c.id === catId
-          ? {
-              ...c,
-              snippets: c.snippets.map((s) =>
-                s.id === snippetId ? { ...s, text } : s
-              ),
-            }
+          ? { ...c, snippets: c.snippets.map((s) => (s.id === snippetId ? { ...s, text } : s)) }
           : c
       )
     );
@@ -112,9 +108,7 @@ const MockupSnippetSettings = () => {
   const deleteSnippet = (catId: string, snippetId: string) => {
     setCategories((prev) =>
       prev.map((c) =>
-        c.id === catId
-          ? { ...c, snippets: c.snippets.filter((s) => s.id !== snippetId) }
-          : c
+        c.id === catId ? { ...c, snippets: c.snippets.filter((s) => s.id !== snippetId) } : c
       )
     );
   };
@@ -122,43 +116,48 @@ const MockupSnippetSettings = () => {
   const totalSnippets = categories.reduce((sum, c) => sum + c.snippets.length, 0);
 
   return (
-    <div className="min-h-screen bg-muted/30">
-      {/* Top bar */}
-      <div className="border-b border-border bg-card">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-3">
+    <div className="min-h-screen bg-background">
+      {/* Header – matches Profile page */}
+      <header className="border-b border-border bg-card">
+        <div className="container flex items-center justify-between h-16">
+          <Link to="/" className="flex items-center gap-2.5">
+            <img src={medenaLogo} alt="Medena" className="w-8 h-8 rounded-lg" />
+            <span className="font-serif font-bold text-xl text-foreground">medena</span>
+          </Link>
           <Link to="/mockup-diagnosis">
-            <Button variant="ghost" size="icon" className="shrink-0">
+            <Button variant="ghost" size="sm" className="gap-2">
               <ArrowLeft className="h-4 w-4" />
+              Back to Diagnosis
             </Button>
           </Link>
-          <div className="flex-1">
-            <Badge variant="outline" className="mb-1 text-xs font-mono">
-              MOCKUP – Settings
-            </Badge>
-            <h1 className="text-xl font-bold text-foreground">Response Snippets</h1>
-          </div>
-          <Button variant="hero" className="gap-2">
-            <Save className="h-4 w-4" />
-            Save Changes
-          </Button>
         </div>
-      </div>
+      </header>
 
-      <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
-        {/* Info card */}
-        <Card className="shadow-card">
+      {/* Main Content – same width as Profile page */}
+      <main className="container py-8 max-w-2xl">
+        <div className="mb-8">
+          <Badge variant="outline" className="mb-2 text-xs font-mono">
+            MOCKUP
+          </Badge>
+          <h1 className="text-3xl font-bold text-foreground">Response Snippets</h1>
+          <p className="text-muted-foreground mt-2">
+            Create and organize predefined text snippets to speed up your consultation responses.
+          </p>
+        </div>
+
+        {/* Overview card */}
+        <Card className="shadow-card mb-8">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <MessageSquareText className="h-5 w-5 text-primary" />
-              Quick Response Snippets
+              Snippet Overview
             </CardTitle>
             <CardDescription>
-              Create and organize predefined text snippets to speed up your consultation responses.
-              These snippets will appear in the diagnosis view for quick insertion.
+              These snippets will appear in the diagnosis view for quick insertion into your responses.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <div className="flex items-center gap-6 text-sm text-muted-foreground">
               <span className="flex items-center gap-1.5">
                 <FolderOpen className="h-4 w-4" />
                 {categories.length} {categories.length === 1 ? "Category" : "Categories"}
@@ -171,75 +170,78 @@ const MockupSnippetSettings = () => {
           </CardContent>
         </Card>
 
-        {/* Categories */}
+        {/* Snippet categories */}
         {categories.map((category) => (
-          <Card key={category.id} className="shadow-card">
-            <CardHeader className="pb-3">
-              <div className="flex items-center gap-3">
-                <GripVertical className="h-4 w-4 text-muted-foreground/50 shrink-0 cursor-grab" />
-                <div className="flex-1">
+          <Card key={category.id} className="shadow-card mb-8">
+            <CardHeader>
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1 space-y-1.5">
+                  <label className="text-sm font-medium text-muted-foreground">Category Name</label>
                   <Input
                     value={category.label}
                     onChange={(e) => updateCategoryLabel(category.id, e.target.value)}
-                    className="text-base font-semibold border-none shadow-none px-0 h-auto focus-visible:ring-0 bg-transparent"
                     placeholder="Category name"
                   />
                 </div>
-                <Badge variant="secondary" className="shrink-0">
-                  {category.snippets.length} {category.snippets.length === 1 ? "snippet" : "snippets"}
-                </Badge>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => toggleCategory(category.id)}
-                  className="shrink-0"
-                >
-                  {category.isExpanded ? (
-                    <ChevronUp className="h-4 w-4" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4" />
-                  )}
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => deleteCategory(category.id)}
-                  className="shrink-0 text-destructive hover:text-destructive"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                <div className="flex items-center gap-1 pt-6">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => toggleCategory(category.id)}
+                  >
+                    {category.isExpanded ? (
+                      <ChevronUp className="h-4 w-4" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4" />
+                    )}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => deleteCategory(category.id)}
+                    className="text-destructive hover:text-destructive"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
+              <p className="text-sm text-muted-foreground">
+                {category.snippets.length} {category.snippets.length === 1 ? "snippet" : "snippets"} in this category.
+              </p>
             </CardHeader>
 
             {category.isExpanded && (
-              <CardContent className="pt-0">
-                <Separator className="mb-4" />
-                <div className="space-y-3">
+              <CardContent>
+                <Separator className="mb-6" />
+                <div className="space-y-4">
                   {category.snippets.map((snippet, idx) => (
-                    <div key={snippet.id} className="flex items-start gap-2">
-                      <span className="text-xs text-muted-foreground mt-2.5 w-5 text-right shrink-0">
-                        {idx + 1}.
-                      </span>
+                    <div key={snippet.id} className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-muted-foreground">
+                          Snippet {idx + 1}
+                        </label>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => deleteSnippet(category.id, snippet.id)}
+                          className="h-7 px-2 text-muted-foreground hover:text-destructive"
+                        >
+                          <Trash2 className="h-3.5 w-3.5 mr-1" />
+                          Remove
+                        </Button>
+                      </div>
                       <Textarea
                         value={snippet.text}
                         onChange={(e) => updateSnippet(category.id, snippet.id, e.target.value)}
                         placeholder="Enter snippet text..."
-                        className="min-h-[60px] text-sm bg-accent/20"
+                        className="min-h-[72px] text-sm"
                         rows={2}
                       />
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => deleteSnippet(category.id, snippet.id)}
-                        className="shrink-0 mt-0.5 text-muted-foreground hover:text-destructive"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
                     </div>
                   ))}
 
                   {category.snippets.length === 0 && (
-                    <p className="text-sm text-muted-foreground italic py-2">
+                    <p className="text-sm text-muted-foreground italic">
                       No snippets yet. Add your first one below.
                     </p>
                   )}
@@ -248,7 +250,7 @@ const MockupSnippetSettings = () => {
                     variant="outline"
                     size="sm"
                     onClick={() => addSnippet(category.id)}
-                    className="gap-1.5 mt-1"
+                    className="gap-1.5"
                   >
                     <Plus className="h-3.5 w-3.5" />
                     Add Snippet
@@ -260,30 +262,43 @@ const MockupSnippetSettings = () => {
         ))}
 
         {/* Add new category */}
-        <Card className="shadow-card border-dashed">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <FolderOpen className="h-5 w-5 text-muted-foreground shrink-0" />
-              <Input
-                value={newCategoryName}
-                onChange={(e) => setNewCategoryName(e.target.value)}
-                placeholder="New category name..."
-                className="flex-1"
-                onKeyDown={(e) => e.key === "Enter" && addCategory()}
-              />
-              <Button
-                variant="outline"
-                onClick={addCategory}
-                disabled={!newCategoryName.trim()}
-                className="gap-1.5 shrink-0"
-              >
-                <Plus className="h-4 w-4" />
-                Add Category
-              </Button>
+        <Card className="shadow-card mb-8 border-dashed">
+          <CardHeader>
+            <CardTitle className="text-base">Add New Category</CardTitle>
+            <CardDescription>
+              Group your snippets by topic for easier access during consultations.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-muted-foreground">Category Name</label>
+              <div className="flex gap-3">
+                <Input
+                  value={newCategoryName}
+                  onChange={(e) => setNewCategoryName(e.target.value)}
+                  placeholder="e.g. Common Diagnoses"
+                  className="flex-1"
+                  onKeyDown={(e) => e.key === "Enter" && addCategory()}
+                />
+                <Button
+                  onClick={addCategory}
+                  disabled={!newCategoryName.trim()}
+                  className="gap-1.5 shrink-0"
+                >
+                  <Plus className="h-4 w-4" />
+                  Add
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
-      </div>
+
+        {/* Save button */}
+        <Button variant="hero" size="lg" className="w-full gap-2">
+          <Save className="h-4 w-4" />
+          Save All Changes
+        </Button>
+      </main>
     </div>
   );
 };
