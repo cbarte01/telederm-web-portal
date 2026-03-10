@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
-import { Globe, Settings, Users } from "lucide-react";
+import { Globe, Users, Copy, RefreshCw, Pencil, MoreHorizontal, ArrowUp, ArrowUpDown, Link } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -16,71 +13,44 @@ import {
 type Lang = "de" | "en";
 const t = (lang: Lang, de: string, en: string) => (lang === "de" ? de : en);
 
-interface DoctorPricing {
-  standard: number;
-  urgent: number;
-  prescription: number;
-}
-
-const GLOBAL_DEFAULTS: DoctorPricing = { standard: 49, urgent: 74, prescription: 29 };
-
 interface MockDoctor {
   id: string;
   name: string;
-  queueType: "hybrid" | "group" | "individual";
-  isActive: boolean;
+  shortId: string;
+  queueType: "Hybrid" | "Group" | "Individual";
   referralCode: string;
-  useCustomPricing: boolean;
-  pricing: DoctorPricing;
+  pricing: string;
   patients: number;
+  isActive: boolean;
   created: string;
 }
 
-const initialDoctors: MockDoctor[] = [
-  { id: "1", name: "Doctor 1 Test", queueType: "hybrid", isActive: true, referralCode: "DRDOC1TEST", useCustomPricing: true, pricing: { standard: 30, urgent: 90, prescription: 15 }, patients: 2, created: "Mar 2, 2026" },
-  { id: "2", name: "Doctor 3 Test", queueType: "group", isActive: true, referralCode: "DR469978DB", useCustomPricing: true, pricing: { standard: 55, urgent: 88, prescription: 12 }, patients: 0, created: "Mar 3, 2026" },
-  { id: "3", name: "Dr. Jim Test2", queueType: "individual", isActive: true, referralCode: "DR07146825", useCustomPricing: false, pricing: { ...GLOBAL_DEFAULTS }, patients: 0, created: "Mar 3, 2026" },
-  { id: "4", name: "Eva Narro-Bartenstein", queueType: "individual", isActive: true, referralCode: "DRF376851C", useCustomPricing: true, pricing: { standard: 90, urgent: 130, prescription: 45 }, patients: 1, created: "Mar 7, 2026" },
+const doctors: MockDoctor[] = [
+  { id: "1", name: "Doctor 1 Test", shortId: "dd780320...", queueType: "Hybrid", referralCode: "DRDOC1TEST", pricing: "30 / 90 / 15", patients: 2, isActive: true, created: "Mar 2, 2026" },
+  { id: "2", name: "Doctor 3 Test", shortId: "469978db...", queueType: "Group", referralCode: "DR469978DB", pricing: "55 / 88 / 12", patients: 0, isActive: true, created: "Mar 3, 2026" },
+  { id: "3", name: "Dr. Jim Test2", shortId: "07146825...", queueType: "Individual", referralCode: "DR07146825", pricing: "60 / 90 / 10", patients: 0, isActive: true, created: "Mar 3, 2026" },
+  { id: "4", name: "Eva Narro-Bartenstein", shortId: "f376851c...", queueType: "Individual", referralCode: "DRF376851C", pricing: "90 / 130 / 45", patients: 1, isActive: true, created: "Mar 7, 2026" },
 ];
 
-const queueBadgeVariant = (type: string) => {
+const queueBadgeClass = (type: string) => {
   switch (type) {
-    case "hybrid": return "secondary" as const;
-    case "group": return "outline" as const;
-    default: return "default" as const;
+    case "Hybrid": return "bg-emerald-100 text-emerald-700 border-emerald-200";
+    case "Group": return "bg-emerald-50 text-emerald-600 border-emerald-200";
+    case "Individual": return "bg-purple-50 text-purple-600 border-purple-200";
+    default: return "";
   }
 };
 
 const MockupDoctorSettings = () => {
   const [lang, setLang] = useState<Lang>("de");
-  const [doctors, setDoctors] = useState<MockDoctor[]>(initialDoctors);
-
-  const updatePricing = (id: string, field: keyof DoctorPricing, value: string) => {
-    const num = parseInt(value) || 0;
-    setDoctors((prev) =>
-      prev.map((d) => d.id === id ? { ...d, pricing: { ...d.pricing, [field]: num } } : d)
-    );
-  };
-
-  const toggleCustomPricing = (id: string, useCustom: boolean) => {
-    setDoctors((prev) =>
-      prev.map((d) => {
-        if (d.id !== id) return d;
-        return { ...d, useCustomPricing: useCustom, pricing: useCustom ? d.pricing : { ...GLOBAL_DEFAULTS } };
-      })
-    );
-  };
-
-  const effectivePricing = (d: MockDoctor) => d.useCustomPricing ? d.pricing : GLOBAL_DEFAULTS;
 
   return (
     <div className="min-h-screen bg-muted/30">
       {/* Top bar */}
       <div className="sticky top-0 z-10 bg-background border-b px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Settings className="h-5 w-5 text-muted-foreground" />
           <h1 className="text-lg font-semibold text-foreground">
-            {t(lang, "Arzt-Einstellungen (Mockup)", "Doctor Settings (Mockup)")}
+            {t(lang, "Arzt-Tabelle (Mockup)", "Doctor Table (Mockup)")}
           </h1>
           <Badge variant="outline" className="text-xs">
             {t(lang, "Nur Vorschau", "Preview Only")}
@@ -93,109 +63,111 @@ const MockupDoctorSettings = () => {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto p-6 space-y-6">
-        {/* Header */}
-        <div className="flex items-center gap-3">
-          <Users className="h-6 w-6 text-primary" />
-          <div>
-            <h2 className="text-2xl font-semibold text-foreground">
-              {t(lang, "Registrierte Ärzte", "Registered Doctors")}
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              {t(lang, "Preise und Einstellungen pro Arzt verwalten.", "Manage pricing and settings per doctor.")}
+      <div className="max-w-7xl mx-auto p-6">
+        {/* Card */}
+        <div className="rounded-xl border bg-card shadow-sm">
+          {/* Header */}
+          <div className="p-6 pb-4">
+            <div className="flex items-center gap-3 mb-1">
+              <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                <Users className="h-4 w-4 text-emerald-600" />
+              </div>
+              <h2 className="text-2xl font-semibold text-foreground" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                {t(lang, "Registrierte Ärzte", "Registered Doctors")}
+              </h2>
+            </div>
+            <p className="text-sm text-muted-foreground ml-11">
+              {t(lang, "Alle registrierten Ärzte auf der Plattform. Klicken Sie auf das Profilbild, um es zu ändern.", "All registered doctors on the platform. Click on the profile picture to change it.")}
             </p>
           </div>
-        </div>
 
-        {/* Table */}
-        <div className="rounded-lg border bg-card">
+          {/* Table */}
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead className="w-[200px]">{t(lang, "Name", "Name")}</TableHead>
-                <TableHead>{t(lang, "Warteschlange", "Queue Type")}</TableHead>
-                <TableHead>{t(lang, "Empfehlungscode", "Referral Code")}</TableHead>
-                <TableHead className="text-center">{t(lang, "Eigene Preise", "Custom Pricing")}</TableHead>
-                <TableHead className="text-right">{t(lang, "Standard (€)", "Standard (€)")}</TableHead>
-                <TableHead className="text-right">{t(lang, "Dringend (€)", "Urgent (€)")}</TableHead>
-                <TableHead className="text-right">{t(lang, "Rezept (€)", "Rx (€)")}</TableHead>
-                <TableHead className="text-center">{t(lang, "Patienten", "Patients")}</TableHead>
-                <TableHead>{t(lang, "Status", "Status")}</TableHead>
-                <TableHead>{t(lang, "Erstellt", "Created")}</TableHead>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="pl-6">
+                  <span className="inline-flex items-center gap-1 cursor-pointer">
+                    {t(lang, "Name", "Name")} <ArrowUp className="h-3 w-3" />
+                  </span>
+                </TableHead>
+                <TableHead>ID</TableHead>
+                <TableHead>
+                  <span className="inline-flex items-center gap-1 cursor-pointer">
+                    {t(lang, "Warteschlange", "Queue Type")} <ArrowUpDown className="h-3 w-3" />
+                  </span>
+                </TableHead>
+                <TableHead>{t(lang, "Empfehlungslink", "Referral Link")}</TableHead>
+                <TableHead>{t(lang, "Preise (€)", "Pricing (€)")}</TableHead>
+                <TableHead>{t(lang, "Patienten", "Patients")}</TableHead>
+                <TableHead>
+                  <span className="inline-flex items-center gap-1 cursor-pointer">
+                    {t(lang, "Status", "Status")} <ArrowUpDown className="h-3 w-3" />
+                  </span>
+                </TableHead>
+                <TableHead>
+                  <span className="inline-flex items-center gap-1 cursor-pointer">
+                    {t(lang, "Erstellt", "Created")} <ArrowUpDown className="h-3 w-3" />
+                  </span>
+                </TableHead>
+                <TableHead>{t(lang, "Aktionen", "Actions")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {doctors.map((doctor) => {
-                const p = effectivePricing(doctor);
-                return (
-                  <TableRow key={doctor.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium text-primary shrink-0">
-                          {doctor.name.charAt(0)}
-                        </div>
-                        <span className="font-medium text-foreground">{doctor.name}</span>
+              {doctors.map((doctor) => (
+                <TableRow key={doctor.id} className="h-20">
+                  <TableCell className="pl-6">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center shrink-0">
+                        <Users className="h-5 w-5 text-muted-foreground" />
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={queueBadgeVariant(doctor.queueType)} className="capitalize text-xs">
-                        {doctor.queueType}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <span className="font-mono text-xs text-muted-foreground">{doctor.referralCode}</span>
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <Switch
-                        checked={doctor.useCustomPricing}
-                        onCheckedChange={(checked) => toggleCustomPricing(doctor.id, checked)}
-                      />
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {doctor.useCustomPricing ? (
-                        <Input type="number" value={p.standard} onChange={(e) => updatePricing(doctor.id, "standard", e.target.value)} className="h-8 w-20 text-right ml-auto" />
-                      ) : (
-                        <span className="text-muted-foreground">{p.standard}</span>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {doctor.useCustomPricing ? (
-                        <Input type="number" value={p.urgent} onChange={(e) => updatePricing(doctor.id, "urgent", e.target.value)} className="h-8 w-20 text-right ml-auto" />
-                      ) : (
-                        <span className="text-muted-foreground">{p.urgent}</span>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {doctor.useCustomPricing ? (
-                        <Input type="number" value={p.prescription} onChange={(e) => updatePricing(doctor.id, "prescription", e.target.value)} className="h-8 w-20 text-right ml-auto" />
-                      ) : (
-                        <span className="text-muted-foreground">{p.prescription}</span>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {doctor.patients > 0 ? (
-                        <span className="text-primary font-medium">{doctor.patients}</span>
-                      ) : (
-                        <span className="text-muted-foreground">0</span>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={doctor.isActive ? "default" : "destructive"} className="text-xs">
-                        {doctor.isActive ? t(lang, "Aktiv", "Active") : t(lang, "Inaktiv", "Inactive")}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">{doctor.created}</TableCell>
-                  </TableRow>
-                );
-              })}
+                      <span className="font-medium text-foreground">{doctor.name}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <span className="font-mono text-xs bg-muted px-2 py-1 rounded text-muted-foreground">{doctor.shortId}</span>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="outline" className={`text-xs font-medium ${queueBadgeClass(doctor.queueType)}`}>
+                      {doctor.queueType}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-xs bg-muted px-2 py-1 rounded text-foreground">{doctor.referralCode}</span>
+                      <button className="text-muted-foreground hover:text-foreground"><Copy className="h-3.5 w-3.5" /></button>
+                      <button className="text-muted-foreground hover:text-foreground"><RefreshCw className="h-3.5 w-3.5" /></button>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-sm text-foreground">{doctor.pricing}</span>
+                      <button className="text-muted-foreground hover:text-foreground"><Pencil className="h-3.5 w-3.5" /></button>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    {doctor.patients > 0 ? (
+                      <span className="inline-flex items-center gap-1 text-primary font-medium">
+                        <Link className="h-3.5 w-3.5" /> {doctor.patients}
+                      </span>
+                    ) : (
+                      <span className="text-muted-foreground">0</span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 hover:bg-emerald-100 text-xs">
+                      {t(lang, "Aktiv", "Active")}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-sm text-muted-foreground">{doctor.created}</TableCell>
+                  <TableCell>
+                    <button className="text-muted-foreground hover:text-foreground">
+                      <MoreHorizontal className="h-5 w-5" />
+                    </button>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
-        </div>
-
-        <div className="flex justify-end">
-          <Button size="lg" onClick={() => alert(t(lang, "Mockup — keine Aktion", "Mockup — no action"))}>
-            {t(lang, "Alle Änderungen speichern", "Save All Changes")}
-          </Button>
         </div>
       </div>
     </div>
