@@ -36,6 +36,7 @@ import Profile from "./pages/Profile";
 // Dev preview pages
 import BefundberichtPreview from "./pages/BefundberichtPreview";
 import MockupDoctorSettings from "./pages/MockupDoctorSettings";
+import MockupDiagnosisPage from "./pages/MockupDiagnosisPage";
 
 const queryClient = new QueryClient();
 
@@ -62,6 +63,7 @@ const App = () => (
             <Route path="/widget/:referralCode" element={<Widget />} />
             <Route path="/befundbericht-preview" element={<BefundberichtPreview />} />
             <Route path="/mockup-doctor-settings" element={<MockupDoctorSettings />} />
+            <Route path="/mockup-diagnosis" element={<MockupDiagnosisPage />} />
             
             {/* Auth pages */}
             <Route path="/auth" element={<PatientAuth />} />
