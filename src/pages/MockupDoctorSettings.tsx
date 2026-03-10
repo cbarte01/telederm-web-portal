@@ -103,7 +103,7 @@ const MockupDoctorSettings = () => {
                   </span>
                 </TableHead>
                 <TableHead>{t(lang, "Empfehlungslink", "Referral Link")}</TableHead>
-                <TableHead>{t(lang, "Konsultationspreise (€)", "Consultation Prices (€)")}</TableHead>
+                <TableHead>{t(lang, "Konsultationspreise (Std, Premium, Rezept €)", "Consultation Prices (Std, Premium, Prescription €)")}</TableHead>
                 <TableHead>{t(lang, "Plattformgebühr Patienten (€ / MwSt.)", "Platform Fee to Patients (€ / VAT %)")}</TableHead>
                 <TableHead>{t(lang, "Plattformgebühr Ärzte (€ / MwSt.)", "Platform Fee to Doctors (€ / VAT %)")}</TableHead>
                 <TableHead>{t(lang, "Abogebühr Ärzte (€ / MwSt.)", "Subscription Fee to Doctors (€ / VAT %)")}</TableHead>
