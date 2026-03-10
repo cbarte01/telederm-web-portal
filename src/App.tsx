@@ -63,6 +63,7 @@ const App = () => (
             <Route path="/widget/:referralCode" element={<Widget />} />
             <Route path="/befundbericht-preview" element={<BefundberichtPreview />} />
             <Route path="/mockup-doctor-settings" element={<MockupDoctorSettings />} />
+            <Route path="/mockup-diagnosis" element={<MockupDiagnosisPage />} />
             
             {/* Auth pages */}
             <Route path="/auth" element={<PatientAuth />} />
