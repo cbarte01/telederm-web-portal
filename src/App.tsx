@@ -64,6 +64,7 @@ const App = () => (
             <Route path="/befundbericht-preview" element={<BefundberichtPreview />} />
             <Route path="/mockup-doctor-settings" element={<MockupDoctorSettings />} />
             <Route path="/mockup-diagnosis" element={<MockupDiagnosisPage />} />
+            <Route path="/mockup-snippet-settings" element={<MockupSnippetSettings />} />
             
             {/* Auth pages */}
             <Route path="/auth" element={<PatientAuth />} />
