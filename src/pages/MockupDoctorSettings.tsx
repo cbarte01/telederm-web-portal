@@ -30,10 +30,10 @@ interface MockDoctor {
 }
 
 const doctors: MockDoctor[] = [
-  { id: "1", name: "Doctor 1 Test", shortId: "dd780320...", queueType: "Hybrid", referralCode: "DRDOC1TEST", pricing: "30 / 90 / 15", platformFee: 9.90, vatPercent: 20, patients: 2, isActive: true, created: "Mar 2, 2026" },
-  { id: "2", name: "Doctor 3 Test", shortId: "469978db...", queueType: "Group", referralCode: "DR469978DB", pricing: "55 / 88 / 12", platformFee: 12.50, vatPercent: 20, patients: 0, isActive: true, created: "Mar 3, 2026" },
-  { id: "3", name: "Dr. Jim Test2", shortId: "07146825...", queueType: "Individual", referralCode: "DR07146825", pricing: "60 / 90 / 10", platformFee: 9.90, vatPercent: 20, patients: 0, isActive: true, created: "Mar 3, 2026" },
-  { id: "4", name: "Eva Narro-Bartenstein", shortId: "f376851c...", queueType: "Individual", referralCode: "DRF376851C", pricing: "90 / 130 / 45", platformFee: 15.00, vatPercent: 20, patients: 1, isActive: true, created: "Mar 7, 2026" },
+  { id: "1", name: "Doctor 1 Test", shortId: "dd780320...", queueType: "Hybrid", referralCode: "DRDOC1TEST", pricing: "30 / 90 / 15", platformFeePatient: 9.90, vatPercentPatient: 20, platformFeeDoctor: 5.00, vatPercentDoctor: 20, patients: 2, isActive: true, created: "Mar 2, 2026" },
+  { id: "2", name: "Doctor 3 Test", shortId: "469978db...", queueType: "Group", referralCode: "DR469978DB", pricing: "55 / 88 / 12", platformFeePatient: 12.50, vatPercentPatient: 20, platformFeeDoctor: 7.50, vatPercentDoctor: 20, patients: 0, isActive: true, created: "Mar 3, 2026" },
+  { id: "3", name: "Dr. Jim Test2", shortId: "07146825...", queueType: "Individual", referralCode: "DR07146825", pricing: "60 / 90 / 10", platformFeePatient: 9.90, vatPercentPatient: 20, platformFeeDoctor: 5.00, vatPercentDoctor: 20, patients: 0, isActive: true, created: "Mar 3, 2026" },
+  { id: "4", name: "Eva Narro-Bartenstein", shortId: "f376851c...", queueType: "Individual", referralCode: "DRF376851C", pricing: "90 / 130 / 45", platformFeePatient: 15.00, vatPercentPatient: 20, platformFeeDoctor: 10.00, vatPercentDoctor: 20, patients: 1, isActive: true, created: "Mar 7, 2026" },
 ];
 
 const queueBadgeClass = (type: string) => {
