@@ -24,6 +24,8 @@ interface MockDoctor {
   vatPercentPatient: number;
   platformFeeDoctor: number;
   vatPercentDoctor: number;
+  subscriptionFeeDoctor: number;
+  subscriptionVatDoctor: number;
   patients: number;
   isActive: boolean;
   created: string;
