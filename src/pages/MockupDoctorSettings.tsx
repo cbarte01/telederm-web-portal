@@ -148,6 +148,13 @@ const MockupDoctorSettings = () => {
                     </div>
                   </TableCell>
                   <TableCell>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-sm text-foreground">€{doctor.platformFee.toFixed(2)}</span>
+                      <span className="text-muted-foreground">/</span>
+                      <span className="text-sm text-foreground">{doctor.vatPercent}%</span>
+                      <button className="text-muted-foreground hover:text-foreground"><Pencil className="h-3.5 w-3.5" /></button>
+                    </div>
+                  <TableCell>
                     {doctor.patients > 0 ? (
                       <span className="inline-flex items-center gap-1 text-primary font-medium">
                         <Link className="h-3.5 w-3.5" /> {doctor.patients}
