@@ -20,8 +20,10 @@ interface MockDoctor {
   queueType: "Hybrid" | "Group" | "Individual";
   referralCode: string;
   pricing: string;
-  platformFee: number;
-  vatPercent: number;
+  platformFeePatient: number;
+  vatPercentPatient: number;
+  platformFeeDoctor: number;
+  vatPercentDoctor: number;
   patients: number;
   isActive: boolean;
   created: string;
