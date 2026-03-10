@@ -1,15 +1,19 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Settings, Users, Euro, Globe } from "lucide-react";
+import { Globe, Settings, Users } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 type Lang = "de" | "en";
-
 const t = (lang: Lang, de: string, en: string) => (lang === "de" ? de : en);
 
 interface DoctorPricing {
@@ -18,76 +22,32 @@ interface DoctorPricing {
   prescription: number;
 }
 
+const GLOBAL_DEFAULTS: DoctorPricing = { standard: 49, urgent: 74, prescription: 29 };
+
 interface MockDoctor {
   id: string;
   name: string;
-  email: string;
   queueType: "hybrid" | "group" | "individual";
   isActive: boolean;
   referralCode: string;
   useCustomPricing: boolean;
   pricing: DoctorPricing;
+  patients: number;
+  created: string;
 }
 
-const GLOBAL_DEFAULTS: DoctorPricing = {
-  standard: 49,
-  urgent: 74,
-  prescription: 29,
-};
-
 const initialDoctors: MockDoctor[] = [
-  {
-    id: "1",
-    name: "Doctor 1 Test",
-    email: "doctor1@test.com",
-    queueType: "hybrid",
-    isActive: true,
-    referralCode: "DOC1TEST",
-    useCustomPricing: true,
-    pricing: { standard: 30, urgent: 90, prescription: 15 },
-  },
-  {
-    id: "2",
-    name: "Doctor 3 Test",
-    email: "doctor3@test.com",
-    queueType: "group",
-    isActive: true,
-    referralCode: "DOC3TEST",
-    useCustomPricing: true,
-    pricing: { standard: 55, urgent: 88, prescription: 12 },
-  },
-  {
-    id: "3",
-    name: "Dr. Jim Test2",
-    email: "jim.test2@example.com",
-    queueType: "individual",
-    isActive: true,
-    referralCode: "JIMTEST2",
-    useCustomPricing: false,
-    pricing: { standard: 49, urgent: 74, prescription: 29 },
-  },
-  {
-    id: "4",
-    name: "Eva Narro-Bartenstein",
-    email: "eva.narro@example.com",
-    queueType: "individual",
-    isActive: true,
-    referralCode: "EVANARRO",
-    useCustomPricing: true,
-    pricing: { standard: 90, urgent: 130, prescription: 45 },
-  },
+  { id: "1", name: "Doctor 1 Test", queueType: "hybrid", isActive: true, referralCode: "DRDOC1TEST", useCustomPricing: true, pricing: { standard: 30, urgent: 90, prescription: 15 }, patients: 2, created: "Mar 2, 2026" },
+  { id: "2", name: "Doctor 3 Test", queueType: "group", isActive: true, referralCode: "DR469978DB", useCustomPricing: true, pricing: { standard: 55, urgent: 88, prescription: 12 }, patients: 0, created: "Mar 3, 2026" },
+  { id: "3", name: "Dr. Jim Test2", queueType: "individual", isActive: true, referralCode: "DR07146825", useCustomPricing: false, pricing: { ...GLOBAL_DEFAULTS }, patients: 0, created: "Mar 3, 2026" },
+  { id: "4", name: "Eva Narro-Bartenstein", queueType: "individual", isActive: true, referralCode: "DRF376851C", useCustomPricing: true, pricing: { standard: 90, urgent: 130, prescription: 45 }, patients: 1, created: "Mar 7, 2026" },
 ];
 
 const queueBadgeVariant = (type: string) => {
   switch (type) {
-    case "hybrid":
-      return "secondary";
-    case "group":
-      return "outline";
-    case "individual":
-      return "default";
-    default:
-      return "outline";
+    case "hybrid": return "secondary" as const;
+    case "group": return "outline" as const;
+    default: return "default" as const;
   }
 };
 
@@ -95,18 +55,10 @@ const MockupDoctorSettings = () => {
   const [lang, setLang] = useState<Lang>("de");
   const [doctors, setDoctors] = useState<MockDoctor[]>(initialDoctors);
 
-  const updateDoctor = (id: string, updates: Partial<MockDoctor>) => {
-    setDoctors((prev) =>
-      prev.map((d) => (d.id === id ? { ...d, ...updates } : d))
-    );
-  };
-
   const updatePricing = (id: string, field: keyof DoctorPricing, value: string) => {
     const num = parseInt(value) || 0;
     setDoctors((prev) =>
-      prev.map((d) =>
-        d.id === id ? { ...d, pricing: { ...d.pricing, [field]: num } } : d
-      )
+      prev.map((d) => d.id === id ? { ...d, pricing: { ...d.pricing, [field]: num } } : d)
     );
   };
 
@@ -114,14 +66,12 @@ const MockupDoctorSettings = () => {
     setDoctors((prev) =>
       prev.map((d) => {
         if (d.id !== id) return d;
-        return {
-          ...d,
-          useCustomPricing: useCustom,
-          pricing: useCustom ? d.pricing : { ...GLOBAL_DEFAULTS },
-        };
+        return { ...d, useCustomPricing: useCustom, pricing: useCustom ? d.pricing : { ...GLOBAL_DEFAULTS } };
       })
     );
   };
+
+  const effectivePricing = (d: MockDoctor) => d.useCustomPricing ? d.pricing : GLOBAL_DEFAULTS;
 
   return (
     <div className="min-h-screen bg-muted/30">
@@ -138,173 +88,110 @@ const MockupDoctorSettings = () => {
         </div>
         <div className="flex items-center gap-2">
           <Globe className="h-4 w-4 text-muted-foreground" />
-          <button
-            onClick={() => setLang("de")}
-            className={`px-2 py-1 text-sm rounded ${lang === "de" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
-          >
-            DE
-          </button>
-          <button
-            onClick={() => setLang("en")}
-            className={`px-2 py-1 text-sm rounded ${lang === "en" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
-          >
-            EN
-          </button>
+          <button onClick={() => setLang("de")} className={`px-2 py-1 text-sm rounded ${lang === "de" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>DE</button>
+          <button onClick={() => setLang("en")} className={`px-2 py-1 text-sm rounded ${lang === "en" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>EN</button>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto p-6 space-y-6">
-        {/* Global defaults card */}
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center gap-2">
-              <Euro className="h-4 w-4" />
-              {t(lang, "Globale Standardpreise", "Global Default Pricing")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="text-center p-3 rounded-md bg-muted/50">
-                <p className="text-xs text-muted-foreground mb-1">
-                  {t(lang, "Standard", "Standard")}
-                </p>
-                <p className="text-xl font-semibold text-foreground">€{GLOBAL_DEFAULTS.standard}</p>
-              </div>
-              <div className="text-center p-3 rounded-md bg-muted/50">
-                <p className="text-xs text-muted-foreground mb-1">
-                  {t(lang, "Dringend", "Urgent")}
-                </p>
-                <p className="text-xl font-semibold text-foreground">€{GLOBAL_DEFAULTS.urgent}</p>
-              </div>
-              <div className="text-center p-3 rounded-md bg-muted/50">
-                <p className="text-xs text-muted-foreground mb-1">
-                  {t(lang, "Rezept", "Prescription")}
-                </p>
-                <p className="text-xl font-semibold text-foreground">€{GLOBAL_DEFAULTS.prescription}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Doctors list */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Users className="h-4 w-4" />
-          {t(lang, `${doctors.length} Ärzte`, `${doctors.length} Doctors`)}
+      <div className="max-w-6xl mx-auto p-6 space-y-6">
+        {/* Header */}
+        <div className="flex items-center gap-3">
+          <Users className="h-6 w-6 text-primary" />
+          <div>
+            <h2 className="text-2xl font-semibold text-foreground">
+              {t(lang, "Registrierte Ärzte", "Registered Doctors")}
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              {t(lang, "Preise und Einstellungen pro Arzt verwalten.", "Manage pricing and settings per doctor.")}
+            </p>
+          </div>
         </div>
 
-        <div className="space-y-4">
-          {doctors.map((doctor) => (
-            <Card
-              key={doctor.id}
-              className={doctor.useCustomPricing ? "border-primary/30" : ""}
-            >
-              <CardContent className="p-5">
-                {/* Doctor header */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-sm font-medium text-primary">
-                      {doctor.name.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="font-medium text-foreground">{doctor.name}</p>
-                      <p className="text-xs text-muted-foreground">{doctor.email}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Badge variant={queueBadgeVariant(doctor.queueType)} className="text-xs capitalize">
-                      {doctor.queueType}
-                    </Badge>
-                    <Badge
-                      variant={doctor.isActive ? "default" : "destructive"}
-                      className="text-xs"
-                    >
-                      {doctor.isActive
-                        ? t(lang, "Aktiv", "Active")
-                        : t(lang, "Inaktiv", "Inactive")}
-                    </Badge>
-                  </div>
-                </div>
-
-                {/* Referral code */}
-                <div className="text-xs text-muted-foreground mb-3">
-                  {t(lang, "Empfehlungscode", "Referral Code")}:{" "}
-                  <span className="font-mono text-foreground">{doctor.referralCode}</span>
-                </div>
-
-                <Separator className="mb-4" />
-
-                {/* Pricing toggle */}
-                <div className="flex items-center justify-between mb-4">
-                  <Label htmlFor={`custom-${doctor.id}`} className="text-sm cursor-pointer">
-                    {t(lang, "Individuelle Preise", "Custom Pricing")}
-                  </Label>
-                  <Switch
-                    id={`custom-${doctor.id}`}
-                    checked={doctor.useCustomPricing}
-                    onCheckedChange={(checked) => toggleCustomPricing(doctor.id, checked)}
-                  />
-                </div>
-
-                {/* Pricing fields */}
-                <div className="grid grid-cols-3 gap-3">
-                  <div>
-                    <Label className="text-xs text-muted-foreground">
-                      {t(lang, "Standard (€)", "Standard (€)")}
-                    </Label>
-                    {doctor.useCustomPricing ? (
-                      <Input
-                        type="number"
-                        value={doctor.pricing.standard}
-                        onChange={(e) => updatePricing(doctor.id, "standard", e.target.value)}
-                        className="mt-1 h-9"
+        {/* Table */}
+        <div className="rounded-lg border bg-card">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[200px]">{t(lang, "Name", "Name")}</TableHead>
+                <TableHead>{t(lang, "Warteschlange", "Queue Type")}</TableHead>
+                <TableHead>{t(lang, "Empfehlungscode", "Referral Code")}</TableHead>
+                <TableHead className="text-center">{t(lang, "Eigene Preise", "Custom Pricing")}</TableHead>
+                <TableHead className="text-right">{t(lang, "Standard (€)", "Standard (€)")}</TableHead>
+                <TableHead className="text-right">{t(lang, "Dringend (€)", "Urgent (€)")}</TableHead>
+                <TableHead className="text-right">{t(lang, "Rezept (€)", "Rx (€)")}</TableHead>
+                <TableHead className="text-center">{t(lang, "Patienten", "Patients")}</TableHead>
+                <TableHead>{t(lang, "Status", "Status")}</TableHead>
+                <TableHead>{t(lang, "Erstellt", "Created")}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {doctors.map((doctor) => {
+                const p = effectivePricing(doctor);
+                return (
+                  <TableRow key={doctor.id}>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium text-primary shrink-0">
+                          {doctor.name.charAt(0)}
+                        </div>
+                        <span className="font-medium text-foreground">{doctor.name}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={queueBadgeVariant(doctor.queueType)} className="capitalize text-xs">
+                        {doctor.queueType}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <span className="font-mono text-xs text-muted-foreground">{doctor.referralCode}</span>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <Switch
+                        checked={doctor.useCustomPricing}
+                        onCheckedChange={(checked) => toggleCustomPricing(doctor.id, checked)}
                       />
-                    ) : (
-                      <p className="mt-1 h-9 flex items-center text-sm text-muted-foreground">
-                        €{GLOBAL_DEFAULTS.standard}
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <Label className="text-xs text-muted-foreground">
-                      {t(lang, "Dringend (€)", "Urgent (€)")}
-                    </Label>
-                    {doctor.useCustomPricing ? (
-                      <Input
-                        type="number"
-                        value={doctor.pricing.urgent}
-                        onChange={(e) => updatePricing(doctor.id, "urgent", e.target.value)}
-                        className="mt-1 h-9"
-                      />
-                    ) : (
-                      <p className="mt-1 h-9 flex items-center text-sm text-muted-foreground">
-                        €{GLOBAL_DEFAULTS.urgent}
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <Label className="text-xs text-muted-foreground">
-                      {t(lang, "Rezept (€)", "Prescription (€)")}
-                    </Label>
-                    {doctor.useCustomPricing ? (
-                      <Input
-                        type="number"
-                        value={doctor.pricing.prescription}
-                        onChange={(e) => updatePricing(doctor.id, "prescription", e.target.value)}
-                        className="mt-1 h-9"
-                      />
-                    ) : (
-                      <p className="mt-1 h-9 flex items-center text-sm text-muted-foreground">
-                        €{GLOBAL_DEFAULTS.prescription}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {doctor.useCustomPricing ? (
+                        <Input type="number" value={p.standard} onChange={(e) => updatePricing(doctor.id, "standard", e.target.value)} className="h-8 w-20 text-right ml-auto" />
+                      ) : (
+                        <span className="text-muted-foreground">{p.standard}</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {doctor.useCustomPricing ? (
+                        <Input type="number" value={p.urgent} onChange={(e) => updatePricing(doctor.id, "urgent", e.target.value)} className="h-8 w-20 text-right ml-auto" />
+                      ) : (
+                        <span className="text-muted-foreground">{p.urgent}</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {doctor.useCustomPricing ? (
+                        <Input type="number" value={p.prescription} onChange={(e) => updatePricing(doctor.id, "prescription", e.target.value)} className="h-8 w-20 text-right ml-auto" />
+                      ) : (
+                        <span className="text-muted-foreground">{p.prescription}</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {doctor.patients > 0 ? (
+                        <span className="text-primary font-medium">{doctor.patients}</span>
+                      ) : (
+                        <span className="text-muted-foreground">0</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={doctor.isActive ? "default" : "destructive"} className="text-xs">
+                        {doctor.isActive ? t(lang, "Aktiv", "Active") : t(lang, "Inaktiv", "Inactive")}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">{doctor.created}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
         </div>
 
-        {/* Save button */}
         <div className="flex justify-end">
           <Button size="lg" onClick={() => alert(t(lang, "Mockup — keine Aktion", "Mockup — no action"))}>
             {t(lang, "Alle Änderungen speichern", "Save All Changes")}
