@@ -37,6 +37,7 @@ import Profile from "./pages/Profile";
 import BefundberichtPreview from "./pages/BefundberichtPreview";
 import MockupDoctorSettings from "./pages/MockupDoctorSettings";
 import MockupDiagnosisPage from "./pages/MockupDiagnosisPage";
+import MockupSnippetSettings from "./pages/MockupSnippetSettings";
 
 const queryClient = new QueryClient();
 
