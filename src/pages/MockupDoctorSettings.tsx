@@ -202,6 +202,91 @@ const MockupDoctorSettings = () => {
             </TableBody>
           </Table>
         </div>
+
+        {/* Group Pricing Table */}
+        <div className="rounded-xl border bg-card shadow-sm mt-8">
+          <div className="p-6 pb-4">
+            <div className="flex items-center gap-3 mb-1">
+              <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                <Users className="h-4 w-4 text-emerald-600" />
+              </div>
+              <h2 className="text-2xl font-semibold text-foreground" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                {t(lang, "Gruppenpreise", "Group Pricing")}
+              </h2>
+            </div>
+            <p className="text-sm text-muted-foreground ml-11">
+              {t(lang, "Standardpreise für alle Ärzte im Gruppenpool.", "Default pricing for all doctors in the group pool.")}
+            </p>
+          </div>
+
+          <Table>
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="pl-6">{t(lang, "Name", "Name")}</TableHead>
+                <TableHead>ID</TableHead>
+                <TableHead>{t(lang, "Warteschlange", "Queue Type")}</TableHead>
+                <TableHead>{t(lang, "Empfehlungslink", "Referral Link")}</TableHead>
+                <TableHead>{t(lang, "Konsultationspreise (Std, Premium, Rezept €)", "Consultation Prices (Std, Premium, Prescription €)")}</TableHead>
+                <TableHead>{t(lang, "Plattformgebühr Patienten (€ / MwSt.)", "Platform Fee to Patients (€ / VAT %)")}</TableHead>
+                <TableHead>{t(lang, "Plattformgebühr Ärzte (€ / MwSt.)", "Platform Fee to Doctors (€ / VAT %)")}</TableHead>
+                <TableHead>{t(lang, "Abogebühr Ärzte (€ / MwSt.)", "Subscription Fee to Doctors (€ / VAT %)")}</TableHead>
+                <TableHead>{t(lang, "Patienten", "Patients")}</TableHead>
+                <TableHead>{t(lang, "Status", "Status")}</TableHead>
+                <TableHead>{t(lang, "Erstellt", "Created")}</TableHead>
+                <TableHead>{t(lang, "Aktionen", "Actions")}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow className="h-20">
+                <TableCell className="pl-6">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center shrink-0">
+                      <Users className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                    <span className="font-medium text-foreground">Group</span>
+                  </div>
+                </TableCell>
+                <TableCell><span className="text-muted-foreground">n/a</span></TableCell>
+                <TableCell><span className="text-muted-foreground">n/a</span></TableCell>
+                <TableCell><span className="text-muted-foreground">n/a</span></TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-sm text-foreground">49 / 74 / 29</span>
+                    <button className="text-muted-foreground hover:text-foreground"><Pencil className="h-3.5 w-3.5" /></button>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-sm text-foreground">€9.90</span>
+                    <span className="text-muted-foreground">/</span>
+                    <span className="text-sm text-foreground">20%</span>
+                    <button className="text-muted-foreground hover:text-foreground"><Pencil className="h-3.5 w-3.5" /></button>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-sm text-foreground">€5.00</span>
+                    <span className="text-muted-foreground">/</span>
+                    <span className="text-sm text-foreground">20%</span>
+                    <button className="text-muted-foreground hover:text-foreground"><Pencil className="h-3.5 w-3.5" /></button>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-sm text-foreground">€49.00</span>
+                    <span className="text-muted-foreground">/</span>
+                    <span className="text-sm text-foreground">20%</span>
+                    <button className="text-muted-foreground hover:text-foreground"><Pencil className="h-3.5 w-3.5" /></button>
+                  </div>
+                </TableCell>
+                <TableCell><span className="text-muted-foreground">n/a</span></TableCell>
+                <TableCell><span className="text-muted-foreground">n/a</span></TableCell>
+                <TableCell><span className="text-muted-foreground">n/a</span></TableCell>
+                <TableCell><span className="text-muted-foreground">n/a</span></TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </div>
   );
