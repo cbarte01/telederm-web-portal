@@ -151,9 +151,17 @@ const MockupDoctorSettings = () => {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-sm text-foreground">€{doctor.platformFee.toFixed(2)}</span>
+                      <span className="text-sm text-foreground">€{doctor.platformFeePatient.toFixed(2)}</span>
                       <span className="text-muted-foreground">/</span>
-                      <span className="text-sm text-foreground">{doctor.vatPercent}%</span>
+                      <span className="text-sm text-foreground">{doctor.vatPercentPatient}%</span>
+                      <button className="text-muted-foreground hover:text-foreground"><Pencil className="h-3.5 w-3.5" /></button>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-sm text-foreground">€{doctor.platformFeeDoctor.toFixed(2)}</span>
+                      <span className="text-muted-foreground">/</span>
+                      <span className="text-sm text-foreground">{doctor.vatPercentDoctor}%</span>
                       <button className="text-muted-foreground hover:text-foreground"><Pencil className="h-3.5 w-3.5" /></button>
                     </div>
                   </TableCell>
