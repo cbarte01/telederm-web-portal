@@ -100,6 +100,7 @@ const MockupDoctorSettings = () => {
                 </TableHead>
                 <TableHead>{t(lang, "Empfehlungslink", "Referral Link")}</TableHead>
                 <TableHead>{t(lang, "Konsultationspreise (€)", "Consultation Prices (€)")}</TableHead>
+                <TableHead>{t(lang, "Plattformgebühr / MwSt.", "Platform Fee to Patients (€ / VAT %)")}</TableHead>
                 <TableHead>{t(lang, "Patienten", "Patients")}</TableHead>
                 <TableHead>
                   <span className="inline-flex items-center gap-1 cursor-pointer">
