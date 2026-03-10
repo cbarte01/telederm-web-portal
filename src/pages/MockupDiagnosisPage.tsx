@@ -78,7 +78,7 @@ const MockupDiagnosisPage = () => {
 
   return (
     <div className="min-h-screen bg-muted/30 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-[1400px] mx-auto">
         {/* Header */}
         <div className="mb-6">
           <Badge variant="outline" className="mb-2 text-xs font-mono">
@@ -103,9 +103,9 @@ const MockupDiagnosisPage = () => {
               <label className="block text-sm font-medium text-foreground mb-2">
                 Your Diagnosis &amp; Recommendation
               </label>
-              <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+              <div className="flex flex-col md:flex-row gap-4">
                 {/* Textarea (3/5) */}
-                <div className="lg:col-span-3">
+                <div className="flex-[3] min-w-0">
                   <Textarea
                     value={diagnosis}
                     onChange={(e) => setDiagnosis(e.target.value)}
@@ -115,7 +115,7 @@ const MockupDiagnosisPage = () => {
                 </div>
 
                 {/* Snippets (2/5) */}
-                <div className="lg:col-span-2 border border-border rounded-lg overflow-hidden">
+                <div className="flex-[2] min-w-0 border border-border rounded-lg overflow-hidden">
                   <div className="flex items-center gap-2 px-3 py-2.5 bg-muted/50 border-b border-border">
                     <Plus className="h-4 w-4 text-primary" />
                     <span className="text-sm font-semibold text-foreground">Quick Snippets</span>
