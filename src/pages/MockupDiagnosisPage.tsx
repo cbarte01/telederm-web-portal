@@ -90,124 +90,119 @@ const MockupDiagnosisPage = () => {
           </p>
         </div>
 
-        {/* Main Layout: Two columns */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-          {/* Left: Doctor's Response (3/5) */}
-          <div className="lg:col-span-3">
-            <Card className="border bg-card">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-2 mb-6">
-                  <FileText className="h-5 w-5 text-primary" />
-                  <h2 className="text-lg font-semibold text-foreground">Doctor's Response</h2>
-                </div>
+        {/* Single card layout */}
+        <Card className="border bg-card">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-2 mb-6">
+              <FileText className="h-5 w-5 text-primary" />
+              <h2 className="text-lg font-semibold text-foreground">Doctor's Response</h2>
+            </div>
 
-                {/* Diagnosis Textarea */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Your Diagnosis &amp; Recommendation
-                  </label>
+            {/* Side-by-side: Textarea + Snippets */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Your Diagnosis &amp; Recommendation
+              </label>
+              <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+                {/* Textarea (3/5) */}
+                <div className="lg:col-span-3">
                   <Textarea
                     value={diagnosis}
                     onChange={(e) => setDiagnosis(e.target.value)}
                     placeholder="Enter your professional assessment..."
-                    className="min-h-[280px] bg-accent/20 border-border text-foreground"
+                    className="min-h-[380px] bg-accent/20 border-border text-foreground h-full"
                   />
                 </div>
 
-                <Separator className="my-6" />
-
-                {/* ICD-10 */}
-                <div className="mb-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <FileText className="h-4 w-4 text-primary" />
-                    <label className="text-sm font-medium text-foreground">
-                      ICD-10 Code (for medical fee note)
-                    </label>
+                {/* Snippets (2/5) */}
+                <div className="lg:col-span-2 border border-border rounded-lg overflow-hidden">
+                  <div className="flex items-center gap-2 px-3 py-2.5 bg-muted/50 border-b border-border">
+                    <Plus className="h-4 w-4 text-primary" />
+                    <span className="text-sm font-semibold text-foreground">Quick Snippets</span>
                   </div>
-                  <Input
-                    value={icd10}
-                    onChange={(e) => setIcd10(e.target.value)}
-                    placeholder="e.g. L50.0"
-                    className="bg-background"
-                  />
-                </div>
-
-                {/* Diagnosis label */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Diagnosis (optional)
-                  </label>
-                  <Input
-                    value={diagnosisLabel}
-                    onChange={(e) => setDiagnosisLabel(e.target.value)}
-                    placeholder="e.g. Allergic Urticaria"
-                    className="bg-background"
-                  />
-                </div>
-
-                {/* Actions */}
-                <Button className="w-full mb-3" variant="hero" size="lg">
-                  <Send className="h-4 w-4 mr-2" />
-                  Send Response &amp; Complete
-                </Button>
-                <Button className="w-full" variant="outline" size="lg">
-                  <Save className="h-4 w-4 mr-2" />
-                  Save as Draft
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Right: Snippet Panel (2/5) */}
-          <div className="lg:col-span-2">
-            <Card className="border bg-card sticky top-4">
-              <CardContent className="p-5">
-                <div className="flex items-center gap-2 mb-4">
-                  <Plus className="h-5 w-5 text-primary" />
-                  <h2 className="text-lg font-semibold text-foreground">Quick Snippets</h2>
-                </div>
-                <p className="text-xs text-muted-foreground mb-4">
-                  Click a snippet to insert it into your diagnosis field.
-                </p>
-
-                <div className="space-y-3 max-h-[calc(100vh-220px)] overflow-y-auto pr-1">
-                  {SNIPPET_CATEGORIES.map((category, catIdx) => (
-                    <div key={catIdx} className="border border-border rounded-lg overflow-hidden">
-                      <button
-                        type="button"
-                        onClick={() => toggleCategory(catIdx)}
-                        className="w-full flex items-center justify-between px-3 py-2.5 bg-muted/50 hover:bg-muted transition-colors text-left"
-                      >
-                        <span className="text-sm font-semibold text-foreground">
-                          {category.label}
-                        </span>
-                        {expandedCategories[catIdx] ? (
-                          <ChevronUp className="h-4 w-4 text-muted-foreground" />
-                        ) : (
-                          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                  <p className="text-xs text-muted-foreground px-3 pt-2 pb-1">
+                    Click to insert into diagnosis field.
+                  </p>
+                  <div className="space-y-1 max-h-[340px] overflow-y-auto p-2">
+                    {SNIPPET_CATEGORIES.map((category, catIdx) => (
+                      <div key={catIdx} className="border border-border rounded-md overflow-hidden">
+                        <button
+                          type="button"
+                          onClick={() => toggleCategory(catIdx)}
+                          className="w-full flex items-center justify-between px-3 py-2 bg-muted/30 hover:bg-muted transition-colors text-left"
+                        >
+                          <span className="text-xs font-semibold text-foreground">
+                            {category.label}
+                          </span>
+                          {expandedCategories[catIdx] ? (
+                            <ChevronUp className="h-3.5 w-3.5 text-muted-foreground" />
+                          ) : (
+                            <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+                          )}
+                        </button>
+                        {expandedCategories[catIdx] && (
+                          <div className="p-1.5 space-y-1">
+                            {category.snippets.map((snippet, snippetIdx) => (
+                              <button
+                                key={snippetIdx}
+                                type="button"
+                                onClick={() => insertSnippet(snippet)}
+                                className="w-full text-left px-2.5 py-1.5 text-[11px] text-muted-foreground hover:text-foreground hover:bg-primary/5 rounded transition-colors border border-transparent hover:border-primary/20 leading-relaxed"
+                              >
+                                {snippet}
+                              </button>
+                            ))}
+                          </div>
                         )}
-                      </button>
-                      {expandedCategories[catIdx] && (
-                        <div className="p-2 space-y-1.5">
-                          {category.snippets.map((snippet, snippetIdx) => (
-                            <button
-                              key={snippetIdx}
-                              type="button"
-                              onClick={() => insertSnippet(snippet)}
-                              className="w-full text-left px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-primary/5 rounded-md transition-colors border border-transparent hover:border-primary/20 leading-relaxed"
-                            >
-                              {snippet}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+              </div>
+            </div>
+
+            <Separator className="my-6" />
+
+            {/* ICD-10 */}
+            <div className="mb-4">
+              <div className="flex items-center gap-2 mb-2">
+                <FileText className="h-4 w-4 text-primary" />
+                <label className="text-sm font-medium text-foreground">
+                  ICD-10 Code (for medical fee note)
+                </label>
+              </div>
+              <Input
+                value={icd10}
+                onChange={(e) => setIcd10(e.target.value)}
+                placeholder="e.g. L50.0"
+                className="bg-background"
+              />
+            </div>
+
+            {/* Diagnosis label */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Diagnosis (optional)
+              </label>
+              <Input
+                value={diagnosisLabel}
+                onChange={(e) => setDiagnosisLabel(e.target.value)}
+                placeholder="e.g. Allergic Urticaria"
+                className="bg-background"
+              />
+            </div>
+
+            {/* Actions */}
+            <Button className="w-full mb-3" variant="hero" size="lg">
+              <Send className="h-4 w-4 mr-2" />
+              Send Response &amp; Complete
+            </Button>
+            <Button className="w-full" variant="outline" size="lg">
+              <Save className="h-4 w-4 mr-2" />
+              Save as Draft
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
