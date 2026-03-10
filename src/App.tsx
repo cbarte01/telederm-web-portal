@@ -35,6 +35,7 @@ import Profile from "./pages/Profile";
 
 // Dev preview pages
 import BefundberichtPreview from "./pages/BefundberichtPreview";
+import MockupDoctorSettings from "./pages/MockupDoctorSettings";
 
 const queryClient = new QueryClient();
 
@@ -60,6 +61,7 @@ const App = () => (
             <Route path="/consultation/success" element={<PaymentSuccess />} />
             <Route path="/widget/:referralCode" element={<Widget />} />
             <Route path="/befundbericht-preview" element={<BefundberichtPreview />} />
+            <Route path="/mockup-doctor-settings" element={<MockupDoctorSettings />} />
             
             {/* Auth pages */}
             <Route path="/auth" element={<PatientAuth />} />
