@@ -36,6 +36,7 @@ import Profile from "./pages/Profile";
 // Dev preview pages
 import BefundberichtPreview from "./pages/BefundberichtPreview";
 import MockupDoctorSettings from "./pages/MockupDoctorSettings";
+import MockupDiagnosisPage from "./pages/MockupDiagnosisPage";
 
 const queryClient = new QueryClient();
 
