@@ -78,7 +78,7 @@ const MockupDiagnosisPage = () => {
 
   return (
     <div className="min-h-screen bg-muted/30 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-[1400px] mx-auto">
         {/* Header */}
         <div className="mb-6">
           <Badge variant="outline" className="mb-2 text-xs font-mono">
