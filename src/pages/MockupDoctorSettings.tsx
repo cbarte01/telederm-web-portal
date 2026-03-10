@@ -20,16 +20,18 @@ interface MockDoctor {
   queueType: "Hybrid" | "Group" | "Individual";
   referralCode: string;
   pricing: string;
+  platformFee: number;
+  vatPercent: number;
   patients: number;
   isActive: boolean;
   created: string;
 }
 
 const doctors: MockDoctor[] = [
-  { id: "1", name: "Doctor 1 Test", shortId: "dd780320...", queueType: "Hybrid", referralCode: "DRDOC1TEST", pricing: "30 / 90 / 15", patients: 2, isActive: true, created: "Mar 2, 2026" },
-  { id: "2", name: "Doctor 3 Test", shortId: "469978db...", queueType: "Group", referralCode: "DR469978DB", pricing: "55 / 88 / 12", patients: 0, isActive: true, created: "Mar 3, 2026" },
-  { id: "3", name: "Dr. Jim Test2", shortId: "07146825...", queueType: "Individual", referralCode: "DR07146825", pricing: "60 / 90 / 10", patients: 0, isActive: true, created: "Mar 3, 2026" },
-  { id: "4", name: "Eva Narro-Bartenstein", shortId: "f376851c...", queueType: "Individual", referralCode: "DRF376851C", pricing: "90 / 130 / 45", patients: 1, isActive: true, created: "Mar 7, 2026" },
+  { id: "1", name: "Doctor 1 Test", shortId: "dd780320...", queueType: "Hybrid", referralCode: "DRDOC1TEST", pricing: "30 / 90 / 15", platformFee: 9.90, vatPercent: 20, patients: 2, isActive: true, created: "Mar 2, 2026" },
+  { id: "2", name: "Doctor 3 Test", shortId: "469978db...", queueType: "Group", referralCode: "DR469978DB", pricing: "55 / 88 / 12", platformFee: 12.50, vatPercent: 20, patients: 0, isActive: true, created: "Mar 3, 2026" },
+  { id: "3", name: "Dr. Jim Test2", shortId: "07146825...", queueType: "Individual", referralCode: "DR07146825", pricing: "60 / 90 / 10", platformFee: 9.90, vatPercent: 20, patients: 0, isActive: true, created: "Mar 3, 2026" },
+  { id: "4", name: "Eva Narro-Bartenstein", shortId: "f376851c...", queueType: "Individual", referralCode: "DRF376851C", pricing: "90 / 130 / 45", platformFee: 15.00, vatPercent: 20, patients: 1, isActive: true, created: "Mar 7, 2026" },
 ];
 
 const queueBadgeClass = (type: string) => {
@@ -98,6 +100,7 @@ const MockupDoctorSettings = () => {
                 </TableHead>
                 <TableHead>{t(lang, "Empfehlungslink", "Referral Link")}</TableHead>
                 <TableHead>{t(lang, "Konsultationspreise (€)", "Consultation Prices (€)")}</TableHead>
+                <TableHead>{t(lang, "Plattformgebühr / MwSt.", "Platform Fee to Patients (€ / VAT %)")}</TableHead>
                 <TableHead>{t(lang, "Patienten", "Patients")}</TableHead>
                 <TableHead>
                   <span className="inline-flex items-center gap-1 cursor-pointer">
@@ -141,6 +144,14 @@ const MockupDoctorSettings = () => {
                   <TableCell>
                     <div className="flex items-center gap-1.5">
                       <span className="text-sm text-foreground">{doctor.pricing}</span>
+                      <button className="text-muted-foreground hover:text-foreground"><Pencil className="h-3.5 w-3.5" /></button>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-sm text-foreground">€{doctor.platformFee.toFixed(2)}</span>
+                      <span className="text-muted-foreground">/</span>
+                      <span className="text-sm text-foreground">{doctor.vatPercent}%</span>
                       <button className="text-muted-foreground hover:text-foreground"><Pencil className="h-3.5 w-3.5" /></button>
                     </div>
                   </TableCell>
