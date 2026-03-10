@@ -106,6 +106,7 @@ const MockupDoctorSettings = () => {
                 <TableHead>{t(lang, "Konsultationspreise (€)", "Consultation Prices (€)")}</TableHead>
                 <TableHead>{t(lang, "Plattformgebühr Patienten (€ / MwSt.)", "Platform Fee to Patients (€ / VAT %)")}</TableHead>
                 <TableHead>{t(lang, "Plattformgebühr Ärzte (€ / MwSt.)", "Platform Fee to Doctors (€ / VAT %)")}</TableHead>
+                <TableHead>{t(lang, "Abogebühr Ärzte (€ / MwSt.)", "Subscription Fee to Doctors (€ / VAT %)")}</TableHead>
                 <TableHead>{t(lang, "Patienten", "Patients")}</TableHead>
                 <TableHead>
                   <span className="inline-flex items-center gap-1 cursor-pointer">
